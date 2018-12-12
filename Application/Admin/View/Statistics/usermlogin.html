@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>每周用户登录流失-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='统计中心 > 每周用户登录流失';
+        </php>
+        <link rel="stylesheet" href="/src/admin/css/jCal.css">
+        <include file="Common:intoHead" />
+    </head>
+        <script src="/src/admin/js/jJquery.js"></script>
+        <script src="/src/admin/js/jCal.js"></script>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">每周用户登录流失</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <div align="center">
+                            <input type='text' class="input" id='dateTime' name='dateTime'  readonly="readonly" value='<?php echo $datas["dateTime"]; ?>'>
+                            <div id="calOne" class="calOne"></div>
+                            <input type="submit" class="btn" value="搜索" />
+                        </div>
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td><strong>时间</strong></td>
+                            <td><strong>新用户</strong>(本周) <img src="/src/admin/img/help.png" width="15" height="15" title="本周注册用户" /></td>
+                            <td><STRONG>活跃用户</STRONG>(本周) <img src="/src/admin/img/help.png" width="15" height="15" title="连续登录2周用户（含本周）" /></td>
+                            <td><STRONG>忠诚用户</STRONG>(本周) <img src="/src/admin/img/help.png" width="15" height="15" title="连续登录三周以上的用户（含本周）" /></td>
+                            <td><STRONG>新增流失用户</STRONG>(本周) <img src="/src/admin/img/help.png" width="15" height="15" title="上周登录，本周没登录" /></td>
+                            <td><STRONG>近期流失用户</STRONG>(本周) <img src="/src/admin/img/help.png" width="15" height="15" title="连续2周没登录（含本周）" /></td>
+                            <td><STRONG>长期流失用户</STRONG>(本周) <img src="/src/admin/img/help.png" width="15" height="15" title="连续三周以上没登录（含本周）" /></td>
+                        </tr>
+                        <tr >
+                            <td><?php echo $datas['login_list']['s_opentime']; ?></td>
+                            <td><?php echo $datas['login_list']['userReg']; ?></td>
+                            <td><?php echo $datas['login_list']['hylogUser']; ?></td>
+                            <td><?php echo $datas['login_list']['zclogUser']; ?></td>
+                            <td><?php echo $datas['login_list']['newls']; ?></td>
+                            <td><?php echo $datas['login_list']['jqls']; ?></td>
+                            <td><?php echo $datas['login_list']['cqls']; ?></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <script src="/src/admin/js/jdate.js"></script>
+        <include file="Common:foot" />
+    </body>
+</html>

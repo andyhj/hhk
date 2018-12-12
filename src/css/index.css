@@ -1,0 +1,121 @@
+﻿html,body{height:100%;width:100%;overflow:hidden;}
+body{margin: 0px; padding: 0px;}
+p,ul,ol,img{margin: 0px; padding:0px;}
+ul,ol{list-style-type: none;}
+
+.header{width: 100%; height: 100px; border-bottom: 1px solid #dbdbdb;}
+.mljia_shop_logo{display: block; width: 144px; height: 26px; float: left; background: url("../img/logo.png") no-repeat; margin: 35px 0 0 20px; }
+.login_box{width: 300px; height: 100px; float: right; text-align: right;}
+.login_before{width: 280px; text-align: right; font-size: 14px; color: #000; line-height: 100px; }
+.login_before a{text-decoration: none; color: #000;}
+.login_before a:hover{color: #1fb9ff;}
+.login_in{width: 280px; text-align: right; font-size: 14px; color: #000;margin-top:10px;}
+.login_in a{text-decoration: none; color: #000;}
+.login_in a:hover{color: #1fb9ff;}
+
+/*菜单*/
+.menu_box{width: 100%; overflow: hidden; float: left;}
+.menu_list{width: 100%; overflow: hidden;}
+.menu_list li{width: 90%; overflow: hidden; margin-left: 10%; margin-top: 10px;}
+.menu_list li a{color: #000; font-size: 14px; text-decoration: none; line-height: 25px;}
+.menu_list li a span{display: block; width: 10px; height: 10px; background: url("../img/jt_y.png") no-repeat; float: left; margin: 7px 3px 0 0;}
+.menu_list li a .jt_x{display: block; width: 10px; height: 10px; background: url("../img/jt_x.png") no-repeat; float: left; margin: 7px 3px 0 0;}
+.jb_inf_box{width: 75%; overflow: hidden; margin-left: 4%;}
+.jb_inf_box li{width: 70%; margin: 0px;padding:2px 10px 2px 10px;font-size:13px;border-radius:3px 3px;}
+.jb_inf_box .active{background:#3299ff;color:#fff;}
+.jb_inf_box .active a{color:#fff;}
+
+
+
+/*具体内容*/
+.main_cont{width: 100%;float: left; margin-top: 20px;}
+.choose_box{width: 100%; height: 30px; margin-bottom: 20px;}
+.choose_p1{float: left; color: #000; font-size: 14px; line-height: 30px; margin-right: 10px;}
+.choose_sel{float: left; display: block; height: 24px; margin-top: 3px; margin-right: 50px;}
+.choose_inp{float: left; display: block; height: 20px; color: #000; font-size: 14px; margin-top: 3px; padding: 0px; margin-right: 30px; }
+
+.btn_red{color: #fff; background-color: #ff0000; padding: 5px 8px; text-decoration: none; border-radius: 5px;}
+ .btn_red:hover{background-color: #c40000;}
+
+
+.btn_blue_big{color: #fff; background-color: #1fb9ff; padding: 5px 15px; text-decoration: none; border-radius: 5px;}
+ .btn_blue_big:hover{background-color: #00a3ed;}
+
+ /* 弹窗公用框架 */
+ .f_l{float:left;}
+ .f_r{float:right;}
+.pop_wrap{width:100%;background-color:#fff;overflow:hidden;}
+.pop_wrap .pop_title{width:100%;height:45px;background-color:#fafafa;border-bottom:#eee 1px solid;overflow:hidden;}
+.pop_wrap .pop_title span{display:block;text-indent:10px;font:100 18px/45px \5fae\8f6f\96c5\9ed1,\5b8b\4f53;color:#4a4a4a;}
+.pop_wrap .pop_title span a{margin:0 8px;color:#f60;}
+.pop_wrap .pop_title a.close_btn{display:block;margin:7px 10px 7px 0;width:31px;height:31px;background:url(/src/img/pop_close_ico.jpg) -31px top no-repeat;overflow:hidden;text-indent:-999px;}
+.pop_wrap .pop_title a:hover.close_btn{background:url(/src/img/pop_close_ico.jpg) left top no-repeat;}
+.pop_wrap .pop_main{padding:20px;overflow:hidden;}
+  /* 公共弹窗 */
+  .main_l{text-align:left;}
+  .main_c{text-align:center;}
+  .main_r{text-align:right;}
+  .pop_content{width:100%;padding:15px 0 20px;font-family:\5fae\8f6f\96c5\9ed1,\5b8b\4f53;overflow:hidden;line-height:22px;}
+  .pop_content a{color:#069dd4;}
+  .align_l{text-align:left;}
+  .align_l a{margin-right:16px;}
+  .align_c{text-align:center;}
+  .align_c a{margin:0 8px;}
+  .align_r{text-align:right;}
+  .pop_nav{width:100%;overflow:hidden;}
+  .pop_nav a{display:inline-block;width:120px;height:40px;font:100 16px/40px \5fae\8f6f\96c5\9ed1,\5b8b\4f53;border:0;border-radius:5px;}
+  .pop_nav a.nav_sure{background-color:#069dd6;color:#fff;}
+  .pop_nav a:hover.nav_sure{background-color:#0083b5;text-decoration:none;}
+  .pop_nav a.nav_none{background-color:#e6e6e6;color:#4a4a4a;}
+  .pop_nav a:hover.nav_none{background-color:#ddd;text-decoration:none;}
+  .pop_nav a.nav_orange{background-color:#f89000;color:#fff;}
+  .pop_nav a:hover.nav_orange{background-color:#f60;text-decoration:none;}
+
+  /*上传公用弹窗*/
+    .in_order_tc{width: 850px;min-height: 312px;background-color: #ffffff;border-radius: 5px;position: absolute;top: 50%;left: 50%;margin-top: -156px;margin-left: -425px;overflow: hidden}
+    .in_order_tc_title{width: 795px;height: 77px;border-bottom: 1px solid #e5e5e5;margin: 0 0 0 55px;overflow: hidden;}
+    .in_order_title_text{color: #444444;font-size: 30px;line-height: 105px;float: left;margin-left: 8px;}
+    .choose_file_box{width: 795px;height: 54px;margin: 33px 0 0 55px;}
+    .choose_file_box_s1{color: #444444;font-size: 20px;float: left;line-height: 54px;}
+    .choose_file_box_inp{display: block;width: 484px;height: 52px;border: 1px solid #b3b3b3;float: left;margin: 0 24px 0 15px;font-size: 18px;text-indent: 10px;}
+    .btn_choose_file{display: block;width: 180px;height: 52px;border-bottom: 2px solid #669727;background-color: #7fbb31;text-align: center;line-height: 54px;color: #fff;float: left;font-size: 20px;text-decoration: none;z-index: 2;}
+    .btn_choose_file_inp{width: 180px;height: 52px;z-index: 1}
+    .in_order_demo_box{width: 795px;height: 54px;margin-left: 55px;overflow: hidden;margin-bottom: 30px;}
+    .btn_download_demo{color: #b3b3b3;font-size: 20px;line-height: 70px;float: left;}
+    .all-btu{margin-left: 414px;}
+    .btn_in_file{display: block;width: 180px;height: 52px;border-bottom: 2px solid #646464;background-color: #7c7c7c;text-align: center;line-height: 54px;color: #fff;float: left;font-size: 20px;text-decoration: none}
+  	.in_order_tc_close{display: block;width: 31px;height: 31px;background: url("/src/img/pop_close_ico.jpg") -31px top no-repeat;position: absolute;top: 14px;right: 19px;}
+    .in_order_tc_close:hover{display: block;width: 31px;height: 31px;background: url("/src/img/pop_close_ico.jpg") left top no-repeat;position: absolute;top: 14px;right: 19px;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

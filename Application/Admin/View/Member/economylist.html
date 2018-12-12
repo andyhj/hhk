@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>用户金币记录-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='网站注册会员管理 > 用户金币记录';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">用户金币记录</div>
+                    </div>
+<!--                    <form id="search_form" method="get">
+                        <input type="hidden" name="uid" value="<?php echo $uid; ?>">
+                        <input type="hidden" name="rurl" value="<?php echo $rurl; ?>">
+                        <select class="act" id="coin_type" name="coin_type" >
+                                <option value="0" <?php if($coin_type==0){echo 'selected = "selected"';} ?>>全部</option>
+                                <option value="1" <?php if($coin_type==1){echo 'selected = "selected"';} ?>>欢乐豆</option>
+                                <option value="2" <?php if($coin_type==2){echo 'selected = "selected"';} ?>>积分</option>
+                        </select>
+                        <input type="submit" value="搜索" class="btn"/> 
+                    </form>-->
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                            <tr>
+                                <td >用户ID</td>
+                                <td>游戏昵称</td>
+                                <td>类型</td>
+                                <td>金币变化</td>
+                                <td>币种</td>
+                                <td>所在房间</td>
+                                <td>输赢</td>
+                                <td>时间</td>
+                            </tr>
+                            <?php foreach($datas['economy_list'] as $n => $data): ?>
+                            <tr id="tr_user_<?php echo $data['logid']; ?>">
+                                <td><?php echo $data['uid']; ?></td>
+                                <td><?php echo $data['nickname']; ?></td>
+                                <td><?php echo $data['oper_name']; ?></td>
+                                <td><?php echo $data['changevalue']; ?></td>
+                                <td><?php if($data['coin_type']==1){ echo "金币";}elseif($data['coin_type']==2){ echo "金币";}elseif($data['coin_type']==3){ echo "元宝";}?></td>
+                                <td><?php echo $data['room_name']; ?></td>
+                                <td><?php echo $data['logtype_name']; ?></td>
+                                <td><?php echo $data['logtime']?date("Y-m-d H:i:s",$data['logtime']):""; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">金币总收入：<?php echo $datas['z_amount']; ?></div>
+<div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">金币总支出：<?php echo $datas['j_amount']; ?></div>
+<div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">剩余：<?php echo $datas['z_amount']-$datas['j_amount']; ?></div>
+<div style="text-align: left;margin-left: 15px;margin-top: 20px;"><input type="button" value="返回" class="btn" onClick="location='<?php echo $return_url; ?>'" /></div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

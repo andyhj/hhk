@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>订单列表-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='统计中心 > 订单列表';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">订单列表</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <input type="text" class="input" name="search_key" value="<?php echo $search_key; ?>" style="width: 200px;"  placeholder="根据用户ID或者支付单号查找"/> 
+                        <input type="submit" class="btn" value="搜索" />
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        
+                        <tbody>
+                                <tr>
+                                <td>ID</td>
+                                <td>用户ID</td>
+                                <td>订单号</td>
+                                <td>支付单号</td>
+                                <td>支付类型</td>
+                                <td>支付金额</td>
+                                <td>获得欢乐豆</td>
+                                <td>订单状态</td>
+                                <td>商品名称</td>
+                                <td>购买渠道</td>
+                                <td>下单时间</td>
+                            </tr>
+                            <?php if(!empty($orderList)): ?>
+                            <?php foreach($orderList as $n => $data): ?>
+                            <tr id="tr_user_<?php echo $data['id']; ?>">
+                                <td><?php echo $data['id']; ?></td>
+                                <td><a href="<?php echo U('member/info/',['uid'=>$data['u_id'],'rurl'=>base64_encode('statistics/orderlist')]); ?>" title="查看"><?php echo str_replace($search_key, '<span class="have_search_key">' . $search_key . '</span>', $data['u_id']); ?></a></td>
+                                <td><?php echo $data['order_number']; ?></td>
+                                <td><?php echo str_replace($search_key, '<span class="have_search_key">' . $search_key . '</span>', $data['pay_number']); ?></td>
+                                <td><?php echo $data['pay_type_name']; ?></td>
+                                <td><?php echo $data['amount']; ?></td>
+                                <td><?php echo $data['ratio']; ?></td>
+                                <td><?php if($data['status'] == 200): ?>已支付<?php elseif($data['status'] == 100): ?>待支付<?php elseif($data['status'] == 300): ?>退款中<?php elseif($data['status'] == 400): ?>退款成功<?php endif; ?></td>
+                                <td><?php echo $data['item_name']; ?></td>
+                                <td><?php echo $data['type_name']; ?></td>
+                                <td><?php echo $data['add_date']?date("Y-m-d H:i:s",$data['add_date']):""; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">人民币支付总金额：<?php echo $r_amount; ?></div>
+<div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">佣金支付总人数：<?php echo $y_amount; ?></div>
+<?php if($return_url){ ?>
+<div style="text-align: left;margin-left: 15px;margin-top: 20px;"><input type="button" value="返回" class="btn" onClick="location='<?php echo $return_url; ?>'" /></div>
+    <?php } ?>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

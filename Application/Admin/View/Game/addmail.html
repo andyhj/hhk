@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>发送邮件-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='游戏管理 > 发送邮件';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">发送邮件</div>
+                    </div>
+                    <form  method="post" enctype="multipart/form-data">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                            <tr>
+                                <td width="100"></td>
+                                <td><div style="color: red;"><?php echo $error; ?></div></td>
+                            </tr>
+                            <tr>
+                                <td width="100">用户ID：</td>
+                                <td><input class="input" type="text" name="uid" id="uid" title="用户id" maxlength="20" value="<?php echo $uid; ?>" <?php if($uid){echo 'readonly="true"';} ?>/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">标题：</td>
+                                <td><input class="input" type="text" name="title" id="title" title="活动标题" maxlength="20" value=""/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">内容：</td>
+                                <td><textarea  name="describe" id="describe" style="margin: 0px; width: 430px; height: 140px;"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td width="100">金币数量：</td>
+                                <td><input class="input" type="text" name="coin" id="coin" title="可领取的金币" value=""/></td>
+                            </tr>
+                           <!--  <tr>
+                                <td width="100">兑换券数量：</td>
+                                <td><input class="input" type="text" name="awardnum" id="awardnum" title="可领取的兑换券数量" value=""/></td>
+                            </tr> -->
+                            <tr>
+                                <td width="100"></td>
+                                <td><input type="submit" value="提交"  class="btn"/>
+                                    <?php if($return_url): ?>
+                                        <input type="button" value="返回" class="btn" onClick="location='<?php echo $return_url; ?>'" />
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

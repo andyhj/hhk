@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>公告列表-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='游戏管理 > 公告列表';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">公告列表</div>
+                    </div>
+                    <div><input type="button" class="btn"  value="发送全服公告" onclick="location='<?php echo $sendUrl; ?>'"></div>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td >id</td>
+                            <td>发送者</td>
+                            <td width='30%'>内容</td>
+                            <td>添加时间</td>
+                            <td>发送时间</td>
+                            <td>结束时间</td>
+                            <td>时间间隔(秒)</td>
+                            <td>操作</td>
+                        </tr>
+                        <?php foreach($newsList as $n => $data): ?>
+                        <tr id="tr_user_<?php echo $data['id']; ?>">
+                            <td><?php echo $data['id']; ?></td>
+                            <td><?php echo $data['sender']; ?></td>
+                            <td><?php echo $data['describe']; ?></td>
+                            <td><?php echo $data['sendtime']?date("Y-m-d H:i:s",$data['sendtime']):""; ?></td>
+                            <td><?php echo $data['start_date']?date("Y-m-d H:i:s",$data['start_date']):""; ?></td>
+                            <td><?php echo $data['expire_time']?date("Y-m-d H:i:s",$data['expire_time']):""; ?></td>
+                            <td><?php echo $data['interval']; ?></td>
+                            <td>[ <a link="<?php echo U('game/delnews/',array('id'=>$data['id'])); ?>" href="javascript:void(0)" name="<?php echo $data['id']; ?>" class="del">删除 </a> ]</td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <script type="text/javascript">
+            $(function(){
+                $(".del").click(function(){
+                    var delLink=$(this).attr("link");
+                    popup.confirm('你真的打算删除【<b>'+$(this).attr("name")+'</b>】吗?','温馨提示',function(action){
+                        if(action == 'ok'){
+                            top.window.location.href=delLink;
+                        }
+                    });
+                    return false;
+                });
+            });
+        </script>
+        <include file="Common:foot" />
+    </body>
+</html>

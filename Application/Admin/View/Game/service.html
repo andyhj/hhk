@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>发送邮件-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='游戏管理 > 设置客服';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">设置客服</div>
+                    </div>
+                    <form  method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="id" name="id" value="<?php echo $service_info['id']; ?>">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                            <tr>
+                                <td width="100">微信：</td>
+                                <td><input class="input" type="text" name="wechat" id="wechat" title="微信" maxlength="20" value="<?php echo $service_info['wechat']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">QQ：</td>
+                                <td><input class="input" type="text" name="qq" id="qq" title="QQ" maxlength="20" value="<?php echo $service_info['qq']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">公众号：</td>
+                                <td><input class="input" type="text" name="phone" id="phone" title="电话" maxlength="20" value="<?php echo $service_info['phone']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100"></td>
+                                <td><input type="submit" value="提交"  class="btn"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

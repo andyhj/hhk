@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>邮件列表-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='游戏管理 > 邮件列表';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">邮件列表</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <input type="button" value="发送邮件" class="btn" onclick="location='<?php echo $sendUrl; ?>'"/>
+                        <input type="text" class="input" name="search_key" value="<?php echo $search_key; ?>" style="width: 200px;"  placeholder="根据用户ID查找"/> 
+                        <input type="submit" value="搜索"  class="btn"/>
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td >id</td>
+                            <td>用户ID</td>
+                            <td>标题</td>
+                            <td>发送者</td>
+                            <td>发送时间</td>
+                            <td width='20%'>内容</td>
+                            <td>可领取的金币</td>
+                            <!-- <td>可领取的兑换券数量</td> -->
+                            <td>是否已读</td>
+                            <td>是否已经领取</td>
+                        </tr>
+                        <?php foreach($mailList as $n => $data): ?>
+                        <tr id="tr_user_<?php echo $data['mailid']; ?>">
+                            <td><?php echo $data['mailid']; ?></td>
+                            <td><a href="<?php echo U('member/info/',['uid'=>$data['uid'],'rurl'=>base64_encode('game/mail')]); ?>" title="查看"><?php echo str_replace($search_key, '<span class="have_search_key">' . $search_key . '</span>', $data['uid']); ?></a></td>
+                            <td><?php echo $data['title']; ?></td>
+                            <td><?php echo $data['sender']; ?></td>
+                            <td><?php echo $data['sendtime']?date("Y-m-d H:i:s",$data['sendtime']):""; ?></td>
+                            <td><?php echo $data['describe']; ?></td>
+                            <td><?php echo $data['coin']; ?></td>
+                            <!-- <td><?php echo $data['awardnum']; ?></td> -->
+                            <td><?php if($data['ifread']==0){ echo "未读";}elseif($data['ifread']==1){ echo "已读";}?></td>
+                            <td><?php if($data['ifget']==0){ echo "未领取";}elseif($data['ifget']==1){ echo "已领取";}?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

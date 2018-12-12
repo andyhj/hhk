@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>用户登录统计-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='统计中心 > 用户登录统计';
+        </php>
+        <style>
+            .have_search_key{
+                font-weight: bold;
+                color: #F00;
+                font-size: 14px;
+            }
+        </style>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">用户登录统计</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <input type="text" class="input" name="search_key" id="search_key" value="<?php echo $search_key; ?>"  readonly="readonly" onClick="SelectDate(this)"/> 
+                        <input type="submit" value="搜索" class="btn"/> 
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td >id</td>
+                            <td>用户ID</td>
+                            <td>描述</td>
+                            <td>时间</td>
+                        </tr>
+                        <?php foreach($login_list as $n => $data): ?>
+                        <tr id="tr_user_<?php echo $data['id']; ?>">
+                            <td><?php echo $data['id']; ?></td>
+                            <td><a href="<?php echo U('member/info/',['uid'=>$data['u_id'],'rurl'=>base64_encode('statistics/userlogin')]); ?>" title="查看"><?php echo $data['u_id']; ?></a></td>
+                            <td><?php echo $data['intro']; ?></td>
+                            <td><?php echo $data['add_date']?date("Y-m-d H:i:s",$data['add_date']):""; ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                    </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

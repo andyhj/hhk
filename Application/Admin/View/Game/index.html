@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>房间列表-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='游戏管理 > 房间列表';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">房间列表</div>
+                    </div>
+                    <div><input type="button" class="btn"  value="更新所有房间" id="updroom"></div>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td>房间ID</td>
+                            <td>游戏名称</td>
+                            <td>房间</td>
+                            <td>人数限制</td>
+                            <td>币种</td>
+                            <td>底分</td>
+                            <td>基础倍数</td>
+                            <td>进入限制</td>
+                            <td>最高限制</td>
+                            <td>封顶数值</td>
+                            <td>台费</td>
+                            <td>积分底分</td>
+                            <td>最大输的钱</td>
+                            <td>最大赢得钱</td>
+                            <td>机器人是否启动</td>
+                            <td>状态</td>
+                            <td>操作</td>
+                        </tr>
+                        <?php if(!empty($room_list)): ?>
+                        <?php foreach($room_list as $n => $data): ?>
+                        <tr id="tr_user_<?php echo $data['room_id']; ?>">
+                            <td><?php echo $data['room_id']; ?></td>
+                            <td><?php echo $data['name']; ?></td>
+                            <td><?php echo $data['summary']; ?></td>
+                            <td><?php echo $data['user_limit']; ?></td>
+                            <td><?php if($data['coin_type'] == 1): ?>金币<?php elseif($data['coin_type'] == 2): ?>积分 <?php else: ?>元宝<?php endif; ?></td>
+                            <td><?php echo $data['base_limit']; ?></td>
+                            <td><?php echo $data['base_times']; ?></td>
+                            <td><?php echo $data['enter_limit']; ?></td>
+                            <td><?php echo $data['high_limit']; ?></td>
+                            <td><?php echo $data['top_limit']; ?></td>
+                            <td><?php echo $data['basefee']; ?></td>
+                            <td><?php echo $data['basepoint']; ?></td>
+                            <td><?php echo $data['ulosecoin']; ?></td>
+                            <td><?php echo $data['uwincoin']; ?></td>
+                            <td><?php if($data['aistart'] == "1"): ?>启动<?php else: ?>停止<?php endif; ?></td>
+                            <td><?php if($data['status'] == "R"): ?>启用<?php else: ?>停用<?php endif; ?></td>
+                            <td>[<a href="<?php echo U('game/roominfo/',['room_id'=>$data['room_id']]); ?>" title="编辑">编辑</a>]
+                                </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <script type="text/javascript">
+        $("#updroom").click(function(event) {
+            if (confirm("是否确认更新？")) {
+                $.ajax({
+                    type: 'get',
+                    url: '<?php echo $updurl; ?>',
+                    success: function(json) {
+                        if(json["status"]==200){
+                            alert("更新成功");
+                        }else{
+                            alert(json["info"]);
+                        }
+                    }
+                });
+            }
+        });
+        </script>
+        <include file="Common:foot" />
+    </body>
+</html>

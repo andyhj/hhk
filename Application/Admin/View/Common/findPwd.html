@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>重置密码-{$site.name}</title>
+        <base href="{$site.WEB_ROOT}"/>
+        <link rel="stylesheet" href="/src/admin/css/base.css">
+        <link rel="stylesheet" href="/src/admin/js/asyncbox/skins/default.css">
+        <script src="/src/js/jquery-1.8.2.min.js"></script>
+        <script src="/src/admin/js/jquery.lazyload.js"></script>
+        <script src="/src/admin/js/functions.js"></script>
+        <script src="/src/admin/js/jquery.form.js"></script>
+        <script src="/src/admin/js/asyncbox/asyncbox.js"></script>
+</head>
+
+<body class="loginWeb">
+    <div class="loginBox">
+        <div class="innerBox">
+            <div class="logo"> <img src="/src/admin/img/logo.png" /></div>
+            <form id="form1" action="" method="post">
+                <input class="input" name="code" id="code" size="30" type="hidden" value="{$code}"/>
+                <div class="loginInfo">
+                    <p align="center">你正在重置：{$info.email} 的密码！</p>
+                    <ul>
+                        <li class="row1">新密码：</li>
+                        <li class="row2"><input class="input" name="pwd" id="pwd" size="30" type="password" /></li>
+                    </ul>
+                    <ul>
+                        <li class="row1">再次输入：</li>
+                        <li class="row2"><input class="input" name="pwd1" id="pwd1" size="30" type="password" /></li>
+                    </ul>
+                    <ul>
+                        <li class="row1">验证码：</li>
+                        <li class="row2"><input class="input" id="verify_code" name="verify_code" type="text" style="width:100px;" /> <img src="{$site.WEB_ROOT}/index.php/Base/verify_code"  title="看不清？单击此处刷新" onclick="this.src+='?rand='+Math.random();"  style="cursor: pointer; vertical-align: middle;"/></li>
+                    </ul>
+                </div>
+            </form>
+            <div class="clear"></div>
+            <div class="operation"><button class="btn submit">提交重置</button> </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function(){
+            $(".submit").click(function(){
+                if($("#pwd").val()==''||$("#pwd1").val()==''||$("#verify_code").val()==''){
+                    popup.alert("填写完整方可登陆");
+                    return false;
+                }
+                if($("#pwd").val()!=$("#pwd1").val()){
+                    popup.alert("两次密码不一致");
+                    return false;
+                }
+                commonAjaxSubmit();
+            });
+        });
+    </script>
+</body>
+</html>

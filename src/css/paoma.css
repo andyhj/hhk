@@ -1,0 +1,340 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body,
+ol,
+ul,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+th,
+td,
+dl,
+dd,
+form,
+fieldset,
+legend,
+input,
+textarea,
+select {
+	margin: 0;
+	padding: 0
+}
+
+html {
+	max-height: 966px;
+	max-width: 1000px;
+	margin: 0 auto;
+}
+
+body {
+	max-width: 1000px;
+	margin: 0 auto;
+	max-height: 933px;
+	font: 12px"微文雅黑", "Arial Narrow", HELVETICA;
+	background: #fff;
+	-webkit-text-size-adjust: 100%;
+}
+
+ul,
+ol {
+	list-style: none;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%rem;
+	height: 100%rem;
+	background: url(/src/img/cj/beijing1.png) no-repeat;
+	background-size: cover;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+        background-color: #d71935;
+}
+
+.shanDeng {
+	height: 100%;
+	background: url(/src/img/cj/beijing1.png) no-repeat;
+        background-color: #d71935;
+	background-size: cover;
+}
+
+.shanDeng2 {
+	background: url(/src/img/cj/beijing2.png) no-repeat;
+        background-color: #d71935;
+	height: 100%;
+	background-size: cover;
+}
+
+#dome {
+	position: relative;
+	top: 10.34rem;
+	z-index: 1;
+}
+
+#dome .pao img {
+	height: 3.59rem;
+}
+
+#dome .cjBtn div {
+	width: 10rem;
+	height: 6rem;
+	background: url(/src/img/cj/gogogo@2x.png)no-repeat;
+	background-size: cover;
+	background-size: 100%;
+	position: absolute;
+	top: 25%;
+	left: 26%;
+	transform: translate(-50% -50%);
+}
+
+#dome .residue div {
+	text-align: center;
+}
+
+#dome .residue div img {
+	width: 10rem;
+	height: 2.5rem;
+}
+
+.active {
+	opacity: 0.3;
+	background: url(/src/img/cj/active1.png) no-repeat;
+	background-size: cover;
+	content: attr(data-text);
+	color: #FFF;
+}
+
+.frame {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background: rgba(0, 0, 0, 0.9);
+	text-align: center;
+	top: 0rem;
+	bottom: 0;
+	left: 0;
+	display: none;
+}
+
+.frame .masking-0 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/01.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.frame .masking-8 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/08.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.frame .masking-11 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/011.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.frame .masking-18 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/018.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.frame .masking-48 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/048.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+.frame .masking-zj {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/zj.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.frame .masking-07 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/0.png) no-repeat;
+	background-size: contain;
+	margin: 0px auto;
+	transform: translate(1%, 27%);
+}
+.frame .masking-zj1 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj1.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+.frame .masking-zj2 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj2.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+.frame .masking-zj3 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj3.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}.frame .masking-zj4 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj4.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}.frame .masking-zj5 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj5.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}.frame .masking-zj6 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj6.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}.frame .masking-zj7 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj7.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}.frame .masking-zj8 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj8.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}.frame .masking-zj9 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj9.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}.frame .masking-zj10 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj10.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}.frame .masking-zj11 {
+	width: 80%;
+	height: 80%;
+	background: url(/src/img/cj/jp/zj11.png) no-repeat;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+#mask .img {
+	position: absolute;
+	top: 6%;
+	right: 1%;
+}
+
+.frame .masking-07 .img {
+	top: -60px !important;
+}
+
+.frame .dianji {
+	position: absolute;
+	top: 15.5rem;
+	left: 17%;
+	width: 10rem;
+	height: 3rem;
+}
+
+.frame .masking-07 .dianji {
+	width: 10rem;
+	height: 3rem;
+	left: 16%;
+	top: 12rem !important;
+}
+
+.time div {
+	width: 9rem;
+	display: block;
+	border: 2px solid #FFFFFF;
+	border-radius: 35px;
+	text-align: center;
+	margin: 0 auto;
+	font-size: 1.3rem;
+	vertical-align: middle;
+	background-color: orange;
+	padding: 0.2rem 0;
+	color: #f31b20;
+	box-shadow: 1px 1px 1px 1px #777;
+	font-weight: bold;
+	background: -webkit-linear-gradient(left top, #FF8247, yellow);
+	/* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(bottom right, #FF8247, yellow);
+	/* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(bottom right, #FF8247, yellow);
+	/* Firefox 3.6 - 15 */
+	background: linear-gradient(to bottom right, #FF8247, yellow);
+	/* 标准的语法（必须放在最后） */
+}
+
+
+/*.btng {*/
+
+
+/*display: block;*/
+
+
+/*width: 4rem;*/
+
+
+/*height: 4rem;*/
+
+
+/*background: url(/src/img/cj/x@2x.png) no-repeat;*/
+
+
+/*background-size: cover;*/
+
+
+/*position: relative;*/
+
+
+/*right: 0;*/
+
+
+/*z-index: 300;*/
+
+
+/*}*/
+
+
+/*.imga{width: 4rem;height: 4rem;
+		position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	text-align: center;
+	display: block;}*/

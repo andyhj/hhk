@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>添加公告-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='游戏管理 > 添加公告';
+        </php>
+        <include file="Common:intoHead" />
+        <script src="/src/admin/js/laydate/laydate.js"></script>
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">添加公告</div>
+                    </div>
+                    <form  method="post" enctype="multipart/form-data">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                            <tr>
+                                <td width="100"></td>
+                                <td><div style="color: red;"><?php echo $error; ?></div></td>
+                            </tr>
+                            <tr>
+                                <td width="100">发送时间：</td>
+                                <td><input class="input" type="text" name="start_date" id="start_date" title="公告开始时间" value="<?php echo $data['start_date']; ?>" readonly="readonly"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">结束时间：</td>
+                                <td><input class="input" type="text" name="expire_time" id="expire_time" title="结束时间" maxlength="20" value="<?php echo $data['expire_time']; ?>" readonly="readonly"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">时间间隔(秒)：</td>
+                                <td><input class="input" type="text" name="interval" id="interval" title="时间间隔" maxlength="20" value="<?php echo $data['interval']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">内容：</td>
+                                <td><textarea  name="describe" id="describe" style="margin: 0px; width: 430px; height: 140px;"><?php echo $data['describe']; ?></textarea></td>
+                            </tr>
+                            <tr>
+                                <td width="100"></td>
+                                <td><input type="submit" value="提交" class="btn"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <script>
+        //时间选择器
+            laydate.render({
+              elem: '#start_date'
+              ,type: 'datetime',
+              fixed: true
+            });
+            laydate.render({
+              elem: '#expire_time'
+              ,type: 'datetime',
+              fixed: true
+            });
+    </script>
+        <include file="Common:foot" />
+    </body>
+</html>

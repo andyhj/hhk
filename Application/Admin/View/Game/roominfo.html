@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>房间详情-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='游戏管理 > 房间详情';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">房间详情</div>
+                    </div>
+                    <form  method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="room_id" value="<?php echo $roomInfo['room_id']; ?>">
+                    <?php if(!empty($roomInfo)): ?>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                            <tr>
+                                <td width="100">房间ID：</td>
+                                <td><?php echo $roomInfo['room_id']; ?></td>
+                            </tr>
+                            <tr>
+                                <td width="100">游戏名称：</td>
+                                <td><?php echo strip_tags($roomInfo['name']); ?></td>
+                            </tr>
+                            <tr>
+                                <td width="100">房间：</td>
+                                <td><?php echo $roomInfo['summary']; ?></td>
+                            </tr>
+                            <?php if($roomInfo['room_id']<900){ ?>
+                            <tr>
+                                <td width="100">底分：</td>
+                                <td><input class="input" type="text" id="base_limit" name="base_limit" value="<?php echo $roomInfo['base_limit']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">基础倍数：</td>
+                                <td><input class="input" type="text" id="base_times" name="base_times" value="<?php echo $roomInfo['base_times']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">进入限制：</td>
+                                <td><input class="input" type="text" id="enter_limit" name="enter_limit" value="<?php echo $roomInfo['enter_limit']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">最高限制：</td>
+                                <td><input class="input" type="text" id="high_limit" name="high_limit" value="<?php echo $roomInfo['high_limit']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">封顶数值：</td>
+                                <td><input class="input" type="text" id="top_limit" name="top_limit" value="<?php echo $roomInfo['top_limit']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">台费：</td>
+                                <td><input class="input" type="text" id="basefee" name="basefee" value="<?php echo $roomInfo['basefee']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">积分底分：</td>
+                                <td><input class="input" type="text" id="basepoint" name="basepoint" value="<?php echo $roomInfo['basepoint']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">最大输的钱：</td>
+                                <td><input class="input" type="text" id="ulosecoin" name="ulosecoin" value="<?php echo $roomInfo['ulosecoin']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">最大赢得钱：</td>
+                                <td><input class="input" type="text" id="uwincoin" name="uwincoin" value="<?php echo $roomInfo['uwincoin']; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">机器人是否启动：</td>
+                                <td><span class="input_radio_container"><input type="radio" id="aistart1" name="aistart" value="1"  <?php if($roomInfo['aistart']==1){echo 'checked="checked"';} ?>/><label for="aistart1">启动</label>
+                                             <input type="radio" id="aistart2" name="aistart" value="2"  <?php if($roomInfo['aistart']==2){echo 'checked="checked"';} ?>/><label for="aistart2" >停止</label></span></td>
+                            </tr>
+                            <?php }else{ ?>
+                            <tr>
+                                <td width="100">小奖池金额：</td>
+                                <td><input class="input" type="text" id="StoreSmall" name="StoreSmall" value="<?php echo $StoreSmall; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">大奖池金额：</td>
+                                <td><input class="input" type="text" id="StoreLarge" name="StoreLarge" value="<?php echo $StoreLarge; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">小奖池幸运值：</td>
+                                <td><input class="input" type="text" id="StoreSmallLuck" name="StoreSmallLuck" value="<?php echo $StoreSmallLuck; ?>"></td>
+                            </tr>
+                            <tr>
+                                <td width="100">大奖池幸运值：</td>
+                                <td><input class="input" type="text" id="StoreLargeLuck" name="StoreLargeLuck" value="<?php echo $StoreLargeLuck; ?>"></td>
+                            </tr>
+                            <?php if($roomInfo['room_id']>1022){ ?>
+                            <tr>
+                                <td width="100">钻头概率：</td>
+                                <td><input class="input" type="text" id="DrillProbit" name="DrillProbit" value="<?php echo $DrillProbit; ?>"></td>
+                            </tr>
+                            <?php } ?>
+                            <?php } ?>
+                            <tr>
+                                <td width="100" style="height: 80px;"></td>
+                                <td>
+                                    <input type="submit" value="提交" class="btn"/> 
+                                    <input type="button" value="返回" class="btn" onClick="location='<?php echo $return_url; ?>'" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <?php endif; ?>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

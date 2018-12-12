@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>时间段用户留存-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='统计中心 > 时间段用户留存';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">时间段用户留存</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <div align="center">
+                        <input name="dateTime" class="input" type="text" id="dateTime" value="<?php echo $datas['dateTime']; ?>" size="12" readonly="readonly" onClick="SelectDate(this)"/> 
+                        <input type="submit" class="btn" value="搜索" />
+                        </div>
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td><div align="center"><strong>首次使用时间</strong></div></td>
+                            <td><div align="center"><strong>新增用户</strong></div></td>
+                            <td><div align="center"><STRONG>1天后留存</STRONG></div></td>
+                            <td><div align="center"><STRONG>2天后留存</STRONG></div></td>
+                            <td><div align="center"><STRONG>3天后留存</STRONG></div></td>
+                            <td><div align="center"><STRONG>4天后留存</STRONG></div></td>
+                            <td><div align="center"><STRONG>5天后留存</STRONG></div></td>
+                            <td><div align="center"><STRONG>6天后留存</STRONG></div></td>
+                            <td><div align="center"><STRONG>14天后留存</STRONG></div></td>
+                            <td><div align="center"><STRONG>30天后留存</STRONG></div></td>
+                        </tr>
+                        <tr >
+                            <td><div align="center"><?php echo $datas['login_list']['s_opentime']; ?></div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onereglogin']; ?></div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onelog_two']; ?>%</div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onelog_three']; ?>%</div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onelog_four']; ?>%</div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onelog_five']; ?>%</div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onelog_six']; ?>%</div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onelog_seven']; ?>%</div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onelog_fifteen']; ?>%</div></td>
+                            <td><div align="center"><?php echo $datas['login_list']['gl_onelog_thirty']; ?>%</div></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

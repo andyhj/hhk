@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>每日充值统计-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='统计中心 > 每日充值统计';
+        </php>
+        <style>
+            .have_search_key{
+                font-weight: bold;
+                color: #F00;
+                font-size: 14px;
+            }
+        </style>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">每日充值统计</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <input type="text" class="input" name="search_key" id="search_key" value="<?php echo $search_key; ?>"  readonly="readonly" onClick="SelectDate(this)"/> 
+                        <input type="submit" value="搜索" class="btn"/> 
+                        <input type="button" id="upd" value="手动更新" class="btn"/>
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                    <tbody>
+                        <tr>
+                            <td rowspan="2">时间</td>
+                            <td colspan="24">充值金额</td>
+                            <td rowspan="2">当天充值总金额</td>
+                            <td rowspan="2">当天充值总人数</td>
+                            <td rowspan="2">更新时间</td>
+                        </tr>
+                        <tr>
+                            <td>00点</td>
+                            <td>01点</td>
+                            <td>02点</td>
+                            <td>03点</td>
+                            <td>04点</td>
+                            <td>05点</td>
+                            <td>06点</td>
+                            <td>07点</td>
+                            <td>08点</td>
+                            <td>09点</td>
+                            <td>10点</td>
+                            <td>11点</td>
+                            <td>12点</td>
+                            <td>13点</td>
+                            <td>14点</td>
+                            <td>15点</td>
+                            <td>16点</td>
+                            <td>17点</td>
+                            <td>18点</td>
+                            <td>19点</td>
+                            <td>20点</td>
+                            <td>21点</td>
+                            <td>22点</td>
+                            <td>23点</td>
+                        </tr>
+                        <?php foreach($order_list as $n => $data): ?>
+                        <tr id="tr_user_<?php echo $data['id']; ?>">
+                            <td><?php echo $data['date_time']?date("Y-m-d",$data['date_time']):""; ?></td>
+                            <td><?php echo $data['hours_00']>0?'<span class="have_search_key">' . $data['hours_00'] . '</span>':$data['hours_00']; ?></td>
+                            <td><?php echo $data['hours_01']>0?'<span class="have_search_key">' . $data['hours_01'] . '</span>':$data['hours_01']; ?></td>
+                            <td><?php echo $data['hours_02']>0?'<span class="have_search_key">' . $data['hours_02'] . '</span>':$data['hours_02']; ?></td>
+                            <td><?php echo $data['hours_03']>0?'<span class="have_search_key">' . $data['hours_03'] . '</span>':$data['hours_03']; ?></td>
+                            <td><?php echo $data['hours_04']>0?'<span class="have_search_key">' . $data['hours_04'] . '</span>':$data['hours_04']; ?></td>
+                            <td><?php echo $data['hours_05']>0?'<span class="have_search_key">' . $data['hours_05'] . '</span>':$data['hours_05']; ?></td>
+                            <td><?php echo $data['hours_06']>0?'<span class="have_search_key">' . $data['hours_06'] . '</span>':$data['hours_06']; ?></td>
+                            <td><?php echo $data['hours_07']>0?'<span class="have_search_key">' . $data['hours_07'] . '</span>':$data['hours_07']; ?></td>
+                            <td><?php echo $data['hours_08']>0?'<span class="have_search_key">' . $data['hours_08'] . '</span>':$data['hours_08']; ?></td>
+                            <td><?php echo $data['hours_09']>0?'<span class="have_search_key">' . $data['hours_09'] . '</span>':$data['hours_09']; ?></td>
+                            <td><?php echo $data['hours_10']>0?'<span class="have_search_key">' . $data['hours_10'] . '</span>':$data['hours_10']; ?></td>
+                            <td><?php echo $data['hours_11']>0?'<span class="have_search_key">' . $data['hours_11'] . '</span>':$data['hours_11']; ?></td>
+                            <td><?php echo $data['hours_12']>0?'<span class="have_search_key">' . $data['hours_12'] . '</span>':$data['hours_12']; ?></td>
+                            <td><?php echo $data['hours_13']>0?'<span class="have_search_key">' . $data['hours_13'] . '</span>':$data['hours_13']; ?></td>
+                            <td><?php echo $data['hours_14']>0?'<span class="have_search_key">' . $data['hours_14'] . '</span>':$data['hours_14']; ?></td>
+                            <td><?php echo $data['hours_15']>0?'<span class="have_search_key">' . $data['hours_15'] . '</span>':$data['hours_15']; ?></td>
+                            <td><?php echo $data['hours_16']>0?'<span class="have_search_key">' . $data['hours_16'] . '</span>':$data['hours_16']; ?></td>
+                            <td><?php echo $data['hours_17']>0?'<span class="have_search_key">' . $data['hours_17'] . '</span>':$data['hours_17']; ?></td>
+                            <td><?php echo $data['hours_18']>0?'<span class="have_search_key">' . $data['hours_18'] . '</span>':$data['hours_18']; ?></td>
+                            <td><?php echo $data['hours_19']>0?'<span class="have_search_key">' . $data['hours_19'] . '</span>':$data['hours_19']; ?></td>
+                            <td><?php echo $data['hours_20']>0?'<span class="have_search_key">' . $data['hours_20'] . '</span>':$data['hours_20']; ?></td>
+                            <td><?php echo $data['hours_21']>0?'<span class="have_search_key">' . $data['hours_21'] . '</span>':$data['hours_21']; ?></td>
+                            <td><?php echo $data['hours_22']>0?'<span class="have_search_key">' . $data['hours_22'] . '</span>':$data['hours_22']; ?></td>
+                            <td><?php echo $data['hours_23']>0?'<span class="have_search_key">' . $data['hours_23'] . '</span>':$data['hours_23']; ?></td>
+                            <td><?php echo $data['amount_num']>0?'<span class="have_search_key">' . $data['amount_num'] . '</span>':$data['amount_num']; ?></td>
+                            <td><?php echo $data['user_num']>0?'<span class="have_search_key">' . $data['user_num'] . '</span>':$data['user_num']; ?></td>
+                            <td><?php echo $data['upd_time']?date("Y-m-d H:i:s",$data['upd_time']):""; ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">充值总金额：<?php echo $amount; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">充值总人数：<?php echo $user_num; ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <script type="text/javascript">
+        $("#upd").click(function(event) {
+            var $date = $("#search_key").val();
+            if($date==""){
+                alert("请选择时间");
+            }else{
+                location="<?php echo U('statistics/updordertime/'); ?>?date_time="+$date;
+            }
+        });
+        </script>
+        <include file="Common:foot" />
+    </body>
+</html>
