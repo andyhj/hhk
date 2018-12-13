@@ -14,10 +14,10 @@
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 define('JS_VS', 201805230142);  //js版本号
 define('MT', 0);  //是否维护
-define('HTTP_HOST','https://wx.69wh2.cn');
-define('CDN_HOST','https://happyqpres.69wh2.cn');
-define('API_HOST','https://wx.69wh2.cn');
-define('ADMIN_HOST','https://wx.69wh2.cn/admin');
+define('HTTP_HOST','');
+define('CDN_HOST','');
+define('API_HOST','');
+define('ADMIN_HOST','');
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',true);
 define('__APP__', '');
