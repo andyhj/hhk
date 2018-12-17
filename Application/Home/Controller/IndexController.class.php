@@ -20,84 +20,141 @@ class IndexController extends InitController {
         if(MT){
             $this->redirect('index/index/maintain',[], 1, '页面跳转中...');
         }
-        $recommend = delTrim(I("rec",0)); //推荐人
-        $roomid = delTrim(I("roomid",0));
-        $roomcode = delTrim(I("roomcode",0));
-        $gameType = delTrim(I("gametype",0));
-        $modetype = delTrim(I("modetype",0));
-        $n = delTrim(I("n",0));
-        //echo $recommend.','.$roomid.','.$roomcode;die();
-        if($recommend){
-            session("rec", $recommend);
-        }else{
-            session("rec",null);
-        }
-        if($roomid){
-            session("roomid", $roomid);
-        }else{
-            session("roomid", null);
-        }
-        if($roomcode){
-            session("roomcode", $roomcode);
-        }else{
-            session("roomcode", null);
-        }
-        if($gameType){
-            session("gameType", $gameType);
-        }else{
-            session("gameType", null);
-        }
-        if($modetype){
-            session("modeType", $modetype);
-        }else{
-            session("modeType", null);
-        }
-        //$url = U("/happyqp","",false);
-        //header('Location: ' . $url);
-        $game_uid = 0;
-        $auth_key = '';
-        session("platSession", 1);
-        if(session("customSession")){
-            session("customSession", null);
-            session("userInfo",null);
-        }
-        
-        $wxlogin_url = $this->http.$_SERVER['HTTP_HOST'].'/index/user/wxlogin.html?n='.$n;
-        if(session("userInfo")){
-            $user_info = session("userInfo");
-            $user_info_arr = json_decode($user_info, true);
-            $m_user = D("user");
-            $where["id"] = $user_info_arr["game_uid"];
-            $where["authkey"] = $user_info_arr["auth_key"];
-            $db_user_info = $m_user->getUserOneByWhere($where);
-            if($db_user_info||$db_user_info["status"]){
-                $game_uid = $user_info_arr["game_uid"];
-                $auth_key = $user_info_arr["auth_key"];
-            }else{
-//                session("userInfo",null);
-//                header('Location: ' . $wxlogin_url);
+        $a = $this->getPlanDes(1, 464885, 2000, 5.12, 1, 6, 2);
+        print_r("<pre>");
+        print_r($a);
+    }
+     /**
+     * 生成计划详情列表
+     * @param type $p_id 计划id
+     * @param type $uid 用户id
+     * @param type $p_amount 扣款金额
+     * @param type $p_fee 扣款手续金额
+     * @param type $type 类型（1，包含今天一整天；2，第二天开始）
+     * @param type $periods 期数
+     * @param type $num 每天执行次数（1，执行一次；2，执行两次；最多两次）
+     */
+    private function getPlanDes($p_id,$uid,$p_amount,$p_fee,$type,$periods,$num){
+        $date = date("Y-m-d");
+        $plan_des_arr = [];
+        $letters = [
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9','Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'
+        ];
+        //每天执行一次
+        if($num==1){
+            if($type==2){
+                $date = date("Y-m-d",strtotime("+1 day"));
             }
-        }else{
-//            header('Location: ' . $wxlogin_url);
+            $a = 1;
+            for($i=0;$i<$periods;$i++){
+                $begintime = $date." 08:10:00";
+                $endtime = $date." 11:30:00";
+                $k_time = randomDate($begintime,$endtime); //随机生成执行时间
+                //代扣
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => round($p_amount+$p_fee, 2),
+                    "s_time" => $k_time,
+                    "type" => 1,
+                    "days" => $date,
+                );
+
+                $begintime = $date." 13:00:00";
+                $endtime = $date." 16:30:00";
+                $h_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                //代还
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => $p_amount,
+                    "s_time" => $h_time,
+                    "type" => 2,
+                    "days" => $date,
+                );
+                $a ++;
+                $date = date("Y-m-d",strtotime("+1 day",strtotime($date)));
+            }
         }
-        $share_title = "58weile";
-        $share_des = "无需下载安装，点击即玩";
-        $game_url = $this->http.$_SERVER['HTTP_HOST'].'/';
-        $wx_config = get_js_sdk("wxcef870e2241d618d","2357e42b795d3c0c3d1fa3a5cfdb394c"); 
-        $this->assign('wx_config',$wx_config);
-        $this->assign('game_uid',$game_uid);
-        $this->assign('auth_key',$auth_key);
-        $this->assign('share_title',$share_title);
-        $this->assign('share_des',$share_des);
-        $this->assign('wxlogin_url',$wxlogin_url);
-        $this->assign('logout',$this->http.$_SERVER['HTTP_HOST'].'/index/index/logout');
-        $this->assign('game_url',$game_url);
-        $this->assign('roomid',$roomid);
-        $this->assign('roomcode',$roomcode);
-        $this->assign('gameType',$gameType);
-        $this->assign('modeType',$modetype);
-        $this->assign('version',JS_VS);
-        $this->display();
+        //每天执行两次
+        if($num==2){
+            if($type==2){
+                $date = date("Y-m-d",strtotime("+1 day"));
+            }
+            $a = 1;
+            for($i=0;$i<($periods/2);$i++){
+                $begintime = $date." 08:10:00";
+                $endtime = $date." 10:00:00";
+                $k1_time = randomDate($begintime,$endtime); //随机生成执行时间
+                //代扣
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => round($p_amount+$p_fee, 2),
+                    "s_time" => $k1_time,
+                    "type" => 1,
+                    "days" => $date,
+                );
+
+                $begintime = $date." 11:00:00";
+                $endtime = $date." 13:00:00";
+                $h1_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                //代还
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => $p_amount,
+                    "s_time" => $h1_time,
+                    "type" => 2,
+                    "days" => $date,
+                );
+                
+                $begintime = $date." 14:00:00";
+                $endtime = $date." 16:00:00";
+                $k2_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                //代扣
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => round($p_amount+$p_fee, 2),
+                    "s_time" => $k2_time,
+                    "type" => 1,
+                    "days" => $date,
+                );
+
+                $begintime = $date." 17:00:00";
+                $endtime = $date." 19:00:00";
+                $h2_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                //代还
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => $p_amount,
+                    "s_time" => $h2_time,
+                    "type" => 2,
+                    "days" => $date,
+                );
+                $a ++;
+                $date = date("Y-m-d",strtotime("+1 day",strtotime($date)));
+            }
+        }
+        return $plan_des_arr;
     }
     
     public function logout(){

@@ -25,9 +25,28 @@ function get_rand_str($length, $letters = []) {
     $rand_str = '';
     $letters_length = count($letters) - 1;
     for ($i = 0; $i < $length; $i++) {
-        $rand_str .= $letters[rand(0, $letters_length)];
+        $rand_str .= $letters[mt_rand(0, $letters_length)];
     }
     return $rand_str;
+}
+//将下划线命名转换为驼峰式命名
+function convertUnderline( $str , $ucfirst = true)
+{
+    $str = preg_replace('/_([A-Za-z])/e',"strtoupper('$1')",$str);
+    return $ucfirst ? ucfirst($str) : $str;
+}
+/** 
+ * 生成某个范围内的随机时间 
+ * @param <type> $begintime  起始时间 格式为 Y-m-d H:i:s 
+ * @param <type> $endtime    结束时间 格式为 Y-m-d H:i:s   
+ * @param <type> $now         是否是时间戳 格式为 Boolean   
+ */  
+function randomDate($begintime, $endtime="", $now = false) {
+    $begin = strtotime($begintime);  
+    $end = $endtime == "" ? time() : strtotime($endtime);
+    $timestamp = mt_rand($begin, $end);
+    // d($timestamp);
+    return $now ?  $timestamp: date("Y-m-d H:i:s", $timestamp);          
 }
 /**
   +----------------------------------------------------------

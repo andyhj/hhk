@@ -39,13 +39,6 @@ class InitController extends Controller{
         }
         return $str_raw_body;
     }
-    public function getGameType($type){
-        if(!$type){
-            return false;
-        }
-        $game_type = ["1"=>"开心斗地主","2"=>"炸金花","3"=>"牛牛","4"=>"德州扑克","5"=>"四川麻将","6"=>"中国象棋"];
-        return $game_type[$type];
-    }
 
     /**
      * 获取登录用户信息

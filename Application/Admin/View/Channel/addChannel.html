@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>添加通道-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='通道管理 > 添加通道';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">添加通道</div>
+                    </div>
+                    <form  method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="id" name="id" value="<?php echo $data['id']; ?>">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                            <tr>
+                                <td width="100"></td>
+                                <td><div style="color: red;"><?php echo $error; ?></div></td>
+                            </tr>
+                            <tr>
+                                <td width="100">通道名称：</td>
+                                <td><input class="input" type="text" name="name" id="name" title="通道名称" maxlength="20" value="<?php echo $data['name']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">通道成本费率：</td>
+                                <td><input class="input" type="text" name="fee" id="fee" title="通道成本费率" maxlength="20" value="<?php echo $data['fee']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">通道成本结算费用（每笔）：</td>
+                                <td><input class="input" type="text" name="close_rate" id="close_rate" title="通道成本结算费用（每笔）" maxlength="20" value="<?php echo $data['close_rate']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">普通用户交易费率：</td>
+                                <td><input class="input" type="text" name="user_fee" id="user_fee" title="普通用户交易费率" maxlength="20" value="<?php echo $data['user_fee']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">plus用户交费率：</td>
+                                <td><input class="input" type="text" name="plus_user_fee" id="plus_user_fee" title="plus用户交费率" maxlength="20" value="<?php echo $data['plus_user_fee']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">普通用户结算费用（每笔）：</td>
+                                <td><input class="input" type="text" name="user_close_rate" id="user_close_rate" title="普通用户结算费用（每笔）" maxlength="20" value="<?php echo $data['user_close_rate']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">plus用户结算费用（每笔）：</td>
+                                <td><input class="input" type="text" name="plus_user_close_rate" id="plus_user_close_rate" title="plus用户结算费用（每笔）" maxlength="20" value="<?php echo $data['plus_user_close_rate']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100"></td>
+                                <td><input type="submit" value="提交"  class="btn"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

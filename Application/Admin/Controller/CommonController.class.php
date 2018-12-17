@@ -117,8 +117,9 @@ class CommonController extends Controller {
      */
     private function show_menu() {
         $_action = explode('/', __ACTION__);
-        $model_name = $_action[2];
-        $cache = $this->menu()['admin_big_menu'];
+        $model_name = convertUnderline($_action[2]);
+//        $cache = $this->menu()['admin_big_menu'];
+        $cache = M("node")->where(["level"=>2,"status"=>1])->select();
         $count = count($cache);
         $i = 1;
         $menu = "";
@@ -140,8 +141,9 @@ class CommonController extends Controller {
             }
             
         }
-        
-        foreach ($cache as $url => $name) {
+        foreach ($cache as $key => $val) {
+            $url = $val["name"];
+            $name = $val["title"];
             if($admin_info["aid"]!=1){
                 $mo = str_replace('_','',$url); 
                 if(!in_array("$mo",$model_list)){
@@ -170,8 +172,9 @@ class CommonController extends Controller {
      */
     private function show_sub_menu() {
         $_action = explode('/', __ACTION__);
-        $big = $_action[2];
-        $cache = $this->menu()['admin_sub_menu'];
+        $big = convertUnderline($_action[2]);
+//        $cache = $this->menu()['admin_sub_menu'];
+        $big_title = M("node")->where(["level"=>2,"name"=>"$big","status"=>1])->find();
         $sub_menu = array();
         $admin_info = $_SESSION['my_info'];
         $model_list = [];
@@ -191,9 +194,11 @@ class CommonController extends Controller {
             }
         }
 //        print_r($model_list);
-        if ($cache[$big]) {
-            $cache = $cache[$big];
-            foreach ($cache as $url => $title) {
+        if ($big_title) {
+            $cache = M("node")->where(["level"=>3,"pid"=>$big_title["id"],"status"=>1])->select();
+            foreach ($cache as $key => $val) {
+                $url = $val["name"];
+                $title = $val["title"];
                 if($admin_info["aid"]!=1){
                     $mo = str_replace('_','',$url); 
                     if(!in_array("$mo",$model_list)){
@@ -208,79 +213,5 @@ class CommonController extends Controller {
             return $sub_menu[] = array('url' => '#', 'title' => "该菜单组不存在");
         }
     }
-
-    private function menu() {
-        $mun = array('admin_big_menu' => array(
-                'index' => '首页',
-                'member' => '用户管理',
-//                'news' => '资讯管理',
-                'statistics' => '统计中心',
-                'game' => '游戏管理',
-//        'Webinfo'=>'系统设置',
-                'sys_data' => '数据管理',
-                'access' => '权限管理'
-            ),
-            'admin_sub_menu' => array(
-                'index' => array(
-                    'myInfo' => '修改密码',
-                    'cache' => '缓存清理',
-//                    'add' => '新闻发布'
-                ),
-                'webinfo' => array(
-                    'index' => '站点配置',
-                    'setEmailConfig' => '邮箱配置',
-                    'setSafeConfig' => '安全配置'
-                ),
-                'member' => array(
-                    'index' => '注册用户列表',
-                    'fuserlist' => '在线用户列表',
-                ),
-//                'news' => array(
-//                    'index' => '新闻列表',
-//                    'category' => '新闻分类管理',
-//                    'add' => '发布新闻',
-//                ),
-                'news' => array(
-                    'index' => '新闻列表',
-                    'category' => '新闻分类管理',
-                    'add' => '发布新闻',
-                ),
-                'statistics' => array(
-                    'index' => '每日注册统计',
-                    'ordertimelog' => '每日充值统计',
-                    'orderlist' => '用户充值订单',
-                    'userlogin' => '用户登录统计',
-                    'usermlogin' => '每周用户登录流失',
-                    'userdalc' => '时间段用户留存'
-                ),
-                'game' => array(
-                    'index' => '房间列表',
-                    'news' => '公告列表',
-                    'mail' => '邮件列表',
-                    'sendbean' => '发送金币',
-                    'service' => '设置客服',
-                    'shop' => '充值档次',
-//                    'bankrecord' => '银行记录',
-                    'economylist' => '金币记录'
-                ),
-                'sys_data' => array(
-                    'index' => '数据库备份',
-                    'restore' => '数据库导入',
-                    'zipList' => '数据库压缩包',
-                    'repair' => '数据库优化修复'
-                ),
-                'access' => array(
-                    'index' => '后台用户',
-                    'nodelist' => '节点管理',
-                    'rolelist' => '角色管理',
-                    'addadmin' => '添加管理员',
-                    'addnode' => '添加节点',
-                    'addrole' => '添加角色',
-                )
-            )
-        );
-        return $mun;
-    }
-    
 
 }
