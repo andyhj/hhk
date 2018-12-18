@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>计划详情列表-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='计划管理 > 计划详情列表';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">计划详情列表</div>
+                    </div>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td>期数</td>
+                            <td>序号</td>
+                            <td>订单号</td>
+                            <td>计划ID</td>
+                            <td>类型</td>
+                            <td>金额</td>
+                            <td>执行时间</td>
+                            <td>实际执行时间</td>
+                            <td>补单订单号</td>
+                            <td>补单时间</td>
+                            <td>信息</td>
+                            <td>状态</td>
+                            <td>操作</td>
+                        </tr>
+                        <?php if(!empty($plan_des_list)): ?>
+                        <?php $i=1; ?>
+                        <?php foreach($plan_des_list as $n => $data): ?>
+                        <tr id="tr_user_<?php echo $data['id']; ?>">
+                            <?php if(($n)%2==0): ?>
+                                <td  rowspan="2">第 <?php echo $i;$i++; ?> 期</td>
+                            <?php endif; ?>
+                            <td><?php echo $data['num']; ?></td>
+                            <td><?php echo $data['order_id']; ?></td>
+                            <td><?php echo $data['p_id']; ?></td>
+                            <td><?php echo $data['type_name']; ?></td>
+                            <td><?php echo $data['amount']; ?></td>
+                            <td><?php echo date("Y-m-d H:i:s",$data['s_time']); ?></td>
+                            <td><?php echo $data['d_time']?date("Y-m-d H:i:s",$data['d_time']):""; ?></td>
+                            <td><?php echo $data['remedy_id']; ?></td>
+                            <td><?php echo $data['remedy_time']?date("Y-m-d H:i:s",$data['remedy_time']):""; ?></td>
+                            <td><?php echo $data['message']; ?></td>
+                            <td><?php echo $data['status_name']; ?></td>
+                            <td></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

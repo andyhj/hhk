@@ -20,9 +20,35 @@ class IndexController extends InitController {
         if(MT){
             $this->redirect('index/index/maintain',[], 1, '页面跳转中...');
         }
-        $a = $this->getPlanDes(1, 464885, 2000, 5.12, 1, 6, 2);
-        print_r("<pre>");
-        print_r($a);
+        $plan_model = M("plan");
+        $plan_des_model = M("plan_des");
+        $u_id = 464885;
+        $c_id = 1;
+        $b_id = 1;
+        $amount = 20000;
+        $periods = 12;
+        $p_amount = 1666.67;
+        $p_fee = 11.83;
+        $fee = 0.65;
+        $close_rate = 1;
+        $plan_data = array(
+            "u_id" => $u_id,
+            "c_id" => $c_id,
+            "bc_id" => $b_id,
+            "amount" => $amount,
+            "periods" => $periods,
+            "p_amount" => $p_amount,
+            "p_fee" => $p_fee,
+            "fee" => $fee,
+            "close_rate" => $close_rate
+        );
+//        $plan_id = $plan_model->add($plan_data);
+//        $a = $this->getPlanDes($plan_id, $u_id, $p_amount, $p_fee, 2, $periods, 2);
+//        $return_status = $plan_des_model->addAll($a);
+//        print_r("<pre>");
+//        print_r($a);
+//        print_r("<pre>");
+//        print_r($return_status);
     }
      /**
      * 生成计划详情列表
@@ -37,9 +63,7 @@ class IndexController extends InitController {
     private function getPlanDes($p_id,$uid,$p_amount,$p_fee,$type,$periods,$num){
         $date = date("Y-m-d");
         $plan_des_arr = [];
-        $letters = [
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9','Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'
-        ];
+        $letters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9','Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
         //每天执行一次
         if($num==1){
             if($type==2){
@@ -57,7 +81,7 @@ class IndexController extends InitController {
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
                     "amount" => round($p_amount+$p_fee, 2),
-                    "s_time" => $k_time,
+                    "s_time" => strtotime($k_time),
                     "type" => 1,
                     "days" => $date,
                 );
@@ -73,7 +97,7 @@ class IndexController extends InitController {
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
                     "amount" => $p_amount,
-                    "s_time" => $h_time,
+                    "s_time" => strtotime($h_time),
                     "type" => 2,
                     "days" => $date,
                 );
@@ -98,7 +122,7 @@ class IndexController extends InitController {
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
                     "amount" => round($p_amount+$p_fee, 2),
-                    "s_time" => $k1_time,
+                    "s_time" => strtotime($k1_time),
                     "type" => 1,
                     "days" => $date,
                 );
@@ -114,7 +138,7 @@ class IndexController extends InitController {
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
                     "amount" => $p_amount,
-                    "s_time" => $h1_time,
+                    "s_time" => strtotime($h1_time),
                     "type" => 2,
                     "days" => $date,
                 );
@@ -130,7 +154,7 @@ class IndexController extends InitController {
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
                     "amount" => round($p_amount+$p_fee, 2),
-                    "s_time" => $k2_time,
+                    "s_time" => strtotime($k2_time),
                     "type" => 1,
                     "days" => $date,
                 );
@@ -146,7 +170,7 @@ class IndexController extends InitController {
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
                     "amount" => $p_amount,
-                    "s_time" => $h2_time,
+                    "s_time" => strtotime($h2_time),
                     "type" => 2,
                     "days" => $date,
                 );

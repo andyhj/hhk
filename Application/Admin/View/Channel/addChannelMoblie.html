@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>添加通道移动端显示-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='通道管理 > 添加通道移动端显示';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">添加通道移动端显示</div>
+                    </div>
+                    <form  method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="id" name="id" value="<?php echo $data['id']; ?>">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                            <tr>
+                                <td width="100"></td>
+                                <td><div style="color: red;"><?php echo $error; ?></div></td>
+                            </tr>
+                            <tr>
+                                <td width="100">选择通道：</td>
+                                <td>
+                                    <select id="c_id" name="c_id">
+                                        <option value="">----请选择----</option>
+                                        <?php if(!empty($channel_list)): ?>
+                                        <?php foreach($channel_list as $n => $c): ?>
+                                        <option value="<?php echo $c['id']; ?>" <?php if($data['c_id']==$c['id']){echo 'selected = "selected"';} ?> ><?php echo $c['name']; ?></option>
+                                        <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100">移动端名称：</td>
+                                <td><input class="input" type="text" name="title" id="title" title="移动端名称" value="<?php echo $data['title']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">限制金额说明：</td>
+                                <td><input class="input" type="text" name="quota" id="quota" title="限制金额说明" value="<?php echo $data['quota']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">结算方式说明：</td>
+                                <td><input class="input" type="text" name="settlement" id="settlement" title="结算方式说明" value="<?php echo $data['settlement']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">服务时间：</td>
+                                <td><input class="input" type="text" name="date" id="date" title="服务时间" value="<?php echo $data['date']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">提示：</td>
+                                <td>
+                                <textarea name="prompt" id="prompt" style="width:500px; height:100px" class="input"><?php echo $data['prompt']; ?></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100">排序：</td>
+                                <td><input class="input" type="text" name="sort" id="sort" title="排序" value="<?php echo $data['sort']; ?>"/></td>
+                            </tr>
+                            <tr>
+                                <td width="100" style="height: 50px;">状态：</td>
+                                <td><input type="radio" id="status1" name="state" value="0" <?php if($data['state']==0){echo 'checked="checked"';} ?> /><label for="status1">隐藏</label>
+                                    <input type="radio" id="status2" name="state" value="1" <?php if($data['state']==1){echo 'checked="checked"';} ?> /><label for="status2">显示</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100"></td>
+                                <td><input type="submit" value="提交"  class="btn"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

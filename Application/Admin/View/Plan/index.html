@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>计划列表-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='计划管理 > 计划列表';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">计划列表</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <input type="text" class="input" name="search_key" value="<?php echo $search_key; ?>" style="width: 200px;"  placeholder="根据登陆账号或者用户ID查找"/> 
+                        <input type="submit" class="btn" value="搜索" />
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td>计划ID</td>
+                            <td>用户ID</td>
+                            <td>登陆账号</td>
+                            <td>商户名称</td>
+                            <td>通道名称</td>
+                            <td>金额</td>
+                            <td>期数</td>
+                            <td>每期扣款额度</td>
+                            <td>每期手续费</td>
+                            <td>交易费率</td>
+                            <td>结算费率(每笔)</td>
+                            <td>任务开始时间</td>
+                            <td>任务结束时间</td>
+                            <td>添加时间</td>
+                            <td>状态</td>
+                            <td>操作</td>
+                        </tr>
+                        <?php if(!empty($plan_list)): ?>
+                        <?php foreach($plan_list as $n => $data): ?>
+                        <tr id="tr_user_<?php echo $data['id']; ?>">
+                            <td><?php echo $data['id']; ?></td>
+                            <td><?php echo $data['u_id']; ?></td>
+                            <td><?php echo $data['user_loginid']; ?></td>
+                            <td><?php echo $data['user_name']; ?></td>
+                            <td><?php echo $data['channel_name']; ?></td>
+                            <td><?php echo $data['amount']; ?></td>
+                            <td><?php echo $data['periods']; ?></td>
+                            <td><?php echo $data['p_amount']; ?></td>
+                            <td><?php echo $data['p_fee']; ?></td>
+                            <td><?php echo $data['fee']; ?></td>
+                            <td><?php echo $data['close_rate']; ?></td>
+                            <td><?php echo $data['channel_start_time']; ?></td>
+                            <td><?php echo $data['channel_end_time']; ?></td>
+                            <td><?php echo $data['add_time']; ?></td>
+                            <td><?php echo $data['status_name']; ?></td>
+                            <td>[<a href="<?php echo U('plan/info/',['id'=>$data['id']]); ?>" title="查看计划详情">查看计划详情</a>]</td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>
