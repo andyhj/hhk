@@ -50,7 +50,8 @@ class InitController extends Controller{
         }
         $user_info_arr = json_decode($user_info, true);
 //        $user_info_arr["u_id"]=100170;
-        $model_user = D("user");
-        return $model_user->getUserOne($user_info_arr["u_id"]);
+        $db_config = C("DB_CONFIG2");
+        $customer_m = M("customer_info",$db_config["DB_PREFIX"],$db_config);
+        return $customer_m->where(["id"=>$user_info_arr["u_id"]])->find();
     }
 }

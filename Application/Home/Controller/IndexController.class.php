@@ -42,6 +42,11 @@ class IndexController extends InitController {
             "fee" => $fee,
             "close_rate" => $close_rate
         );
+        $d1 = strtotime("2018-12-28");
+	$d2 = strtotime("2018-12-29");
+	$days = round(($d2-$d1)/3600/24); //计算距离还款日天数
+        $d = 3;
+        echo strtotime("+$d day",1545204455);
 //        $plan_id = $plan_model->add($plan_data);
 //        $a = $this->getPlanDes($plan_id, $u_id, $p_amount, $p_fee, 2, $periods, 2);
 //        $return_status = $plan_des_model->addAll($a);

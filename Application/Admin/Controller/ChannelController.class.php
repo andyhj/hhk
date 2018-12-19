@@ -29,9 +29,10 @@ class ChannelController  extends CommonController{
         $data["plus_user_fee"] = I("plus_user_fee",""); //plus用户交费率
         $data["user_close_rate"] = I("user_close_rate",""); //普通用户结算费用（每笔）
         $data["plus_user_close_rate"] = I("plus_user_close_rate",""); //plus用户结算费用（每笔）
+        $data["code"] = I("code",""); //通道编码
         $error = "";
         if(is_post()){
-            if(!$data["name"] || !$data["fee"] || !$data["close_rate"] || !$data["user_fee"] || !$data["plus_user_fee"] || !$data["user_close_rate"] || !$data["plus_user_close_rate"]){
+            if(!$data["name"] || !$data["fee"] || !$data["close_rate"] || !$data["user_fee"] || !$data["plus_user_fee"] || !$data["user_close_rate"] || !$data["plus_user_close_rate"] || !$data["code"]){
                 $error = "参数不完整错误";
             }else{
                 $r_id = M("channel")->add($data);
@@ -78,9 +79,10 @@ class ChannelController  extends CommonController{
         $data["plus_user_fee"] = I("plus_user_fee",$channel_info["plus_user_fee"]); //plus用户交费率
         $data["user_close_rate"] = I("user_close_rate",$channel_info["user_close_rate"]); //普通用户结算费用（每笔）
         $data["plus_user_close_rate"] = I("plus_user_close_rate",$channel_info["plus_user_close_rate"]); //plus用户结算费用（每笔）
+        $data["code"] = I("code",$channel_info["code"]); //通道编码
         $error = "";
         if(is_post()){
-            if(!$data["name"] || !$data["fee"] || !$data["close_rate"] || !$data["user_fee"] || !$data["plus_user_fee"] || !$data["user_close_rate"] || !$data["plus_user_close_rate"]){
+            if(!$data["name"] || !$data["fee"] || !$data["close_rate"] || !$data["user_fee"] || !$data["plus_user_fee"] || !$data["user_close_rate"] || !$data["plus_user_close_rate"] || !$data["code"]){
                 $error = "参数不完整错误";
             }else{
                 $r_id = M("channel")->where(["id"=>$id])->save($data);

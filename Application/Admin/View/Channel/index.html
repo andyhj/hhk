@@ -29,6 +29,7 @@
                             <td>plus用户交费率</td>
                             <td>普通用户结算费用（每笔）</td>
                             <td>plus用户结算费用（每笔）</td>
+                            <td>通道编码</td>
                             <td>操作</td>
                         </tr>
                         <?php if(!empty($channel_list)): ?>
@@ -42,6 +43,7 @@
                             <td><?php echo $data['plus_user_fee']; ?></td>
                             <td><?php echo $data['user_close_rate']; ?></td>
                             <td><?php echo $data['plus_user_close_rate']; ?></td>
+                            <td><?php echo $data['code']; ?></td>
                             <td>[<a href="<?php echo U('channel/editChannel/',['id'=>$data['id']]); ?>" title="编辑">编辑</a>]</td>
                         </tr>
                         <?php endforeach; ?>

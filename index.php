@@ -14,7 +14,7 @@
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 define('JS_VS', 201805230142);  //js版本号
 define('MT', 0);  //是否维护
-define('HTTP_HOST','');
+define('HTTP_HOST','http://hsq.ysetong.com');
 define('CDN_HOST','');
 define('API_HOST','');
 define('ADMIN_HOST','');
