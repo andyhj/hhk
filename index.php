@@ -14,9 +14,9 @@
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 define('JS_VS', 201805230142);  //js版本号
 define('MT', 0);  //是否维护
-define('HTTP_HOST','http://hsq.ysetong.com');
+define('HTTP_HOST','');
 define('CDN_HOST','');
-define('API_HOST','');
+define('HSQ_HOST','http://hsq.ysetong.com');
 define('ADMIN_HOST','');
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',true);

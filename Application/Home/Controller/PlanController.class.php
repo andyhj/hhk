@@ -35,7 +35,7 @@ class PlanController extends InitController {
                 echo '<script>alert("登陆失败");</script>';
                 die();
             }
-            $url = HTTP_HOST. '/mobile/perfect_info/registered';
+            $url = HSQ_HOST. '/mobile/perfect_info/registered';
             if ($return_status === 113) {
                 header('Location: ' . $url);
                 die();
