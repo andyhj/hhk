@@ -57,10 +57,11 @@ class WxH5Login {
         }
         $nickname = '';     //用户昵称
         if (isset($data["nickname"])) {
-            $tmpStr = json_encode($data['nickname']);
-            $tmpStr = preg_replace_callback("#(\\\ud[0-9a-f]{3})|(\\\ue[0-9a-f]{3})#ie", "", $tmpStr); //将emoji的unicode置为空，其他不动  
-            $nickname = delTrim(json_decode($tmpStr, true));
-            $nickname=str_replace("'","",$nickname);
+//            $tmpStr = json_encode($data['nickname']);
+//            $tmpStr = preg_replace_callback("#(\\\ud[0-9a-f]{3})|(\\\ue[0-9a-f]{3})#ie", "", $tmpStr); //将emoji的unicode置为空，其他不动  
+//            $nickname = delTrim(json_decode($tmpStr, true));
+//            $nickname=str_replace("'","",$nickname);
+            $nickname=$this->filterEmoji($data["nickname"]);
         }
         $openid = delTrim($data["openid"]); //第三方ID
         $other_type = 1; //第三方类型(1微信，2QQ，3支付宝)
@@ -104,6 +105,15 @@ class WxH5Login {
             }
             return 113;
         }
+    }
+    private function filterEmoji($str)
+    {
+      $str = preg_replace_callback( '/./u',
+          function (array $match) {
+            return strlen($match[0]) >= 4 ? '' : $match[0];
+          },
+          $str);
+       return $str;
     }
     private function updAgency($user_id) {
         require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/wxapi/example/weixin.api.php";

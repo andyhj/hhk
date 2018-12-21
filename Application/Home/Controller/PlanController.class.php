@@ -45,7 +45,71 @@ class PlanController extends InitController {
         $this->assign('wx_share_url', $this->http . $_SERVER['HTTP_HOST'] . '/s/' . $this->user_info["id"] . '-0-0-0-0.html');
     }
     public function index(){
-        
+        $this->display();
+    }
+    /**
+     * 通道列表
+     */
+    public function channel(){
+        $channel_moblie_m = M("channel_moblie");
+        $where["state"] = 1;
+        $num = $channel_moblie_m->where($where)->count();
+        $channel_moblie_list = $channel_moblie_m->where($where)->select();
+        if($num==1&&$channel_moblie_list){
+            $url = U("plan/planadd",["c_id"=>$channel_moblie_list[0]["c_id"]]);
+            header('Location: ' . $url);
+            die();
+        }
+        $channels_arr = [];
+        if($channel_moblie_list){
+            foreach ($channel_moblie_list as $value) {
+                $channel_info = M("channel")->where(["id"=>$value["c_id"]])->find();
+                $value["channel_info"] = $channel_info;
+                $channels_arr[] = $value;
+            }
+        }
+        $this->assign('channels', $channels_arr);
+        $this->display();
+    }
+    /**
+     * 添加计划
+     */
+    public function planadd(){
+        $c_id = I("c_id"); //通道id
+        $u_id = $this->user_info["id"];
+        if(!$c_id||!$u_id){
+            echo '<script>alert("参数错误");</script>';
+            die();
+        }
+        $channel_model = M("channel");
+        $channel_moblie_m = M("channel_moblie");
+        $user_vip_model = M("user_vip");
+        $channel_info = $channel_model->where(["id"=>$c_id])->find(); 
+        if(!$channel_info){
+            echo '<script>alert("通道不存在");</script>';
+            die();
+        }
+        $user_vip_info = $user_vip_model->where(["u_id"=>$u_id])->find();
+        $fee = $channel_info["user_fee"]; //普通用户交易费率
+        $close_rate = $channel_info["user_close_rate"];   //普通用户结算费用（每笔）
+        $is_plus = 0;
+        //判断是否plus会员
+        if($user_vip_info && strtotime($user_vip_info["end_time"])> time()){
+            $is_plus = 1;
+            $fee = $channel_info["plus_user_fee"]; //plus用户交费率
+            $close_rate = $channel_info["plus_user_close_rate"];   //plus用户结算费用（每笔）
+        }
+        $bank_card_model = M("bank_card_".$channel_info["code"]);
+        $bank_card_list = $bank_card_model->where(["uid"=>$u_id,"success"=>1])->select();
+        $this->assign('bank_card_list', $bank_card_list);
+        $this->assign('channel_moblie_info', $channel_moblie_m->where(["c_id"=>$c_id])->find());
+        $this->assign('is_plus', $is_plus);
+        $this->assign('fee', $fee);
+        $this->assign('close_rate', $close_rate);
+        $this->assign('add_plan_url', U("plan/planSubmit"));
+        $this->assign('add_cart_url', U("cart/addCart",["c_code"=>$channel_info["code"]]));
+        $this->assign('cart_url', U("cart/index",["c_code"=>$channel_info["code"]]));
+        $this->display();
     }
 
     //添加计划
