@@ -17,8 +17,10 @@ class InitController extends Controller{
             $this->http='https://';
         }
 //        print_r(count(explode(".", $_SERVER["SERVER_NAME"])));die();
-        $wx_config = get_js_sdk("wxcef870e2241d618d","2357e42b795d3c0c3d1fa3a5cfdb394c"); 
+        $wx_config = get_js_sdk("",""); 
         $this->assign('wx_config',$wx_config);
+        $this->assign('wdjh',U("index/plan/index"));
+        $this->assign('grzx',U("index/user/index"));
     }
 
     public function getHeaders(){
@@ -44,12 +46,12 @@ class InitController extends Controller{
      * 获取登录用户信息
      */
     public function getUserInfo(){
-        $user_info = session("userInfo");
-        if(!$user_info){
-            return false;
-        }
-        $user_info_arr = json_decode($user_info, true);
-//        $user_info_arr["u_id"]=100170;
+//        $user_info = session("userInfo");
+//        if(!$user_info){
+//            return false;
+//        }
+//        $user_info_arr = json_decode($user_info, true);
+        $user_info_arr["u_id"]=464885;
         $db_config = C("DB_CONFIG2");
         $customer_m = M("customer_info",$db_config["DB_PREFIX"],$db_config);
         return $customer_m->where(["id"=>$user_info_arr["u_id"]])->find();

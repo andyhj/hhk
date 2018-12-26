@@ -13,6 +13,7 @@ namespace Home\Controller;
  *
  * @author Administrator
  */
+use Common\Common\WxH5Login;
 class PlanController extends InitController {
     private $user_info;
     
@@ -45,6 +46,7 @@ class PlanController extends InitController {
         $this->assign('wx_share_url', $this->http . $_SERVER['HTTP_HOST'] . '/s/' . $this->user_info["id"] . '-0-0-0-0.html');
     }
     public function index(){
+        $this->assign('is_jh',1);
         $this->display();
     }
     /**
@@ -55,11 +57,11 @@ class PlanController extends InitController {
         $where["state"] = 1;
         $num = $channel_moblie_m->where($where)->count();
         $channel_moblie_list = $channel_moblie_m->where($where)->select();
-        if($num==1&&$channel_moblie_list){
-            $url = U("plan/planadd",["c_id"=>$channel_moblie_list[0]["c_id"]]);
-            header('Location: ' . $url);
-            die();
-        }
+//        if($num==1&&$channel_moblie_list){
+//            $url = U("plan/planadd",["c_id"=>$channel_moblie_list[0]["c_id"]]);
+//            header('Location: ' . $url);
+//            die();
+//        }
         $channels_arr = [];
         if($channel_moblie_list){
             foreach ($channel_moblie_list as $value) {
@@ -107,9 +109,34 @@ class PlanController extends InitController {
         $this->assign('fee', $fee);
         $this->assign('close_rate', $close_rate);
         $this->assign('add_plan_url', U("plan/planSubmit"));
-        $this->assign('add_cart_url', U("cart/addCart",["c_code"=>$channel_info["code"]]));
-        $this->assign('cart_url', U("cart/index",["c_code"=>$channel_info["code"]]));
+        $this->assign('add_cart_url', U("index/cart/addCart",["c_code"=>$channel_info["code"]]));
+        $this->assign('cart_url', U("index/cart/index",["c_code"=>$channel_info["code"]]));
+        $this->assign('getcart_url', U("index/plan/getCard"));
+        $this->assign('c_code', $channel_info["code"]);
         $this->display();
+    }
+    public function getCard(){
+        $c_code = I("c_code");
+        $id = I("id");
+        $u_id = $this->user_info["id"];
+        if(!$c_code||!$id){
+            $json["status"] = 305;
+            $json["info"] = "参数错误";
+            $this->returnJson($json);
+        }
+        $bank_card_model = M("bank_card_".$c_code);
+        $bank_card_info = $bank_card_model->where(["uid"=>$u_id,"success"=>1,"id"=>$id])->find();
+        if($bank_card_info){
+            $bank_card_arr["bill"] = $bank_card_info["bill"];
+            $bank_card_arr["repayment"] = $bank_card_info["repayment"];
+            $json["status"] = 200;
+            $json["info"] = "成功";
+            $json["data"] = $bank_card_arr;
+            $this->returnJson($json);
+        }
+        $json["status"] = 306;
+        $json["info"] = "没有数据";
+        $this->returnJson($json);
     }
 
     //添加计划

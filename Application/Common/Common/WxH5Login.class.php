@@ -99,10 +99,12 @@ class WxH5Login {
                         'openid'=>$_SESSION['openid'],
                         'scene_value'=>$scene_value,
                     );
+                    $openid_bind_info = $obj;
                     $obj['created'] = $obj['updated'] = date('Y-m-d H:i:s');
                     $openid_bind_m->add($obj);
                 }
             }
+            session('openidBind', json_encode($openid_bind_info));
             return 113;
         }
     }

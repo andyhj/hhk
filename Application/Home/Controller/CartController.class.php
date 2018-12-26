@@ -6,6 +6,7 @@ namespace Home\Controller;
  *
  * @author Administrator
  */
+use Common\Common\WxH5Login;
 class CartController extends InitController {
     private $user_info;
     private $c_code;
@@ -40,9 +41,9 @@ class CartController extends InitController {
             echo '<script>alert("参数错误");</script>';
             die();
         }
-        $table_name = "bank_card_".$this->c_code;
-        $isTable = M()->query('SHOW TABLES LIKE "'.$table_name.'"');
-        if( $isTable ){
+        $table_name ="bank_card_".$this->c_code;
+        $isTable = M()->query('SHOW TABLES LIKE "'. C("DB_PREFIX").$table_name.'"');
+        if(!empty($isTable) ){
             $this->cart_m = M($table_name);
         }else{
             echo '<script>alert("非法请求");</script>';
@@ -64,7 +65,7 @@ class CartController extends InitController {
     public function addCart(){
         $db_config = C("DB_CONFIG2");
         $u_id = $this->user_info["id"];
-        $bank_id = $this->user_info["bankId"];
+        $bank_id = $this->user_info["bankid"];
         $url = HSQ_HOST.'/mobile/info/index.html';
         if(!$bank_id){
             echo '<script>alert("请完善个人资料");location="'.$url.'"</script>';

@@ -57,6 +57,7 @@
             <div class="channel_list" id="channel_list">
                 <?php foreach ($channels as $k => $channel): ?>
                     <div class="item">
+                        <a href="<?php echo U("index/plan/planadd",["c_id"=>$channel["c_id"]]);?>">
                         <div class="title">
                             <span class="icon"><img src="/src/img/channel/bank_icon.png" alt=""></span>
                             <span><?php echo $channel['title']; ?></span>
@@ -69,6 +70,7 @@
                             <span>普通会员：<?php echo ($channel['channel_info']["user_fee"]*100)."%+".(int)$channel['channel_info']["user_close_rate"]; ?></span>
                             <span class="rate">PLUS会员：<?php echo ($channel['channel_info']["plus_user_fee"]*100)."%+".(int)$channel['channel_info']["plus_user_close_rate"]; ?></span>
                         </div>
+                        </a>
                         <div class="tips"><span class="tips_info"><?php echo $channel['prompt']; ?></span><span class="tips_more"></span></div>
                     </div>
                 <?php endforeach; ?>

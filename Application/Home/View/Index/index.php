@@ -66,7 +66,7 @@
         <div style="position:absolute;top:2%;left:80%; ">
             <img src="/src/img/home/cpjs.png" style="width:1rem;">
         </div>
-        <div class="add">
+        <div class="add" onclick="javascript:window.location.href='<?php echo $channel;?>'">
             <div><img src="/src/img/home/addjh.png"></div>
         </div>
         <?php include T('Common/footer'); ?>
