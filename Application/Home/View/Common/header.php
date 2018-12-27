@@ -8,6 +8,16 @@
 <script src="js/html5.js"></script>
 <![endif]-->
 <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<style>
+    .nos{
+        width: 50%;
+        margin: 25%;
+    }
+    .nos img{
+        width: 35%;
+        margin-top: 25%;
+    }
+</style>
 <script>
             (function (doc, win) {
                 var docEl = doc.documentElement, resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize', recalc = function () {

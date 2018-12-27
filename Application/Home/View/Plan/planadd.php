@@ -127,10 +127,18 @@
             .channel_submit{
                 margin-bottom: 1rem;
             }
+            select{
+                width: auto;
+                padding: 0 2%;
+                margin: 0;
+            }
+            option{
+                text-align:center;
+            }
         </style>
     </head>
     <body>
-        <div class="kjtd"><img src="/src/img/channel/bank_icon.png" alt=""> 银联快捷H</div>
+        <div class="kjtd"><img src="/src/img/channel/bank_icon.png" alt=""> <?php echo $channel_moblie_info["title"];?></div>
         <div class="usercenter  acdv" style="margin-bottom: 0.2rem;">
             <div class="details" style="padding: 18px;padding-top: 0px;padding-bottom: 1px;">
                 <ul class="list-ul" style="margin-bottom: 0px;">
@@ -158,25 +166,32 @@
                         <span  style="float:right;" id="repayment"></span>
                     </li>
                     <li>
-                        当前费率：0.65%+1 
+                        <?php if(!$is_plus){?> 
+                        当前费率：<?php echo ($fee*100).'%+'.$close_rate;?> 
                         <span  style="float:right;"><input type="button" value="升级PLUS" class="sjplus"></span>
+                        <?php }else{?>
+                        当前费率：
+                        <span  style="float:right;"><?php echo $fee.'%+'.$close_rate;?> </span>
+                        <?php }?>
                     </li>
+                    <?php if(!$is_plus){?> 
                     <li style="border-bottom:0px;height: 43px;padding-top: 9px;">
-                        <span  class="splus">PLUS会员：0.55%+1  成为PLUS会员降低费率</span>
+                        <span  class="splus">PLUS会员：<?php echo ($channel_info["plus_user_fee"]*100).'%+'.(int)$channel_info["plus_user_close_rate"];?>   成为PLUS会员降低费率</span>
                     </li>
+                    <?php }?>
                     <li style="    border-bottom: 0px;height: 3px;background-color: #eeeeee;padding: 0px;margin: 0px;width: 110%;left: -5%;">
                         
                     </li>
                     <li>
                         计划金额：
-                        <span  style="float:right;"><input type="text" value="" placeholder="输入金额" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" value="" id="amount" name="amount" placeholder="输入金额" style="text-align: right;"></span>
                     </li>
                     <li>
                         计划期数：
                             <span  style="float:right;">
-                                <select>
+                                <select id="periods" name="periods" >
                                     <option value="0">---选择期数---</option>
-                                    <option value="6"> 6期</option>
+                                    <option value="6"> 6 期</option>
                                     <option value="12"> 12期</option>
                                     <option value="24"> 24期</option>
                                 </select>
@@ -184,21 +199,21 @@
                     </li>
                     <li>
                         每期还款金额：
-                        <span  style="float:right;">1024</span>
+                        <span  style="float:right;" id="p_amount"></span>
                     </li>
                     <li>
                         每期手续费：
-                        <span  style="float:right;">21</span>
+                        <span  style="float:right;" id="p_fee"></span>
                     </li>
                     <li>
                         手续费总额：
-                        <span  style="float:right;">512</span>
+                        <span  style="float:right;" id="p_amount_count"></span>
                     </li>
-                    <li style="    border-bottom: 0px;height: 3px;background-color: #eeeeee;padding: 0px;margin: 0px;width: 110%;left: -5%;">
+                    <li style="border-bottom: 0px;height: 3px;background-color: #eeeeee;padding: 0px;margin: 0px;width: 110%;left: -5%;">
                         
                     </li>
-                    <li style="border-bottom:0px;height: 43px;padding-top: 9px;">
-                        <span  class="splus" style="font-size: 0.26rem;">PLUS会员手续费总额：412</span>
+                    <li style="border-bottom:0px;height: 43px;padding-top: 9px;display:none" id="plus_fee">
+                        
                     </li>
                 </ul>
             </div>
@@ -237,6 +252,109 @@
                     });
                 }
             });
+            
+            $("#amount").change(function () {
+                var amount = $(this).val();
+                var fee = <?php echo $fee;?> ;
+                var close_rate = <?php echo $close_rate;?> ;
+                if(amount){
+                    if(amount<2000){
+                        alert("金额不能低于2000");
+                        $("#amount").val("");
+                        return false;
+                    }
+                    var p_amount6=(amount/6).toFixed(2);//6期扣款额度
+                    var p_amount12=(amount/12).toFixed(2);//12期扣款额度
+                    var p_amount24=(amount/24).toFixed(2);//12期扣款额度
+                    var p_fee6 = (parseFloat(p_amount6)+(p_amount6*fee+close_rate)).toFixed(2); //6期手续费
+                    var p_fee12 = (parseFloat(p_amount12)+(p_amount12*fee+close_rate)).toFixed(2); //6期手续费
+                    var p_fee24 = (parseFloat(p_amount24)+(p_amount24*fee+close_rate)).toFixed(2); //6期手续费
+                    var p_html = '<option value="0">---选择期数---</option>'+
+                                    '<option value="6"> 6 期 × 每期 '+p_fee6+'</option>'+
+                                    '<option value="12"> 12期 × 每期 '+p_fee12+'</option>'+
+                                    '<option value="24"> 24期 × 每期 '+p_fee24+'</option>';
+                    $("#periods").html(p_html);
+                    $("#p_amount").html();
+                    $("#p_fee").html();
+                    $("#p_amount_count").html();
+                }
+            });
+            $("#periods").change(function () {
+                var amount = $("#amount").val();
+                var periods = $(this).val();
+                var fee = <?php echo $fee;?> ;
+                var is_plus = <?php echo $is_plus;?> ;
+                var close_rate = <?php echo $close_rate;?> ;
+                if(amount&&periods!=0){
+                    if(amount<2000){
+                        alert("金额不能低于2000");
+                        $("#amount").val("");
+                        return false;
+                    }
+                    periods = parseInt(periods);
+                    var p_amount=(amount/periods).toFixed(2);//扣款额度
+                    var p_fee = (p_amount*fee+close_rate).toFixed(2); //每期手续费
+                    $("#p_amount").html(p_amount);
+                    $("#p_fee").html(p_fee);
+                    $("#p_amount_count").html((p_fee*periods).toFixed(2));
+                    if(!is_plus){
+                        var plus_fee = <?php echo $channel_info["plus_user_fee"];?>;
+                        var plus_user_close_rate = <?php echo $channel_info["plus_user_close_rate"];?>;
+                        var p_plus_fee = (p_amount*plus_fee+plus_user_close_rate).toFixed(2); //plus每期手续费
+                        var html = '<span  class="splus" style="font-size: 0.26rem;">PLUS会员手续费总额：'+((p_plus_fee*periods).toFixed(2))+'</span>';
+                        $("#plus_fee").show();
+                        $("#plus_fee").html(html);
+                    }
+                }
+            });
+            var _lock = false;
+            $("#save").click(function(){
+                if(_lock){
+                    alert('正在提交....');
+                    return false;
+                }
+                _lock = true;
+                var c_id = <?php echo $c_id;?>;
+                var b_id = $("#bc_id").val();
+                var amount = $("#amount").val();
+                var periods = $("#periods").val();
+                if(b_id<1){
+                    _lock = false;
+                    alert("请选择银行卡");
+                    return false;
+                }
+                if(!amount){
+                    _lock = false;
+                    alert("请输入金额");
+                    return false;
+                }
+                if(amount<2000){
+                    _lock = false;
+                    alert("金额不能低于2000");
+                    return false;
+                }
+                if(periods==0){
+                    _lock = false;
+                    alert("请选择期数");
+                    return false;
+                }
+                $.ajax({
+                    url: "<?php echo $add_plan_url; ?>",
+                    data: {c_id: c_id,b_id:b_id,amount:amount,periods:periods},
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.status == 200) {
+                            alert("生成计划成功");
+                            location='<?php echo U("index/plan/index");?>';
+                        } else {
+                            _lock = false;
+                            alert(data.info);
+                        }
+                    }
+                });
+            });
+            
         </script>
     </body>
 </html>

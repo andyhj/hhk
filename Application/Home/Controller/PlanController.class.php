@@ -16,7 +16,7 @@ namespace Home\Controller;
 use Common\Common\WxH5Login;
 class PlanController extends InitController {
     private $user_info;
-    
+    private $user_wx_info;
     public function __construct() {
         header("Content-type: text/html; charset=utf-8"); 
         parent::__construct();
@@ -36,19 +36,116 @@ class PlanController extends InitController {
                 echo '<script>alert("登陆失败");</script>';
                 die();
             }
-            $url = HSQ_HOST. '/mobile/perfect_info/registered';
+//            $url = HSQ_HOST. '/mobile/perfect_info/registered';
+            $url = HSQ_HOST. '/mobile/binding/new_binding';
             if ($return_status === 113) {
                 header('Location: ' . $url);
                 die();
             }
         }
+        $db_config = C("DB_CONFIG2");
+        $customer_wx_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
+        $wx = $customer_wx_m->where(["user_id"=>$this->user_info["id"]])->find();
+        if(!$wx["state"]){
+            echo '<script>alert("请先关注会收钱公众号");</script>';
+            die();
+        }
+        $this->user_wx_info = $wx;
         $this->assign('userInfo', $this->user_info);
-        $this->assign('wx_share_url', $this->http . $_SERVER['HTTP_HOST'] . '/s/' . $this->user_info["id"] . '-0-0-0-0.html');
+        $this->assign('wx_share_url', $this->http . $_SERVER['HTTP_HOST'] . '/' . $this->user_info["id"] . '-0-0-0-0.html');
     }
     public function index(){
+        $plan_model = M("plan");
+        $current_page = 1;
+        $per_page = 4;
+        $plan_list1 = $plan_model->where(["status"=>3])->order("add_time desc")->page($current_page.','.$per_page)->select(); //正在执行
+        $plan_list2 = $plan_model->where(["status"=>1])->order("add_time desc")->page($current_page.','.$per_page)->select(); //已完成
+        $plan_list3 = $plan_model->where(["status"=>array('in','2,4,5')])->order("add_time desc,status desc")->page($current_page.','.$per_page)->select(); //未执行
+        $plan_arr1 = [];
+        $plan_arr2 = [];
+        $plan_arr3 = [];
+        if($plan_list1){
+            foreach ($plan_list1 as $p1) {
+                $card_info = M("bank_card_".$p1["c_code"])->where(["id"=>$p1["bc_id"]])->find();
+                $p1["bank_name"] = $card_info["bank_name"];
+                $p1["user_name"] = $card_info["user_name"];
+                $p1["card_no"] = substr($card_info["card_no"],-4);
+                $plan_arr1[] = $p1;
+            }
+        }
+        if($plan_list2){
+            foreach ($plan_list2 as $p2) {
+                $card_info = M("bank_card_".$p2["c_code"])->where(["id"=>$p2["bc_id"]])->find();
+                $p2["bank_name"] = $card_info["bank_name"];
+                $p2["user_name"] = $card_info["user_name"];
+                $p2["card_no"] = substr($card_info["card_no"],-4);
+                $plan_arr2[] = $p2;
+            }
+        }
+        if($plan_list3){
+            foreach ($plan_list3 as $p3) {
+                $card_info = M("bank_card_".$p3["c_code"])->where(["id"=>$p3["bc_id"]])->find();
+                $p3["bank_name"] = $card_info["bank_name"];
+                $p3["user_name"] = $card_info["user_name"];
+                $p3["card_no"] = substr($card_info["card_no"],-4);
+                $plan_arr3[] = $p3;
+            }
+        }
         $this->assign('is_jh',1);
+        $this->assign('plan_arr1', $plan_arr1);
+        $this->assign('plan_arr2', $plan_arr2);
+        $this->assign('plan_arr3', $plan_arr3);
         $this->display();
     }
+    /**
+     * 
+     */
+    public function plandes(){
+        $p_id = I("id");
+        $url = U("index/plan/index");
+        if(!$p_id){
+            $this->error("参数错误",$url);die();
+        }
+        $plan_des_list = M("plan_des")->where(["p_id"=>$p_id])->select();
+        if(!$plan_des_list||empty($plan_des_list)){
+            $this->error("计划不存在",$url);die();
+        }
+        
+        $plan_des_arr = [];
+        if($plan_des_list&&!empty($plan_des_list)){
+            foreach ($plan_des_list as $val) {
+                $val["type_name"] = ""; 
+                if($val["type"]==1){
+                    $val["type_name"] = "消费"; 
+                }
+                if($val["type"]==2){
+                    $val["type_name"] = "还款"; 
+                }
+                switch ($val["order_state"]) {
+                    case 1:
+                        $val["status_name"] = "成功";
+                        break;
+                    case 2:
+                        $val["status_name"] = "待执行";
+                        break;
+                    case 3:
+                        $val["status_name"] = "执行中";
+                        break;
+                    case 4:
+                        $val["status_name"] = "失败";
+                        break;
+                    default:
+                        $val["status_name"] = "";
+                        break;
+                }
+                $plan_des_arr[] = $val;
+            }
+        }
+        $this->assign("plan_des_list",$plan_des_arr);
+        $this->display();
+        
+    }
+
     /**
      * 通道列表
      */
@@ -107,12 +204,14 @@ class PlanController extends InitController {
         $this->assign('channel_moblie_info', $channel_moblie_m->where(["c_id"=>$c_id])->find());
         $this->assign('is_plus', $is_plus);
         $this->assign('fee', $fee);
-        $this->assign('close_rate', $close_rate);
-        $this->assign('add_plan_url', U("plan/planSubmit"));
+        $this->assign('close_rate', (int)$close_rate);
+        $this->assign('channel_info', $channel_info);
+        $this->assign('add_plan_url', U("index/plan/planSubmit"));
         $this->assign('add_cart_url', U("index/cart/addCart",["c_code"=>$channel_info["code"]]));
         $this->assign('cart_url', U("index/cart/index",["c_code"=>$channel_info["code"]]));
         $this->assign('getcart_url', U("index/plan/getCard"));
         $this->assign('c_code', $channel_info["code"]);
+        $this->assign('c_id', $c_id);
         $this->display();
     }
     public function getCard(){
@@ -153,7 +252,7 @@ class PlanController extends InitController {
             $this->returnJson($json);
         }
         session($session_name,1);
-        if(!$c_id||!$b_id||!$u_id||!$amount||!$periods){
+        if(!$c_id||!$b_id||!$u_id||!$amount||!$periods||$b_id<1){
             $json["status"] = 305;
             $json["info"] = "参数错误";
             $this->returnJson($json,$session_name);
@@ -194,7 +293,7 @@ class PlanController extends InitController {
             $json["info"] = "请在账单日后制定计划";
             $this->returnJson($json,$session_name);
         }
-        if($d>=$$repayment){
+        if($d>=$repayment){
             $json["status"] = 308;
             $json["info"] = "请在还款日前制定计划";
             $this->returnJson($json,$session_name);
@@ -221,7 +320,7 @@ class PlanController extends InitController {
             $fee = $channel_info["plus_user_fee"]; //plus用户交费率
             $close_rate = $channel_info["plus_user_close_rate"];   //plus用户结算费用（每笔）
         }
-        $p_fee = round($p_amount*$fee+$close_rate); //每期手续费
+        $p_fee = round($p_amount*$fee+$close_rate,2); //每期手续费
         
         $plan_data = array(
             "u_id" => $u_id,
@@ -235,6 +334,7 @@ class PlanController extends InitController {
             "fee" => $fee,
             "close_rate" => $close_rate
         );
+        M()->startTrans();
         $plan_id = $plan_model->add($plan_data);
         if(!$plan_id){
             $json["status"] = 309;
@@ -253,17 +353,20 @@ class PlanController extends InitController {
             $num = 1;
         }
         $plan_des_arr = $this->getPlanDes($plan_id, $u_id, $p_amount, $p_fee, $is_include, $periods, $num);
-        if($plan_des_arr&&empty($plan_des_arr)){
+        if($plan_des_arr&&!empty($plan_des_arr)){
             $return_status = $plan_des_model->addAll($plan_des_arr);
             if($return_status){
+                M()->commit();
                 $json["status"] = 200;
                 $json["info"] = "生成计划成功";
                 $this->returnJson($json,$session_name);
             }
+            M()->rollback();
             $json["status"] = 400;
             $json["info"] = "插入计划详情失败";
             $this->returnJson($json,$session_name);
         }else{
+            M()->rollback();
             $json["status"] = 401;
             $json["info"] = "制定计划详情失败";
             $this->returnJson($json,$session_name);

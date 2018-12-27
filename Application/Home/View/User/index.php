@@ -48,13 +48,13 @@
         <div class="vipcenter">
             <div class="vipheader">
                 <a href="userinfo.html">
-                    <div class="touxiang"><img src="http://thirdwx.qlogo.cn/mmopen/QS5WibGy8Cq3iaRESvjZckkWPl0ADnCedFicvwjPia3H8dT9S6hY1uOpu1L4I5dwia0FRw9Y1qnWBajxchudYosnXMx4kNo14ibjaa/132"><if condition="$userInfo['headurl']" ><img src="{$userInfo.headurl}"></if></div>
-                    <div class="name">Andy{$userInfo.nickname} <img src="/src/img/user/plus.png"style="width:0.8rem;"></div>
-                    <div class="gztt">会员到限：2019.05.20</div>
+                    <div class="touxiang"><if condition="$rows['tx']" ><img src="{$rows['tx']}"></if></div>
+                    <div class="name">{$rows.name} <if condition="$rows['is_plus']" ><img src="/src/img/user/plus.png"style="width:0.8rem;"></if></div>
+                    <if condition="$rows['is_plus']" ><div class="gztt">会员到限：{$rows.dq_date}</div></if>
                 </a>
             </div>
             <div class="des">
-                <div class="vipsan">
+<!--                <div class="vipsan">
                     <a href="">
                     <div class="col-xs-6 text-left">
                         <span class="iccs"><img src="/src/img/user/card.png" alt=""></span>
@@ -64,7 +64,7 @@
                         <span class="icc"><img src="/src/img/user/jt.png" alt=""></span>
                     </div>
                     </a>
-                </div>
+                </div>-->
                 <div class="vipsan">
                     <a href="">
                     <div class="col-xs-6 text-left">

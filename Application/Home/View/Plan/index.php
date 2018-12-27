@@ -110,378 +110,126 @@
             </ul>
             <div id="myTabContent" class="tab-cot">
                 <div class="tab-pane fade active in " id="sp1" >
+                    <?php if($plan_arr1&&!empty($plan_arr1)){?>
                     <ul class="list-ul" style="margin-bottom: 0px;">
-                        <li>
+                        <?php foreach ($plan_arr1 as $k=>$v){?>
+                        <li  onclick="javascript:window.location.href='<?php echo U('index/plan/plandes',['id'=>$v['id']]);?>'">
                             <table>
                                 <tr>
                                     <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
+                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;"><?php echo $v['bank_name']?></span>
                                     </td>
                                     <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a">12</span>期
+                                        共<span style="font-size: 0.6rem;color: #fc8b5a"><?php echo $v['periods']?></span>期
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        张三|尾号6529
+                                        <?php echo $v['user_name']?>|尾号<?php echo $v['card_no']?>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：60000元
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        费率：0.55%+1
+                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                     <td  style="text-align: right;">
-                                        每期还款金额：1568元
+                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
                                     </td>
                                 </tr>
                             </table>
                         </li>
-                        <li>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a">12</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                        <li>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a">12</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                        <li style="border-bottom: 0px;">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a">12</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
+                        <?php }?>
                     </ul>
+                    <?php }else{?>
+                    <img src="/src/img/no.png" class="nos">
+                    <?php }?>
                 </div>
 
                 <div class="tab-pane fade " id="sp2">
+                    <?php if($plan_arr3&&!empty($plan_arr3)){?>
                     <ul class="list-ul" style="margin-bottom: 0px;">
-                        <li>
+                        <?php foreach ($plan_arr3 as $k=>$v){?>
+                        <li  onclick="javascript:window.location.href='<?php echo U('index/plan/plandes',['id'=>$v['id']]);?>'">
                             <table>
                                 <tr>
                                     <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
+                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;"><?php echo $v['bank_name']?></span>
                                     </td>
                                     <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a">24</span>期
+                                        共<span style="font-size: 0.6rem;color: #fc8b5a"><?php echo $v['periods']?></span>期
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        张三|尾号6529
+                                        <?php echo $v['user_name']?>|尾号<?php echo $v['card_no']?>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：60000元
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        费率：0.55%+1
+                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                     <td  style="text-align: right;">
-                                        每期还款金额：1568元
+                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
                                     </td>
                                 </tr>
                             </table>
                         </li>
-                        <li>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a">24</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                        <li>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a">24</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                        <li style="border-bottom: 0px;">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a">24</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
+                        <?php }?>
                     </ul>
+                    <?php }else{?>
+                    <img src="/src/img/no.png" class="nos">
+                    <?php }?>
                 </div>
 
                 <div class="tab-pane fade" id="sp3">
+                    <?php if($plan_arr2&&!empty($plan_arr2)){?>
                     <ul class="list-ul" style="margin-bottom: 0px;">
-                        <li>
+                        <?php foreach ($plan_arr2 as $k=>$v){?>
+                        <li  onclick="javascript:window.location.href='<?php echo U('index/plan/plandes',['id'=>$v['id']]);?>'">
                             <table>
                                 <tr>
                                     <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
+                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;"><?php echo $v['bank_name']?></span>
                                     </td>
                                     <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #c1c1c1">6</span>期
+                                        共<span style="font-size: 0.6rem;color: #c1c1c1"><?php echo $v['periods']?></span>期
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        张三|尾号6529
+                                        <?php echo $v['user_name']?>|尾号<?php echo $v['card_no']?>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：60000元
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        费率：0.55%+1
+                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                     <td  style="text-align: right;">
-                                        每期还款金额：1568元
+                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
                                     </td>
                                 </tr>
                             </table>
                         </li>
-                        <li>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #c1c1c1">6</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                        <li>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #c1c1c1">6</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                        <li style="border-bottom: 0px;">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span style="font-size: 0.36rem;color: #595757;font-weight:bold;">招商银行</span>
-                                    </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #c1c1c1">6</span>期
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        张三|尾号6529
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        还款总额：60000元
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        费率：0.55%+1
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        每期还款金额：1568元
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
+                        <?php }?>
                     </ul>
+                    <?php }else{?>
+                    <img src="/src/img/no.png" class="nos">
+                    <?php }?>
                 </div>
             </div>
         </div>

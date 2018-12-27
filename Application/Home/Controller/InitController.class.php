@@ -46,12 +46,12 @@ class InitController extends Controller{
      * 获取登录用户信息
      */
     public function getUserInfo(){
-//        $user_info = session("userInfo");
-//        if(!$user_info){
-//            return false;
-//        }
-//        $user_info_arr = json_decode($user_info, true);
-        $user_info_arr["u_id"]=464885;
+        $user_info = session("userInfo");
+        if(!$user_info){
+            return false;
+        }
+        $user_info_arr = json_decode($user_info, true);
+//        $user_info_arr["u_id"]=464885;
         $db_config = C("DB_CONFIG2");
         $customer_m = M("customer_info",$db_config["DB_PREFIX"],$db_config);
         return $customer_m->where(["id"=>$user_info_arr["u_id"]])->find();
