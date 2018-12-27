@@ -1,22 +1,22 @@
 ﻿<?php
 header("Content-type:text/html;charset='UTF-8");
-define("filePath", APP_ROOT . 'cert/helipay/'); //.pfx和.cer文件放置的地址
-define("pfxFileName", "hhq.pfx"); //.pfx文件名
+define("filePath", APP_ROOT . 'cert/'); //.pfx和.cer文件放置的地址
+define("pfxFileName", "hhk.pfx"); //.pfx文件名
 define("password", "hsq105"); //.pfx文件的密码
 define("cerFileName", "helipay.cer"); //.cer文件名
 
 /* 实现.pfx文件转为.pem文件 */
-//$file = filePath . pfxFileName;
-//$results = [];
-//$worked = openssl_pkcs12_read(file_get_contents($file), $results, password);
-//$certificateCApem = $file . '.pem';
-//@file_put_contents($certificateCApem, $results);
-//
-///* 实现.cer文件转为.pem文件 */
-//$certificateCAcer = filePath . cerFileName;
-//$certificateCAcerContent = file_get_contents($certificateCAcer);
-//$certificateCApem = filePath . cerFileName . '.pem';
-//file_put_contents($certificateCApem, $certificateCAcerContent);
+$file = filePath . pfxFileName;
+$results = [];
+$worked = openssl_pkcs12_read(file_get_contents($file), $results, password);
+$certificateCApem = $file . '.pem';
+@file_put_contents($certificateCApem, $results);
+
+/* 实现.cer文件转为.pem文件 */
+$certificateCAcer = filePath . cerFileName;
+$certificateCAcerContent = file_get_contents($certificateCAcer);
+$certificateCApem = filePath . cerFileName . '.pem';
+file_put_contents($certificateCApem, $certificateCAcerContent);
 
 class Rsa {
     /* 实现加签功能 */
