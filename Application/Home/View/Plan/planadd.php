@@ -230,14 +230,14 @@
                     return;
                 }
                 if (id == -1) {
-                    location.href = "<?php echo $add_cart_url; ?>";
+                    location.href = "<?php echo $add_card_url; ?>";
                     return;
                 }
                 if (id == -2) {
                     return;
                 } else {
                     $.ajax({
-                        url: "<?php echo $getcart_url; ?>",
+                        url: "<?php echo $getcard_url; ?>",
                         data: {id: id,c_code:'<?php echo $c_code; ?>'},
                         type: 'GET',
                         dataType: 'json',

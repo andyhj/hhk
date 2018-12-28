@@ -1,22 +1,24 @@
 <?php
-require_once 'HttpClient.class.php';
-require_once 'AES.php';
-require_once 'RSA.php';
-class heli {
+namespace Common\HeliPay;
+use Common\HeliPay\Rsa;
+use Common\HeliPay\CryptAES;
+require_once APP_ROOT .'Application/Common/Concrete/helipay/CryptAES.php';
+require_once APP_ROOT .'Application/Common/Concrete/helipay/RSA.php';
+class Heli{
     const TENANT = 'C1800372628';
-    const OFFICIALURL = 'http://pay.trx.helipay.com/trx/quickPayApi/interface.action';   //正式请求地址
-//    const OFFICIALURL = 'http://test.trx.helipay.com/trx/quickPayApi/interface.action';   //测试请求地址
+//    const OFFICIALURL = 'http://pay.trx.helipay.com/trx/quickPayApi/interface.action';   //正式请求地址
+    const OFFICIALURL = 'http://test.trx.helipay.com/trx/quickPayApi/interface.action';   //测试请求地址
 
     // 发起提现地址
-    const WIT_API = 'http://transfer.trx.helipay.com/trx/transfer/interface.action';
-//    const WIT_API = 'http://test.trx.helipay.com/trx/transfer/interface.action'; //测试环境
+//    const WIT_API = 'http://transfer.trx.helipay.com/trx/transfer/interface.action';
+    const WIT_API = 'http://test.trx.helipay.com/trx/transfer/interface.action'; //测试环境
    
     /**
      * 银行卡支付下单
      * @return boolean
      */
     public function anotherPay($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -49,9 +51,9 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("anotherPay.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("anotherPay.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
-        $rsa->add_log("anotherPay.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        add_log("anotherPay.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
         $arr['userAccount'] = $aes->encrypt($data['phone']); //用户注册账号
         $arr['appType'] = 'WX'; //应用类型
         $arr['appName'] = '微信公众号'; //应用名
@@ -60,10 +62,10 @@ class heli {
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
         //$http_client = new HttpClient();
-        $rsa->add_log("anotherPay.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("anotherPay.log", "helipay", "提交参数：". var_export($arr, true));
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("anotherPay.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("anotherPay.log", "helipay", "返回参数：". var_export($result_arr, true));
         $verify = array(
             'rt1_bizType' => $result_arr['rt1_bizType'],
             'rt2_retCode' => $result_arr['rt2_retCode'],
@@ -71,10 +73,10 @@ class heli {
             'rt5_orderId' => $result_arr['rt5_orderId']
         );
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("anotherPay.log", "helipay", "返回参数验签成功");
+            add_log("anotherPay.log", "helipay", "返回参数验签成功");
             return $result_arr;
         } else {
-            $rsa->add_log("anotherPay.log", "helipay", "返回参数验签失败");
+            add_log("anotherPay.log", "helipay", "返回参数验签失败");
             return false;
         }
     }
@@ -83,7 +85,7 @@ class heli {
      * 发送支付短信验证码
      */
     public function phoneCode($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -98,18 +100,18 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("phoneCode.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("phoneCode.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
-        $rsa->add_log("phoneCode.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        add_log("phoneCode.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
         $arr['encryptionKey'] = $encryptionKey; //加密密钥
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("anotherPay.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("anotherPay.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("phoneCode.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("phoneCode.log", "helipay", "返回参数：". var_export($result_arr, true));
         return $result_arr;
     }
     
@@ -117,7 +119,7 @@ class heli {
      * 确认支付
      */
     public function affirmPay($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -134,18 +136,18 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("affirmPay.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("affirmPay.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
-        $rsa->add_log("affirmPay.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        add_log("affirmPay.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
         $arr['encryptionKey'] = $encryptionKey; //加密密钥
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("anotherPay.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("anotherPay.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("affirmPay.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("affirmPay.log", "helipay", "返回参数：". var_export($result_arr, true));
         return $result_arr;
     }
     
@@ -153,7 +155,7 @@ class heli {
      * 绑卡支付短信
      */
     public function bindingPayCode($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -172,18 +174,18 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("bindingPayCode.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("bindingPayCode.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
-        $rsa->add_log("bindingPayCode.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        add_log("bindingPayCode.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
         $arr['encryptionKey'] = $encryptionKey; //加密密钥
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("bindingPayCode.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("bindingPayCode.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("bindingPayCode.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("bindingPayCode.log", "helipay", "返回参数：". var_export($result_arr, true));
         $verify = array(
             'rt1_bizType' => $result_arr['rt1_bizType'],
             'rt2_retCode' => $result_arr['rt2_retCode'],
@@ -192,10 +194,10 @@ class heli {
             'rt6_phone' => $result_arr['rt6_phone']
         );
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("bindingPayCode.log", "helipay", "返回参数验签成功");
+            add_log("bindingPayCode.log", "helipay", "返回参数验签成功");
             return $result_arr;
         } else {
-            $rsa->add_log("bindingPayCode.log", "helipay", "返回参数验签失败");
+            add_log("bindingPayCode.log", "helipay", "返回参数验签失败");
             return false;
         }
     }
@@ -204,7 +206,7 @@ class heli {
      * 绑卡支付
      */
     public function bindingCardPay($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -230,9 +232,9 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("bindingCardPay.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("bindingCardPay.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
-        $rsa->add_log("bindingCardPay.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        add_log("bindingCardPay.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
         if(array_key_exists("Code", $data)&&$data["Code"]){
             $arr['P17_validateCode'] = $aes->encrypt($data['Code']);   //商户设置需要验证支付短信码时，必填，AES加密
         }
@@ -244,11 +246,11 @@ class heli {
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("bindingCardPay.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("bindingCardPay.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("bindingCardPay.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("bindingCardPay.log", "helipay", "返回参数：". var_export($result_arr, true));
         return $result_arr;
     }
     
@@ -256,7 +258,7 @@ class heli {
      * 鉴权绑卡
      */
     public function bindingCard($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -274,25 +276,25 @@ class heli {
             'P11_month'=>$data['month'],     //信用卡时必填：信用卡有效期月
             'P12_cvv2'=>$data['cvv2'],     //信用卡时必填：安全码
             'P13_phone'=>$data['phone'], //手机号
-            'P14_validateCode'=>'', //信息验证码
+            'P14_validateCode'=>$data['code'], //信息验证码
         );
         $sign_str_trim = $this->sinParamsToString($arr);
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("bindingCard.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("bindingCard.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
-        $rsa->add_log("bindingCard.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
-        $arr['userAccount'] = $aes->encrypt($data['phone']); //用户注册账号
+        add_log("bindingCard.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        $arr['userAccount'] = $data['phone']; //用户注册账号
         $arr['encryptionKey'] = $encryptionKey; //加密密钥
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("bindingCard.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("bindingCard.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("bindingCard.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("bindingCard.log", "helipay", "返回参数：". var_export($result_arr, true));
         $verify = array(
             'rt1_bizType' => $result_arr['rt1_bizType'],
             'rt2_retCode' => $result_arr['rt2_retCode'],
@@ -306,10 +308,10 @@ class heli {
             'rt11_serialNumber' => $result_arr['rt11_serialNumber']
         );
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("bindingCard.log", "helipay", "返回参数验签成功");
+            add_log("bindingCard.log", "helipay", "返回参数验签成功");
             return $result_arr;
         } else {
-            $rsa->add_log("bindingCard.log", "helipay", "返回参数验签失败");
+            add_log("bindingCard.log", "helipay", "返回参数验签失败");
             return false;
         }
     }
@@ -318,12 +320,12 @@ class heli {
      * 鉴权绑卡短信
      */
     public function bindingCardCode($data) {
-        $keyStr = genKey(16);
-        $aes = new CryptAES();
-        $aes->set_key($keyStr);
-        $aes->require_pkcs5();
+        $keyStr = get_rand_str(16);
+//        $aes = new CryptAES();
+//        $aes->set_key($keyStr);
+//        $aes->require_pkcs5();
         $arr=array(
-            'P1_bizType'=>'QuickPayBindCardValidateCode',    //银行卡支付接口
+            'P1_bizType'=>'AgreementPayBindCardValidateCode',    //银行卡支付接口
             'P2_customerNumber'=> self::TENANT,      //商户号由合利宝分配
             'P3_userId'=>$data['userId'],       //用户ID
             'P4_orderId'=>$data['orderId'],     //订单号
@@ -335,29 +337,30 @@ class heli {
             'P10_payerName'=>$data['payerName'],       //姓名
         );
         $sign_str_trim = $this->sinParamsToString($arr);
-
+        
+        add_log("bindingCardCode.log", "helipay", "签名字符串：". $sign_str_trim);
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("bindingCardCode.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("bindingCardCode.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
-        $rsa->add_log("bindingCardCode.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        add_log("bindingCardCode.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
         if(array_key_exists("year", $data)&&$data["year"]){
-            $arr['P12_year'] = $aes->encrypt($data['year']);   //信用卡时必填：信用卡有效期年
+            $arr['P12_year'] = $data['year'];   //信用卡时必填：信用卡有效期年
         }
         if(array_key_exists("month", $data)&&$data["month"]){
-            $arr['P13_month'] = $aes->encrypt($data['month']);   //信用卡时必填：信用卡有效期月
+            $arr['P13_month'] = $data['month'];   //信用卡时必填：信用卡有效期月
         }
         if(array_key_exists("cvv2", $data)&&$data["cvv2"]){
-            $arr['P14_cvv2'] = $aes->encrypt($data['cvv2']);   //信用卡时必填：安全码
+            $arr['P14_cvv2'] = $data['cvv2'];   //信用卡时必填：安全码
         }
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("bindingCardCode.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("bindingCardCode.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("bindingCardCode.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("bindingCardCode.log", "helipay", "返回参数：". var_export($result_arr, true));
         $verify = array(
             'rt1_bizType' => $result_arr['rt1_bizType'],
             'rt2_retCode' => $result_arr['rt2_retCode'],
@@ -365,10 +368,10 @@ class heli {
             'rt5_orderId' => $result_arr['rt6_orderId']
         );
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("bindingCardCode.log", "helipay", "返回参数验签成功");
+            add_log("bindingCardCode.log", "helipay", "返回参数验签成功");
             return $result_arr;
         } else {
-            $rsa->add_log("bindingCardCode.log", "helipay", "返回参数验签失败");
+            add_log("bindingCardCode.log", "helipay", "返回参数验签失败");
             return false;
         }
     }
@@ -378,7 +381,7 @@ class heli {
      * @return [type]       [description]
      */
     public function card_unbind($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -394,15 +397,15 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("card_unbind.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("card_unbind.log", "helipay", "私钥生成的数字签名为：". $sign);
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("card_unbind.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("card_unbind.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("card_unbind.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("card_unbind.log", "helipay", "返回参数：". var_export($result_arr, true));
         return $result_arr;
     }
     
@@ -412,7 +415,7 @@ class heli {
      * @return [type]       [description]
      */
     public function wit_bind_card($data, $type) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -432,9 +435,9 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("witbindcard.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("witbindcard.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
-        $rsa->add_log("witbindcard.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        add_log("witbindcard.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
         // 操作类型，绑定，修改，不参与签名
         $arr['P11_operateType'] = $type;
         if(array_key_exists("bind_id", $data)&&$data["bind_id"]){
@@ -444,10 +447,10 @@ class heli {
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
         //$http_client = new HttpClient();
-        $rsa->add_log("witbindcard.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("witbindcard.log", "helipay", "提交参数：". var_export($arr, true));
         $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("witbindcard.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("witbindcard.log", "helipay", "返回参数：". var_export($result_arr, true));
         $verify = array(
             'rt1_bizType' => $result_arr['rt1_bizType'],
             'rt2_retCode' => $result_arr['rt2_retCode'],
@@ -459,10 +462,10 @@ class heli {
             'rt9_cardAfterFour' => $result_arr['rt9_cardAfterFour']
         );
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("witbindcard.log", "helipay", "返回参数验签成功");
+            add_log("witbindcard.log", "helipay", "返回参数验签成功");
             return $result_arr;
         } else {
-            $rsa->add_log("witbindcard.log", "helipay", "返回参数验签失败");
+            add_log("witbindcard.log", "helipay", "返回参数验签失败");
             return false;
         }
     }
@@ -472,7 +475,7 @@ class heli {
      * @return [type]       [description]
      */
     public function withdraw($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -489,17 +492,17 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("withdraw.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("withdraw.log", "helipay", "私钥生成的数字签名为：". $sign);
         // 绑定id不参与加密
         $arr['P8_bindId'] = $data['bind_id'];
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("withdraw.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("withdraw.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::WIT_API, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("withdraw.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("withdraw.log", "helipay", "返回参数：". var_export($result_arr, true));
         $verify = array(
             'rt1_bizType' => $result_arr['rt1_bizType'],
             'rt2_retCode' => $result_arr['rt2_retCode'],
@@ -509,10 +512,10 @@ class heli {
             'rt7_serialNumber' => $result_arr['rt7_serialNumber']
         );
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("withdraw.log", "helipay", "返回参数验签成功");
+            add_log("withdraw.log", "helipay", "返回参数验签成功");
             return $result_arr;
         } else {
-            $rsa->add_log("withdraw.log", "helipay", "返回参数验签失败");
+            add_log("withdraw.log", "helipay", "返回参数验签失败");
             return false;
         }
     }
@@ -523,7 +526,7 @@ class heli {
      * @return [type]       [description]
      */
     public function creditWithdraw($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -543,15 +546,15 @@ class heli {
 
         $rsa = new Rsa();
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("creditWithdraw.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("creditWithdraw.log", "helipay", "私钥生成的数字签名为：". $sign);
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("creditWithdraw.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("creditWithdraw.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::WIT_API, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("creditWithdraw.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("creditWithdraw.log", "helipay", "返回参数：". var_export($result_arr, true));
         $verify = array(
             'rt1_bizType' => $result_arr['rt1_bizType'],
             'rt2_retCode' => $result_arr['rt2_retCode'],
@@ -562,10 +565,10 @@ class heli {
             'rt8_bindId' => $result_arr['rt8_bindId']
         );
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("creditWithdraw.log", "helipay", "返回参数验签成功");
+            add_log("creditWithdraw.log", "helipay", "返回参数验签成功");
             return $result_arr;
         } else {
-            $rsa->add_log("creditWithdraw.log", "helipay", "返回参数验签失败");
+            add_log("creditWithdraw.log", "helipay", "返回参数验签失败");
             return false;
         }
     }
@@ -575,7 +578,7 @@ class heli {
      * @return [type]       [description]
      */
     public function getWithdraw($data) {
-        $keyStr = genKey(16);
+        $keyStr = get_rand_str(16);
         $aes = new CryptAES();
         $aes->set_key($keyStr);
         $aes->require_pkcs5();
@@ -588,15 +591,15 @@ class heli {
         $sign_str_trim = $this->sinParamsToString($arr);
 
         $sign =  $rsa->genSign($sign_str_trim);
-        $rsa->add_log("getWithdraw.log", "helipay", "私钥生成的数字签名为：". $sign);
+        add_log("getWithdraw.log", "helipay", "私钥生成的数字签名为：". $sign);
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
-        $rsa->add_log("getWithdraw.log", "helipay", "提交参数：". var_export($arr, true));
+        add_log("getWithdraw.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
         $pageContents = $rsa->curlPost(self::WIT_API, $arr);
         $result_arr = json_decode($pageContents, true);
-        $rsa->add_log("getWithdraw.log", "helipay", "返回参数：". var_export($result_arr, true));
+        add_log("getWithdraw.log", "helipay", "返回参数：". var_export($result_arr, true));
         $verify = array(
             'rt1_bizType' => $result_arr['rt1_bizType'],
             'rt2_retCode' => $result_arr['rt2_retCode'],
@@ -606,10 +609,10 @@ class heli {
             'rt7_orderStatus' => $result_arr['rt7_orderStatus']
         );
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("getWithdraw.log", "helipay", "返回参数验签成功");
+            add_log("getWithdraw.log", "helipay", "返回参数验签成功");
             return $result_arr;
         } else {
-            $rsa->add_log("getWithdraw.log", "helipay", "返回参数验签失败");
+            add_log("getWithdraw.log", "helipay", "返回参数验签失败");
             return false;
         }
     }
@@ -636,10 +639,10 @@ class heli {
         );
         $rsa = new Rsa();
         if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
-            $rsa->add_log("backchecked.log", "helipay", "返回参数验签成功");
+            add_log("backchecked.log", "helipay", "返回参数验签成功");
             return true;
         } else {
-            $rsa->add_log("backchecked.log", "helipay", "返回参数验签失败");
+            add_log("backchecked.log", "helipay", "返回参数验签失败");
             return false;
         }
     }

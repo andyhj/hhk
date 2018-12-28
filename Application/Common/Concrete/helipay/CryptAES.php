@@ -1,7 +1,19 @@
-﻿<?php
+<?php
 
-class CryptAES
-{
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+namespace Common\HeliPay;
+
+/**
+ * Description of CryptAES
+ *
+ * @author Administrator
+ */
+class CryptAES {
     protected $cipher = MCRYPT_RIJNDAEL_128;
     protected $mode = MCRYPT_MODE_ECB;
     protected $pad_method = NULL;
@@ -131,19 +143,3 @@ class CryptAES
         return substr($text, 0, -1 * $pad);
     }
 }
-
-//生成随机数
-function genKey($key_length){
-	$str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	$len = strlen($str)-1;
-	$key = '';
-	for ($i=0; $i<$key_length; $i++){
-		$num = mt_rand(0, $len);
-		$key .= $str[$num];
-	}
-	return $key;
-}
-
-
-
-?>

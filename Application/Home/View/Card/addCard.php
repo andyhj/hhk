@@ -123,24 +123,24 @@
                 <ul class="list-ul" style="margin-bottom: 0px;">
                     <li>
                         持卡人：
-                        <span  style="float:right;">张三</span>
+                        <span  style="float:right;"><?php echo $account_name;?></span>
                     </li>
                     <li>
                         卡号：
-                        <span  style="float:right;"><input type="text" value="" placeholder="银行卡卡号" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" value="" id="card_no" name="card_no" placeholder="银行卡卡号" style="text-align: right;"></span>
                     </li>
                     <li>
                         CVN2：
-                        <span  style="float:right;"><input type="text" value="" placeholder="信用卡背后3位CVN2" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" value="" id="card_cvv" name="card_cvv" placeholder="信用卡背后3位CVN2" style="text-align: right;"></span>
                     </li>
                     <li>
                         有效期：
-                        <span  style="float:right;"><input type="text" value="" placeholder="示例:09/15 输入0915" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" value="" id="validity_date" name="validity_date" placeholder="示例:09/15 输入0915" style="text-align: right;"></span>
                     </li>
                     <li>
                         发卡银行：
                             <span  style="float:right;">
-                                <select>
+                                <select id="bank_name" name="bank_name">
                                     <option value="0">---选择发卡行---</option>
                                     <option value="中国银行">中国银行</option>
                                     <option value="招商银行">招商银行</option>
@@ -166,18 +166,18 @@
                     </li>
                     <li>
                         账单日：
-                        <span  style="float:right;"><input type="text" value="" placeholder="输入账单日" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" value="" id="bill" name="bill" placeholder="输入账单日" style="text-align: right;"></span>
                     </li>
                     <li>
                         还款日：
-                        <span  style="float:right;"><input type="text" value="" placeholder="输入还款日" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" value="" id="repayment" name="repayment" placeholder="输入还款日" style="text-align: right;"></span>
                     </li>
                     <li>
                         手机号码：
-                        <span  style="float:right;"><input type="text" value="" placeholder="银行预留手机号" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" value="" id="phone" name="phone" placeholder="银行预留手机号" style="text-align: right;"></span>
                     </li>
                     <li style="border-bottom:0px;">
-                        验证码：<span  style="float:right;"><input type="text" value="" placeholder="请输入验证码" style="text-align: right; width: 2rem; height: 0.7rem;"><input type="button" value="发送验证码" class="sjplus"></span>
+                        验证码：<span  style="float:right;"><input type="text" value="" id="code" name="code" placeholder="请输入验证码" style="text-align: right; width: 2rem; height: 0.7rem;"><input type="button" value="发送验证码" class="sjplus"></span>
                     </li>
                 </ul>
             </div>
@@ -185,4 +185,146 @@
         <div class="channel_submit"><div id="save">确定添加</div></div>
         <?php include T('Common/footer'); ?>
     </body>
+    <script>
+        var data = {};
+        data.c_code = '<?php echo $c_code;?>';
+        var _lock = false;
+        var _lock1 = false;
+        $(".sjplus").click(function(){
+            data.card_no = $("#card_no").val();
+            data.card_cvv = $("#card_cvv").val();
+            data.validity_date = $("#validity_date").val();
+            data.bank_name = $("#bank_name").val();
+            data.bill = $("#bill").val();
+            data.repayment = $("#repayment").val();
+            data.phone = $("#phone").val();
+            data.code = $("#code").val();
+            
+            if(_lock){
+                alert('正在发送....');
+                return false;
+            }
+            _lock = true;
+            console.log(data);
+            if(!data.card_no){
+                _lock = false;
+                alert("请输入银行卡");
+                return false;
+            }
+            if(!data.card_cvv){
+                _lock = false;
+                alert("请输入3位cvv号");
+                return false;
+            }
+            if(!data.validity_date){
+                _lock = false;
+                alert("请输入4位卡有效期");
+                return false;
+            }
+            if(!data.bank_name){
+                _lock = false;
+                alert("请选择开户行");
+                return false;
+            }
+            if(!data.bill){
+                _lock = false;
+                alert("请输入账单日");
+                return false;
+            }
+            if(!data.repayment){
+                _lock = false;
+                alert("请输入还款日");
+                return false;
+            }
+            if (!/^13[0-9]{1}[0-9]{8}$|14[0-9]{1}[0-9]{8}$|15[0-9]{1}[0-9]{8}$|18[0-9]{1}[0-9]{8}$|17[0-9]{1}[0-9]{8}$/.test(data.phone)) {
+                _lock = false;
+                alert('手机号格式不正确');
+                return false;
+            }
+            $.ajax({
+                url: "<?php echo $get_code_url; ?>",
+                data: data,
+                type: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status == 200) {
+                        alert("发送验证码成功");
+                    } else {
+                        _lock = false;
+                        alert(data.info);
+                    }
+                }
+            });
+        });
+        $("#save").click(function(){
+            data.card_no = $("#card_no").val();
+            data.card_cvv = $("#card_cvv").val();
+            data.validity_date = $("#validity_date").val();
+            data.bank_name = $("#bank_name").val();
+            data.bill = $("#bill").val();
+            data.repayment = $("#repayment").val();
+            data.phone = $("#phone").val();
+            data.code = $("#code").val();
+            if(_lock1){
+                alert('正在提交....');
+                return false;
+            }
+            _lock1 = true;
+            if(!data.card_no){
+                _lock1 = false;
+                alert("请输入银行卡");
+                return false;
+            }
+            if(!data.card_cvv){
+                _lock1 = false;
+                alert("请输入3位cvv号");
+                return false;
+            }
+            if(!data.validity_date){
+                _lock1 = false;
+                alert("请输入4位卡有效期");
+                return false;
+            }
+            if(!data.bank_name){
+                _lock1 = false;
+                alert("请选择开户行");
+                return false;
+            }
+            if(!data.bill){
+                _lock1 = false;
+                alert("请输入账单日");
+                return false;
+            }
+            if(!data.repayment){
+                _lock1 = false;
+                alert("请输入还款日");
+                return false;
+            }
+            if(!data.code){
+                _lock1 = false;
+                alert("请输入验证码");
+                return false;
+            }
+            if (!/^13[0-9]{1}[0-9]{8}$|14[0-9]{1}[0-9]{8}$|15[0-9]{1}[0-9]{8}$|18[0-9]{1}[0-9]{8}$|17[0-9]{1}[0-9]{8}$/.test(data.phone)) {
+                _lock1 = false;
+                alert('手机号格式不正确');
+                return false;
+            }
+            $.ajax({
+                url: "<?php echo $add_card_url; ?>",
+                data: data,
+                type: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status == 200) {
+                        alert("添加成功");
+                        location='<?php echo U("index/card/index");?>';
+                    } else {
+                        _lock1 = false;
+                        alert(data.info);
+                    }
+                }
+            });
+        });
+    </script>
 </html>

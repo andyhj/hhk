@@ -56,4 +56,10 @@ class InitController extends Controller{
         $customer_m = M("customer_info",$db_config["DB_PREFIX"],$db_config);
         return $customer_m->where(["id"=>$user_info_arr["u_id"]])->find();
     }
+    protected function returnJson($data,$session_name=""){
+        if($session_name){
+            session($session_name, null);
+        }
+        $this->ajaxReturn($data);
+    }
 }

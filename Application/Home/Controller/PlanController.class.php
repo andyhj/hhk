@@ -207,9 +207,9 @@ class PlanController extends InitController {
         $this->assign('close_rate', (int)$close_rate);
         $this->assign('channel_info', $channel_info);
         $this->assign('add_plan_url', U("index/plan/planSubmit"));
-        $this->assign('add_cart_url', U("index/cart/addCart",["c_code"=>$channel_info["code"]]));
-        $this->assign('cart_url', U("index/cart/index",["c_code"=>$channel_info["code"]]));
-        $this->assign('getcart_url', U("index/plan/getCard"));
+        $this->assign('add_card_url', U("index/card/addCard",["c_code"=>$channel_info["code"]]));
+        $this->assign('cart_url', U("index/card/index",["c_code"=>$channel_info["code"]]));
+        $this->assign('getcard_url', U("index/plan/getCard"));
         $this->assign('c_code', $channel_info["code"]);
         $this->assign('c_id', $c_id);
         $this->display();
@@ -717,10 +717,4 @@ class PlanController extends InitController {
         $this->returnJson($json,$session_name);
     }
 
-    private function returnJson($data,$session_name=""){
-        if($session_name){
-            session($session_name, null);
-        }
-        $this->ajaxReturn($data);
-    }
 }
