@@ -21,10 +21,10 @@ define('APP_DEBUG',false);
 define('__APP__', '');
 //系统根目录
 define('APP_ROOT',dirname(__FILE__).'/');
-define('HTTP_HOST','https://wx.69wh2.cn');
-define('CDN_HOST','https://happyqpres.69wh2.cn');
-define('API_HOST','https://wx.69wh2.cn');
-define('ADMIN_HOST','https://wx.69wh2.cn/admin');
+define('HTTP_HOST','');
+define('CDN_HOST','');
+define('API_HOST','');
+define('ADMIN_HOST','');
 //定义模块
 define('APP_MODE','cli');
 //定义模块

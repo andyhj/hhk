@@ -96,6 +96,10 @@
             .tab-cot .active{
                 display:block;
             }
+            .plan{
+                height: 7.5rem;
+                overflow-y: auto;
+            }
         </style>
     </head>
     <body>       
@@ -108,7 +112,7 @@
                 <li class="tbli" style="padding-left:1%"><a href="#sp2" data-toggle="tab">未执行计划</a></li>
                 <li class="tbli" style="padding-left:1%"><a href="#sp3" data-toggle="tab">已执行完计划</a></li>
             </ul>
-            <div id="myTabContent" class="tab-cot">
+            <div id="myTabContent" class="tab-cot plan">
                 <div class="tab-pane fade active in " id="sp1" >
                     <?php if($plan_arr1&&!empty($plan_arr1)){?>
                     <ul class="list-ul" style="margin-bottom: 0px;">
@@ -130,15 +134,15 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：<?php echo $v['amount']?>元
+                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                     <td  style="text-align: right;">
-                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
+                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                 </tr>
                             </table>
@@ -171,15 +175,15 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：<?php echo $v['amount']?>元
+                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                     <td  style="text-align: right;">
-                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
+                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                 </tr>
                             </table>
@@ -212,15 +216,15 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：<?php echo $v['amount']?>元
+                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                     <td  style="text-align: right;">
-                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
+                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                 </tr>
                             </table>
