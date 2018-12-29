@@ -267,10 +267,15 @@ class CardController extends InitController {
             $this->returnJson($json, $session_name);
         }
         $card_info = $this->cart_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->find();
-        if($card_info&&$card_info["success"]){
-            $json["status"] = 200;
-            $json["info"] = "银行卡已经绑定成功";
-            $this->returnJson($json, $session_name);
+        $card_id = 0;
+        if($card_info){
+            if($card_info["success"]){
+                $json["status"] = 200;
+                $json["info"] = "银行卡已经绑定成功";
+                $this->returnJson($json, $session_name);
+            }else{
+                $card_id = $card_info["id"];
+            }            
         }
         $order_id = "HLB".$u_id.time();
         $add_card_data = array(
@@ -312,7 +317,12 @@ class CardController extends InitController {
                     $json["info"] = "绑卡失败(".$re['rt3_retMsg'].")";
                     $this->returnJson($json, $session_name);
                 }else{
-                    $r_s = $this->cart_m->add($add_card_data);
+                    if($card_id){
+                        $r_s = $this->cart_m->where(["id"=>$card_id])->save($add_card_data);
+                    }else{
+                        $r_s = $this->cart_m->add($add_card_data);
+                    }
+                    
                     if($r_s){
                         $json["status"] = 200;
                         $json["info"] = "发送绑卡短信成功";
