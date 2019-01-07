@@ -24,7 +24,7 @@
             }
             .list-ul table{
                 width: 100%;
-                margin-bottom: 0.2rem;
+                margin-bottom: 0.1rem;
             }
             .list-ul table td{
                 height: 0.25rem;
@@ -145,6 +145,13 @@
                                         费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                 </tr>
+                                <?php if($v["message"]): ?>
+                                <tr>
+                                    <td colspan="2" style="color: red; padding-top: 0.1rem;">
+                                        提示：<?php echo $v['message']?>
+                                    </td>
+                                </tr>
+                                <?php endif; ?>
                             </table>
                         </li>
                         <?php }?>
@@ -186,6 +193,13 @@
                                         费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                 </tr>
+                                <?php if($v["message"]): ?>
+                                <tr>
+                                    <td colspan="2" style="color: red; padding-top: 0.1rem;">
+                                        提示：<?php echo $v['message']?>
+                                    </td>
+                                </tr>
+                                <?php endif; ?>
                             </table>
                         </li>
                         <?php }?>
@@ -227,6 +241,13 @@
                                         费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                 </tr>
+                                <?php if($v["message"]): ?>
+                                <tr>
+                                    <td colspan="2" style="color: red; padding-top: 0.1rem;">
+                                        提示：<?php echo $v['message']?>
+                                    </td>
+                                </tr>
+                                <?php endif; ?>
                             </table>
                         </li>
                         <?php }?>

@@ -14,6 +14,8 @@ namespace Home\Controller;
  * @author Administrator
  */
 use Common\Common\WxH5Login;
+use Common\HeliPay\Heli;
+use Common\WxApi\class_weixin_adv;
 class PlanController extends InitController {
     private $user_info;
     private $user_wx_info;
@@ -142,7 +144,7 @@ class PlanController extends InitController {
             }
         }
         $this->assign("plan_des_list",$plan_des_arr);
-        $this->display();
+        $this->display("des");
         
     }
 
@@ -566,7 +568,7 @@ class PlanController extends InitController {
                 $json["info"] = "计划异常";
                 $this->returnJson($json,$session_name);
             }
-            $this->replacementOrder($plan_info, $plan_des_info,$session_name); //通道补单
+            $this->replacementOrder($plan_info, $plan_des_info,$bank_card_hlb_info,$session_name); //通道补单
         }
         
         $plan_des_next_info = $plan_des_model->where(["num"=>$plan_des_info["num"]+1,"u_id"=>$plan_des_info["u_id"],"p_id"=>$plan_des_info["p_id"]])->find();  //查询下一期计划
@@ -580,7 +582,7 @@ class PlanController extends InitController {
             if($plan_des_next_info["s_time"]- time()<1800){ //当前时间距离下一期任务小于半小时，则下一期任务延期半小时
                 $plan_des_model->where(["id"=>$plan_des_next_info["id"]])->save(["s_time"=>$plan_des_next_info["s_time"]+1800]);
             }
-            $this->replacementOrder($plan_info, $plan_des_info,$session_name); //通道补单
+            $this->replacementOrder($plan_info, $plan_des_info,$bank_card_hlb_info,$session_name); //通道补单
         }
         
         //如果当前期数补单时间大于下一期时间，则要修改之后期数时间
@@ -625,11 +627,12 @@ class PlanController extends InitController {
      * 通道补单，如果新增通道，修改此方法即可
      * @param type $plan_info    //计划
      * @param type $plan_des_info //计划详情
+     * @param type $bank_card_hlb_info //银行卡信息
      */
-    private function replacementOrder($plan_info,$plan_des_info,$session_name=''){
+    private function replacementOrder($plan_info,$plan_des_info,$bank_card_hlb_info,$session_name=''){
         $json["status"] = 311;
         $json["info"] = "补单失败";
-        if(!$plan_info||empty($plan_info)||!$plan_des_info||empty($plan_des_info)){
+        if(!$plan_info||empty($plan_info)||!$plan_des_info||empty($plan_des_info)||!$bank_card_hlb_info||empty($bank_card_hlb_info)){
             $this->returnJson($json,$session_name);
         }
         $plan_model = M("plan");
@@ -644,10 +647,23 @@ class PlanController extends InitController {
             //执行代扣
             switch ($plan_info["c_code"]) {
                 case "hlb":
-                    $hlb_dh = [];//执行代扣
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+                    $heli_pay = new Heli();
+                    $arg = array(
+                        'bindId'=>$bank_card_hlb_info['bind_id'],
+                        'userId'=>$plan_info['u_id'],
+                        'orderId'=>$remedy_id,
+                        'orderAmount'=>$plan_des_info["amount"],
+                        'terminalType'=>'IMEI',
+                        'terminalId'=>'122121212121',
+                        'queryUrl'=>U("index/callback/hlbPay"),
+                        'Code'=>'',
+                    );
+                    $hlb_dh = $heli_pay->bindingCardPay($arg);//执行代扣
                     if(!$hlb_dh){
                         $upd_plan_des_data["message"] = "补单失败";
                         $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                        $this->sendWxErrorMessage($plan_info, "消费补单失败", "消费");
                     }else{
                         if ($hlb_dh['rt2_retCode'] == '0000') {
                             $upd_plan_des_data["message"] = "提交成功,等待回调通知";
@@ -666,6 +682,7 @@ class PlanController extends InitController {
                             $upd_plan_des_data["message"] = $hlb_dh['rt3_retMsg'];
                             $upd_plan_des_data["order_state"] = 4;
                             $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, $hlb_dh['rt3_retMsg'], "消费");
                             $json["status"] = 311;
                             $json["info"] = $hlb_dh['rt3_retMsg'];
                         }
@@ -679,16 +696,30 @@ class PlanController extends InitController {
             //执行代还
             switch ($plan_info["c_code"]) {
                 case "hlb":
-                    $hlb_dh = [];//执行代还
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+                    $heli_pay = new Heli();
+                    $arg = array(
+                        'userId' => $plan_info['u_id'],
+                        'bindId' => $bank_card_hlb_info['bind_id'],
+                        'order_id' => $remedy_id,
+                        'amount' => $plan_des_info["amount"],
+                    );
+                    $hlb_dh = $heli_pay->creditWithdraw($arg);//执行代还
                     if(!$hlb_dh){
                         $upd_plan_des_data["message"] = "补单失败";
                         $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                        $this->sendWxErrorMessage($plan_info, "还款补单失败", "还款");
                     }else{
                         if ($hlb_dh['rt2_retCode'] == '0000') {
                             $upd_plan_des_data["message"] = "补单成功";
                             $upd_plan_des_data["order_state"] = 1;
                             $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
-                            $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $plan_status = 3;
+                            if((int)($plan_info["periods"]*2)==$upd_plan_des_data["num"]){
+                                $plan_status = 1;
+                            }
+                            $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>$plan_status]);
+                            $this->sendWxMessage($plan_info, $plan_des_info);
                             $json["status"] = 200;
                             $json["info"] = "补单成功";
                         }elseif($hlb_dh['rt2_retCode'] == '0001'){
@@ -701,6 +732,7 @@ class PlanController extends InitController {
                             $upd_plan_des_data["message"] = $hlb_dh['rt3_retMsg'];
                             $upd_plan_des_data["order_state"] = 4;
                             $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, $hlb_dh['rt3_retMsg'], "还款");
                             $json["status"] = 311;
                             $json["info"] = $hlb_dh['rt3_retMsg'];
                         }
@@ -716,5 +748,92 @@ class PlanController extends InitController {
         }
         $this->returnJson($json,$session_name);
     }
-
+/**
+     * 公众号推送信息
+     * @param type $plan_info
+     * @param type $plan_des_info
+     */
+    private function sendWxMessage($plan_info,$plan_des_info,$trade_type="还款"){
+        $db_config = C("DB_CONFIG2");
+        $customer_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
+        $cunstomer_wx_binding_info = $customer_m->where(["user_id"=>$plan_info["u_id"],"state"=>1])->find();
+        if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)){
+            require_once $_SERVER['DOCUMENT_ROOT'] ."/Application/Common/Concrete/wxapi/example/weixin.api.php";
+            $weixin = new class_weixin_adv();
+            $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
+            $msg_data["template_id"] = "_laSDHK5TjAugpGCDoDNJ0C0OVQYI9NkISqfJtPr1q8";
+            $msg_data["url"] = HTTP_HOST.'/index/plan/plandes.html?id='.$plan_info["id"];
+            $bank_card_model = M("bank_card_".$plan_info["c_code"]);
+            $card_info = $bank_card_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
+            $msg_data["data"] = array(
+                "first"=>array(
+                    "value"=>"《会还款》尊敬的用户您好，您尾号".substr($card_info["card_no"],-4)."的信用卡发生一笔交易。",
+                    "color"=>""
+                ),
+                "tradeDateTime"=>array(
+                    "value"=> date("Y-m-d H:i:s"),
+                    "color"=>""
+                ),
+                "tradeType"=>array(
+                    "value"=> $trade_type,
+                    "color"=>""
+                ),
+                "curAmount"=>array(
+                    "value"=> $plan_des_info["amount"],
+                    "color"=>""
+                ),
+                "remark"=>array(
+                    "value"=>"点击查看详情。",
+                    "color"=>""
+                )
+            );
+            $return_status = $weixin->send_user_message($msg_data);
+            add_log("callback_helipay.log", "callback", "公众号消息推送状态：". var_export($return_status, true));
+        }
+    }
+    /**
+     * 计划失败公众号推送信息
+     * @param type $plan_info
+     * @param type $plan_des_info
+     */
+    private function sendWxErrorMessage($plan_info,$title,$des){
+        $db_config = C("DB_CONFIG2");
+        $customer_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
+        $cunstomer_wx_binding_info = $customer_m->where(["user_id"=>$plan_info["u_id"],"state"=>1])->find();
+        if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)){
+            require_once $_SERVER['DOCUMENT_ROOT'] ."/Application/Common/Concrete/wxapi/example/weixin.api.php";
+            $weixin = new class_weixin_adv();
+            $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
+            $msg_data["template_id"] = "DVlfjMCemVIaf6RbPAqARRYMVckz76r_LJXZ_IS566Y";
+            $msg_data["url"] = HTTP_HOST.'/index/plan/plandes.html?id='.$plan_info["id"];
+            $msg_data["data"] = array(
+                "first"=>array(
+                    "value"=> "《会还款》计划失败提醒，请关注",
+                    "color"=>""
+                ),
+                "keyword1"=>array(
+                    "value"=> $des,
+                    "color"=>""
+                ),
+                "keyword2"=>array(
+                    "value"=> date("Y-m-d H:i:s"),
+                    "color"=>""
+                ),
+                "keyword3"=>array(
+                    "value"=> $title,
+                    "color"=>""
+                ),
+                "keyword4"=>array(
+                    "value"=>"请根据提醒内容处理计划",
+                    "color"=>""
+                ),
+                "remark"=>array(
+                    "value"=>"点击查看详情。",
+                    "color"=>""
+                )
+            );
+            $return_status = $weixin->send_user_message($msg_data);
+            add_log("callback_helipay.log", "callback", "计划失败公众号消息推送状态：". var_export($return_status, true));
+        }
+    }
 }

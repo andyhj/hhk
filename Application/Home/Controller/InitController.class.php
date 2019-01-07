@@ -54,7 +54,18 @@ class InitController extends Controller{
 //        $user_info_arr["u_id"]=464885;
         $db_config = C("DB_CONFIG2");
         $customer_m = M("customer_info",$db_config["DB_PREFIX"],$db_config);
-        return $customer_m->where(["id"=>$user_info_arr["u_id"]])->find();
+        $user_des = $customer_m->where(["id"=>$user_info_arr["u_id"]])->find();
+        if($user_des&&!empty($user_des)){
+            $user_vip_log_m = M("user_vip_log");
+            $user_vip_log_info = $user_vip_log_m->where(["u_id"=>$user_des["id"],"type"=>1])->find();
+            if(!$user_vip_log_info&&empty($user_vip_log_info)){
+                $user_vip_log_data["u_id"] = $user_des["id"];
+                $user_vip_log_data["add_time"] = time();
+                $user_vip_log_data["end_time"] = strtotime("+1 month");
+                $user_vip_log_m->add($user_vip_log_data);
+            }
+        }
+        return $user_des;
     }
     protected function returnJson($data,$session_name=""){
         if($session_name){

@@ -66,4 +66,126 @@ class UserController extends InitController {
         $this->assign('rows',$rows);
         $this->display();
     }
+    public function plus(){
+        $info = $this->user_info;
+        $user_vip_log_m = M("user_vip_log");
+        $user_vip_model = M("user_vip");
+        $user_vip_info = $user_vip_model->where(["u_id"=>$info["id"]])->find();
+        $user_vip_log_info = $user_vip_log_m->where(["u_id"=>$info["id"],"status"=>0])->order("end_time asc")->find();
+        $user_vip_log_info1 = $user_vip_log_m->where(["u_id"=>$info["id"]])->order("end_time desc")->find();
+        $user_vip_log_count = $user_vip_log_m->where(["u_id"=>$info["id"],"status"=>0])->count();
+        $user_vip_log_info?$user_vip_log_info["type_name"] = $this->getTypeName($user_vip_log_info["type"]):"";
+        $user_vip_log_info1?$user_vip_log_info1["type_name"] = $this->getTypeName($user_vip_log_info1["type"]):"";
+        $this->assign('user_vip_info',$user_vip_info);
+        $this->assign('user_vip_log_info',$user_vip_log_info);
+        $this->assign('user_vip_log_info1',$user_vip_log_info1);
+        $this->assign('user_vip_log_count',$user_vip_log_count);
+        $this->assign('getPlus',U("index/user/getVip"));
+        $this->display();
+    }
+    public function plusdes(){
+        $info = $this->user_info;
+        $user_vip_log_m = M("user_vip_log");
+        $user_vip_log_list = $user_vip_log_m->where(["u_id"=>$info["id"]])->order("status desc,end_time desc")->select();
+        $user_vip_log_arr = [];
+        if($user_vip_log_list){
+            foreach ($user_vip_log_list as $value) {
+                $value["type_name"] = $this->getTypeName($value["type"]);
+                $user_vip_log_arr[] = $value;
+            }
+        }
+        $this->assign('user_vip_log_list',$user_vip_log_arr);
+        $this->assign('getPlus',U("index/user/getVip"));
+        $this->display();
+    }
+
+    private function getTypeName($type){
+        if(!$type){
+            return "";
+        }
+        $str = "";
+        switch ($type) {
+            case 1:
+                $str = "新用户注册赠送";
+                break;
+            case 2:
+                $str = "系统赠送会员";
+                break;
+            case 3:
+                $str = "邀请好友赠送";
+                break;
+            default:
+                break;
+        }
+        return $str;
+    }
+
+    public function getVip(){
+        $id = I("post.id");
+        $session_name = "get_vip_submit_".$id;
+        if(session($session_name)){
+            $json["status"] = 305;
+            $json["info"] = "正在提交...";
+            $this->returnJson($json);
+        }
+        session($session_name,1);
+        if(!$id){
+            $json["status"] = 306;
+            $json["info"] = "参数错误";
+            $this->returnJson($json,$session_name);
+        }
+        $info = $this->user_info;
+        $user_vip_log_m = M("user_vip_log");
+        $user_vip_model = M("user_vip");
+        $user_vip_log_info = $user_vip_log_m->where(["u_id"=>$info["id"],"id"=>$id])->find();
+        if($user_vip_log_info&&!empty($user_vip_log_info)){
+            if($user_vip_log_info["status"]){
+                $json["status"] = 307;
+                $json["info"] = "已领取";
+                $this->returnJson($json,$session_name);
+            }else{
+                if($user_vip_log_info["end_time"]&&$user_vip_log_info["end_time"]< time()){
+                    $json["status"] = 308;
+                    $json["info"] = "已过有效期";
+                    $this->returnJson($json,$session_name);
+                }
+                $user_vip_log_m->where(["u_id"=>$info["id"],"id"=>$id])->save(["status"=>1,"get_time"=> time()]);
+                $user_vip_info = $user_vip_model->where(["u_id"=>$info["id"]])->find();
+                //判断是否plus会员
+                if($user_vip_info){
+                    if(strtotime($user_vip_info["end_time"])> time()){
+                        $end_time = strtotime("+".$user_vip_log_info["vip_m"]." month",strtotime($user_vip_info["end_time"]));
+                    }else{
+                        $end_time = strtotime("+".$user_vip_log_info["vip_m"]." month");
+                    }
+                    $r_s = $user_vip_model->where(["u_id"=>$info["id"]])->save(["end_time"=>date("Y-m-d H:i:s",$end_time)]);
+                    if($r_s){
+                        $json["status"] = 200;
+                        $json["info"] = "领取成功";
+                        $this->returnJson($json,$session_name);
+                    }
+                }else{
+                    $end_time = strtotime("+".$user_vip_log_info["vip_m"]." month");
+                    $user_vip_data["u_id"] = $info["id"];
+                    $user_vip_data["add_time"] = date("Y-m-d H:i:s");
+                    $user_vip_data["end_time"] = date("Y-m-d H:i:s",$end_time);
+                    $r_s = $user_vip_model->add($user_vip_data);
+                    if($r_s){
+                        $json["status"] = 200;
+                        $json["info"] = "领取成功";
+                        $this->returnJson($json,$session_name);
+                    }
+                }
+            }
+        }
+        $json["status"] = 306;
+        $json["info"] = "没有数据";
+        $this->returnJson($json,$session_name);
+    }
+    protected function returnJson($data,$session_name=""){
+        if($session_name){
+            session($session_name, null);
+        }
+        $this->ajaxReturn($data);
+    }
 }
