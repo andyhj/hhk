@@ -354,6 +354,7 @@ class Heli{
         if(array_key_exists("cvv2", $data)&&$data["cvv2"]){
             $arr['P14_cvv2'] = $aes->encrypt($data['cvv2']);   //信用卡时必填：安全码
         }
+        $arr['encryptionKey'] = $encryptionKey; //加密密钥
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
 
