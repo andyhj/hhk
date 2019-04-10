@@ -99,7 +99,7 @@
                 font-size: 0.25rem;
                 color: #595757;
                 border-color:#595757;
-                margin-left: 0.2rem;
+                margin-left: 0.1rem;
             }
             #save{
                 width: 3.5rem;
