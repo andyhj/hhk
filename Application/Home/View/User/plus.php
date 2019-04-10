@@ -80,7 +80,7 @@
             <div class="des">
                 <div style="text-align:center;margin-top:8%;"><img src="/src/img/plus/plus_card.png" style="width: 60%;"></div>
                 <div style="text-align:center;margin-top: 0.2rem;">（20元/月）</div>
-                <div style="text-align:center;margin-top: 0.2rem;"><img src="/src/img/plus/button.png" style="width: 3rem;"></div>
+                <div style="text-align:center;margin-top: 0.2rem;" id="buy_plus"><img src="/src/img/plus/button.png" style="width: 3rem;"></div>
                 <div style="margin-top: 0.2rem;width: 90%;border-bottom: 1px solid #e1e1e1;margin-left: 5%;"></div>
                 <div style="text-align:center;margin-top: 0.2rem;">使用说明</div>
                 <div style="margin-top: 0.1rem;padding-left: 6%;font-size: 0.2rem;">购买后立即生效，请在有效期内使用；</div>
@@ -154,6 +154,9 @@
                         }
                     }
                 });
+        });
+        $("#buy_plus").click(function(){
+            alert('请联系客服购买');
         });
     </script>
 </html>

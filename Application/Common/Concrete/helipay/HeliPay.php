@@ -270,13 +270,13 @@ class Heli{
             'P5_timestamp'=>date("YmdHis"),     //时间 yyyyMMddHHmmss
             'P6_payerName'=>$data['payerName'],       //姓名
             'P7_idCardType'=>"IDCARD",  //身份证：IDCARD
-            'P8_idCardNo'=>$data['idCardNo'],      //身份证号码
-            'P9_cardNo'=>$data['cardNo'],    //银行卡号
-            'P10_year'=>$data['year'],     //信用卡时必填：信用卡有效期年
-            'P11_month'=>$data['month'],     //信用卡时必填：信用卡有效期月
-            'P12_cvv2'=>$data['cvv2'],     //信用卡时必填：安全码
-            'P13_phone'=>$data['phone'], //手机号
-            'P14_validateCode'=>$data['code'], //信息验证码
+            'P8_idCardNo'=>$aes->encrypt($data['idCardNo']),      //身份证号码
+            'P9_cardNo'=>$aes->encrypt($data['cardNo']),    //银行卡号
+            'P10_year'=>$aes->encrypt($data['year']),     //信用卡时必填：信用卡有效期年
+            'P11_month'=>$aes->encrypt($data['month']),     //信用卡时必填：信用卡有效期月
+            'P12_cvv2'=>$aes->encrypt($data['cvv2']),     //信用卡时必填：安全码
+            'P13_phone'=>$aes->encrypt($data['phone']), //手机号
+            'P14_validateCode'=>$aes->encrypt($data['code']), //信息验证码
         );
         $sign_str_trim = $this->sinParamsToString($arr);
 
@@ -321,18 +321,18 @@ class Heli{
      */
     public function bindingCardCode($data) {
         $keyStr = get_rand_str(16);
-//        $aes = new CryptAES();
-//        $aes->set_key($keyStr);
-//        $aes->require_pkcs5();
+        $aes = new CryptAES();
+        $aes->set_key($keyStr);
+        $aes->require_pkcs5();
         $arr=array(
             'P1_bizType'=>'AgreementPayBindCardValidateCode',    //银行卡支付接口
             'P2_customerNumber'=> self::TENANT,      //商户号由合利宝分配
             'P3_userId'=>$data['userId'],       //用户ID
             'P4_orderId'=>$data['orderId'],     //订单号
             'P5_timestamp'=>date("YmdHis"),     //时间：yyyyMMddHHmmss
-            'P6_cardNo'=>$data['cardNo'],       //银行卡号
-            'P7_phone'=>$data['phone'],       //手机号
-            'P8_idCardNo'=>$data['idCardNo'],     //证件号
+            'P6_cardNo'=>$aes->encrypt($data['cardNo']),       //银行卡号
+            'P7_phone'=>$aes->encrypt($data['phone']),       //手机号
+            'P8_idCardNo'=>$aes->encrypt($data['idCardNo']),     //证件号
             'P9_idCardType'=>"IDCARD",  //身份证：IDCARD
             'P10_payerName'=>$data['payerName'],       //姓名
         );

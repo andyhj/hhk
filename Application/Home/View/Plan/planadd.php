@@ -354,7 +354,9 @@
                     }
                 });
             });
-            
+            $(".sjplus").click(function(){
+                location='<?php echo U("index/user/plus");?>';
+            });
         </script>
     </body>
 </html>

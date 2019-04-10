@@ -135,7 +135,7 @@
                     </li>
                     <li>
                         有效期：
-                        <span  style="float:right;"><input type="text" value="" id="validity_date" name="validity_date" placeholder="示例:09/15 输入0915" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" value="" id="validity_date" name="validity_date" placeholder="示例:09/15 输入0915 " style="text-align: right;"></span>
                     </li>
                     <li>
                         发卡银行：
@@ -177,7 +177,7 @@
                         <span  style="float:right;"><input type="text" value="" id="phone" name="phone" placeholder="银行预留手机号" style="text-align: right;"></span>
                     </li>
                     <li style="border-bottom:0px;">
-                        验证码：<span  style="float:right;"><input type="text" value="" id="code" name="code" placeholder="请输入验证码" style="text-align: right; width: 2rem; height: 0.7rem;"><input type="button" value="发送验证码" class="sjplus"></span>
+                        验证码：<span  style="float:right;"><input type="text" value="" id="code" name="code" placeholder="请输入验证码" style="text-align: right; width: 2rem; height: 0.7rem;" maxlength="6"><input type="button" value="发送验证码" class="sjplus"></span>
                     </li>
                 </ul>
             </div>
