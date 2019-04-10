@@ -290,12 +290,12 @@ class PlanController extends InitController {
             $repayment = date("Y-m",strtotime("+1 month"))."-".$bank_card_hlb_info["repayment"]; //还款日
         }
         $d = date("Y-m-d", time());
-        if($d<=$bill){
+        if(strtotime($d)<= strtotime($bill)){
             $json["status"] = 308;
             $json["info"] = "请在账单日后制定计划";
             $this->returnJson($json,$session_name);
         }
-        if($d>=$repayment){
+        if(strtotime($d)>= strtotime($repayment)){
             $json["status"] = 308;
             $json["info"] = "请在还款日前制定计划";
             $this->returnJson($json,$session_name);
