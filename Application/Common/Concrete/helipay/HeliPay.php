@@ -344,14 +344,15 @@ class Heli{
         add_log("bindingCardCode.log", "helipay", "私钥生成的数字签名为：". $sign);
         $encryptionKey = $rsa->rsaEnc($keyStr);
         add_log("bindingCardCode.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        $arr['P11_isEncrypt'] = 1; 
         if(array_key_exists("year", $data)&&$data["year"]){
-            $arr['P12_year'] = $data['year'];   //信用卡时必填：信用卡有效期年
+            $arr['P12_year'] = $aes->encrypt($data['year']);   //信用卡时必填：信用卡有效期年
         }
         if(array_key_exists("month", $data)&&$data["month"]){
-            $arr['P13_month'] = $data['month'];   //信用卡时必填：信用卡有效期月
+            $arr['P13_month'] = $aes->encrypt($data['month']);   //信用卡时必填：信用卡有效期月
         }
         if(array_key_exists("cvv2", $data)&&$data["cvv2"]){
-            $arr['P14_cvv2'] = $data['cvv2'];   //信用卡时必填：安全码
+            $arr['P14_cvv2'] = $aes->encrypt($data['cvv2']);   //信用卡时必填：安全码
         }
         $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
         $arr['sign'] = $sign;
