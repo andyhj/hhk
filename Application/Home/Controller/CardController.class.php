@@ -80,6 +80,7 @@ class CardController extends InitController {
         $this->assign('account_name', $customer_bankaccount_info["accountname"]);
         $this->assign('get_code_url', U("index/card/sendCode"));
         $this->assign('add_card_url', U("index/card/submitCard"));
+        $this->assign('cart_url', U("index/card/index",["c_code"=>$this->c_code]));
         $this->display();
     }
     /**
