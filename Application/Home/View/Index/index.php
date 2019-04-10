@@ -124,7 +124,7 @@
     </body>
     <script>
         $("#cpjs").click(function(){
-            $(".cpjs-des").show(500);
+            //$(".cpjs-des").show(500);
         });
         $(".close").click(function(){
             $(".cpjs-des").hide(500);

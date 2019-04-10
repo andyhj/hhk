@@ -13,9 +13,9 @@
 // 检测PHP环境
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 //禁止浏览器访问
-if(php_sapi_name() != 'cli'){
-    die('非法访问！');
-}
+//if(php_sapi_name() != 'cli'){
+//    die('非法访问！');
+//}
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',false);
 define('__APP__', '');
@@ -25,8 +25,6 @@ define('HTTP_HOST','');
 define('CDN_HOST','');
 define('API_HOST','');
 define('ADMIN_HOST','');
-//定义模块
-define('APP_MODE','cli');
 //定义模块
 define('BIND_MODULE','Cli');
 // 定义应用目录
