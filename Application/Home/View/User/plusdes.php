@@ -166,7 +166,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        有时间：<?php echo date("Y-m-d",$v["add_time"]);?> - <?php echo $v["end_time"]?date("Y-m-d",$v["end_time"]):"永久";?>
+                                        有效时间：<?php echo date("Y-m-d",$v["add_time"]);?> - <?php echo $v["end_time"]?date("Y-m-d",$v["end_time"]):"永久";?>
                                     </td>
                                 </tr>
                             </table>
