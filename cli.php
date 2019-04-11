@@ -21,7 +21,7 @@ define('APP_DEBUG',false);
 define('__APP__', '');
 //系统根目录
 define('APP_ROOT',dirname(__FILE__).'/');
-define('HTTP_HOST','');
+define('HTTP_HOST','http://hhk.91hefu.com');
 define('CDN_HOST','');
 define('API_HOST','');
 define('ADMIN_HOST','');

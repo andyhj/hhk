@@ -57,7 +57,7 @@ class PlanController extends InitController {
             //执行代扣
             switch ($plan_info["c_code"]) {
                 case "hlb":
-                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+                    require_once APP_ROOT . "Application/Common/Concrete/helipay/HeliPay.php";
                     $heli_pay = new Heli();
                     $arg = array(
                         'bindId'=>$bank_card_hlb_info['bind_id'],
@@ -66,7 +66,7 @@ class PlanController extends InitController {
                         'orderAmount'=>$plan_des_info["amount"],
                         'terminalType'=>'IMEI',
                         'terminalId'=>'122121212121',
-                        'queryUrl'=>U("index/callback/hlbPay"),
+                        'queryUrl'=>HTTP_HOST."/index/callback/hlbPay",
                         'Code'=>'',
                     );
                     $hlb_dh = $heli_pay->bindingCardPay($arg);//执行代扣
@@ -106,7 +106,7 @@ class PlanController extends InitController {
             //执行代还
             switch ($plan_info["c_code"]) {
                 case "hlb":
-                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+                    require_once APP_ROOT . "Application/Common/Concrete/helipay/HeliPay.php";
                     $heli_pay = new Heli();
                     $arg = array(
                         'userId' => $plan_des_info['u_id'],
@@ -164,7 +164,7 @@ class PlanController extends InitController {
         $customer_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
         $cunstomer_wx_binding_info = $customer_m->where(["user_id"=>$plan_info["u_id"],"state"=>1])->find();
         if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)){
-            require_once $_SERVER['DOCUMENT_ROOT'] ."/Application/Common/Concrete/wxapi/example/weixin.api.php";
+            require_once APP_ROOT ."Application/Common/Concrete/wxapi/example/weixin.api.php";
             $weixin = new class_weixin_adv();
             $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
             $msg_data["template_id"] = "_laSDHK5TjAugpGCDoDNJ0C0OVQYI9NkISqfJtPr1q8";
@@ -208,7 +208,7 @@ class PlanController extends InitController {
         $customer_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
         $cunstomer_wx_binding_info = $customer_m->where(["user_id"=>$plan_info["u_id"],"state"=>1])->find();
         if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)){
-            require_once $_SERVER['DOCUMENT_ROOT'] ."/Application/Common/Concrete/wxapi/example/weixin.api.php";
+            require_once APP_ROOT ."Application/Common/Concrete/wxapi/example/weixin.api.php";
             $weixin = new class_weixin_adv();
             $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
             $msg_data["template_id"] = "DVlfjMCemVIaf6RbPAqARRYMVckz76r_LJXZ_IS566Y";
