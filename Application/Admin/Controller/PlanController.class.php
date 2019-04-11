@@ -125,6 +125,7 @@ class PlanController extends CommonController{
             }
         }
         $this->assign("plan_des_list",$plan_des_arr);
+        $this->assign("bd_url",HTTP_HOST."/index/plan/repOrder");
         $this->display();
     }
 }

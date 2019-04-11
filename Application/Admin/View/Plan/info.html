@@ -53,7 +53,7 @@
                             <td><?php echo $data['remedy_time']?date("Y-m-d H:i:s",$data['remedy_time']):""; ?></td>
                             <td><?php echo $data['message']; ?></td>
                             <td><?php echo $data['status_name']; ?></td>
-                            <td></td>
+                            <td><?php if($data['order_state']==4): ?><input type="button" value="补单" data-bdid="<?php echo $data['id']; ?>" class="btn bd" /><?php endif; ?></td>
                         </tr>
                         <?php endforeach; ?>
                         <?php endif; ?>
@@ -63,5 +63,27 @@
         </div>
         <div class="clear"></div>
         <include file="Common:foot" />
+        <script>
+            
+            var _lock = false;
+            $(".bd").click(function(){
+                if(_lock){
+                    alert('正在提交....');
+                    return false;
+                }
+                _lock = true;
+                var bd_id = $(this).attr('data-bdid');
+                $.ajax({
+                    url: "<?php echo $bd_url; ?>",
+                    data: {id:bd_id},
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        alert(data.info);
+                        window.location.reload();
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

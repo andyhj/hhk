@@ -19,6 +19,7 @@ define('APP_DEBUG',true);
 //系统根目录
 define('APP_ROOT',dirname(__FILE__).'/');
 define("WEB_ROOT", dirname(__FILE__) . "/");
+define('HTTP_HOST','http://hhk.91hefu.com');
 //定义模块
 define('BIND_MODULE','Admin');
 define('__APP__', '/admin');
