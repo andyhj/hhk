@@ -87,7 +87,7 @@
                     </div>
                     </a>
                 </div>
-                <div class="vipsan">
+<!--                <div class="vipsan">
                     <a href="">
                     <div class="col-xs-6 text-left">
                         <span class="iccs"><img src="/src/img/user/jyjl.png" alt=""></span>
@@ -97,7 +97,7 @@
                         <span class="icc"><img src="/src/img/user/jt.png" alt=""></span>
                     </div>
                     </a>
-                </div>
+                </div>-->
                 <div class="vipsan">
                     <a href="plus.html">
                     <div class="col-xs-6 text-left">
@@ -109,7 +109,7 @@
                     </div>
                     </a>
                 </div>
-                <div class="vipsan clear-border">
+<!--                <div class="vipsan clear-border">
                     <a href="">
                     <div class="col-xs-6 text-left">
                         <span class="iccs"><img src="/src/img/user/lb.png" alt=""></span>
@@ -119,7 +119,7 @@
                         <span class="icc"><img src="/src/img/user/jt.png" alt=""></span>
                     </div>
                     </a>
-                </div>
+                </div>-->
             </div>
         </div>
         <?php include T('Common/footer'); ?>
