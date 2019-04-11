@@ -20,7 +20,7 @@ class CallbackController extends InitController {
      */
     public function hlbPay(){
          //接受请求的数据
-        $result_arr = $this->input->post();
+        $result_arr = I('post.');
         add_log("callback_helipay.log", "callback", "收款异步post回调参数：". var_export($result_arr, true));
         // 验签
         $this->checked($result_arr);
