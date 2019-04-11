@@ -27,7 +27,7 @@ class CallbackController extends InitController {
         $order_id =  $result_arr['rt5_orderId'];
         $plan_model = M("plan");
         $plan_des_model = M("plan_des");
-        $plan_des_info = $plan_des_model->where("order_id={$order_id} OR remedy_id={$order_id}")->find();
+        $plan_des_info = $plan_des_model->where("order_id='{$order_id}' OR remedy_id='{$order_id}'")->find();
         if(!$plan_des_info&&empty($plan_des_info)){
             add_log("callback_helipay.log", "callback", "订单不存在：". var_export($order_id, true));
             die('success');
