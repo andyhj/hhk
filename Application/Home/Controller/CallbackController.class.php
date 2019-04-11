@@ -52,7 +52,7 @@ class CallbackController extends InitController {
         }
         $time = time();
         $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>$plan_status]);
-        $r_s = $plan_des_model->where(["id"=>$plan_des_info["id"]])->save(["order_state"=>1,"d_time"=> $time]);
+        $r_s = $plan_des_model->where(["id"=>$plan_des_info["id"]])->save(["order_state"=>1,'message'=>'成功',"d_time"=> $time]);
         if($r_s){
             $this->sendWxMessage($plan_info, $plan_des_info);
             die('success');

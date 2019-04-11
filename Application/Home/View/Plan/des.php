@@ -68,9 +68,9 @@
                                     <tr>
                                         <td colspan="3">实际执行时间：<?php echo $data['d_time']?date("Y-m-d H:i:s",$data['d_time']):""; ?></td>
                                     </tr>
-                                    <?php if($data["message"]): ?>
+                                    <?php if($data["message"]&&$data['order_state']!=1): ?>
                                     <tr>
-                                        <td colspan="3" style="color: red;">提示：<?php echo date("Y-m-d H:i:s",$data['message']); ?></td>
+                                        <td colspan="3" style="color: red;">提示：<?php echo $data['message']; ?></td>
                                     </tr>
                                     <?php endif; ?>
                                 </table>
