@@ -127,11 +127,11 @@ class PlanController extends CommonController{
             }
         }
         $this->assign("plan_des_list",$plan_des_arr);
-        $this->assign("bd_url",U("plan/repOrder"));
+        $this->assign("bd_url",U("plan/reporder"));
         $this->display();
     }
     //补单
-    public function repOrder(){
+    public function reporder(){
         $pd_id = I("post.id");  //计划详情id
         $session_name = "plan_rep_".$pd_id;
         if(session($session_name)){
