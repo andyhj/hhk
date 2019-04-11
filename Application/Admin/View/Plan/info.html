@@ -71,6 +71,9 @@
                     alert('正在提交....');
                     return false;
                 }
+                if(!confirm('是否补单？')){
+                    return false;
+                }
                 _lock = true;
                 var bd_id = $(this).attr('data-bdid');
                 $.ajax({

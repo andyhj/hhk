@@ -6,12 +6,12 @@ require_once APP_ROOT .'Application/Common/Concrete/helipay/CryptAES.php';
 require_once APP_ROOT .'Application/Common/Concrete/helipay/RSA.php';
 class Heli{
     const TENANT = 'C1800372628';
-//    const OFFICIALURL = 'http://pay.trx.helipay.com/trx/quickPayApi/interface.action';   //正式请求地址
-    const OFFICIALURL = 'http://test.trx.helipay.com/trx/quickPayApi/interface.action';   //测试请求地址
+    const OFFICIALURL = 'http://pay.trx.helipay.com/trx/quickPayApi/interface.action';   //正式请求地址
+//    const OFFICIALURL = 'http://test.trx.helipay.com/trx/quickPayApi/interface.action';   //测试请求地址
 
     // 发起提现地址
-//    const WIT_API = 'http://transfer.trx.helipay.com/trx/transfer/interface.action';
-    const WIT_API = 'http://test.trx.helipay.com/trx/transfer/interface.action'; //测试环境
+    const WIT_API = 'http://transfer.trx.helipay.com/trx/transfer/interface.action';
+//    const WIT_API = 'http://test.trx.helipay.com/trx/transfer/interface.action'; //测试环境
    
     /**
      * 银行卡支付下单
