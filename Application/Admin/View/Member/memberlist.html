@@ -36,8 +36,8 @@
                             </tr>
                             <?php if(!empty($datas["list"])): ?>
                             <?php foreach($datas["list"] as $n => $data): ?>
-                            <tr id="tr_user_<?php echo $data['id']; ?>">
-                                <td><?php echo str_replace($datas['search_key'], '<span style="color:red;">' . $datas['search_key'] . '</span>', $data['id']); ?></td>
+                            <tr id="tr_user_<?php echo $data['u_id']; ?>">
+                                <td><?php echo str_replace($datas['search_key'], '<span style="color:red;">' . $datas['search_key'] . '</span>', $data['u_id']); ?></td>
                                 <td><?php echo $data['superior_id']; ?></td>
                                 <td><?php echo str_replace($datas['search_key'], '<span style="color:red;">' . $datas['search_key'] . '</span>', $data['login_id']); ?></td>
                                 <td><?php echo $data['u_name']; ?></td>
