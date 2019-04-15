@@ -52,6 +52,7 @@ class MemberController extends CommonController {
             if($s){
                 $user_m = D('User');
                 $user_m->wxMessagewxYwlcMsg($user_id,'恭喜您获得《会还款》'.$vip_m.'个月VIP','系统赠送《会还款》'.$vip_m.'个月VIP',date("Y-m-d H:i:s"),'请尽快领取','点击领取','',HTTP_HOST.'/index/user/plusdes.html');
+                $this->success('赠送成功', $url);
             }
         }        
         $this->assign("user_info", $user_info);
