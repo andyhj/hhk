@@ -58,7 +58,8 @@ class CardController extends InitController {
         $u_id = $this->user_info["id"];
         $bank_card_list = $this->cart_m->where(["uid"=>$u_id,"success"=>1])->select();
         $this->assign('bank_card_list', $bank_card_list);
-        $this->assign('del_cart_url', U("cart/delCard"));
+        $this->assign('add_card_url', U("index/card/addCard",["c_code"=>$this->c_code]));
+        $this->assign('del_cart_url', U("index/cart/delCard",["c_code"=>$this->c_code]));
         $this->display();
     }
     /**
@@ -348,6 +349,62 @@ class CardController extends InitController {
      * 解除银行卡
      */
     public function delCard(){
-        
+        $id = I("post.id"); 
+        $u_id = $this->user_info["id"];
+        if(!$id){
+            $json["status"] = 305;
+            $json["info"] = "参数错误";
+            $this->returnJson($json);
+        }
+        $bank_card_info = $this->cart_m->where(["uid"=>$u_id,"id"=>$id,"success"=>1])->select();
+        if(!$bank_card_info||!$bank_card_info["bind_id"]){
+            $json["status"] = 306;
+            $json["info"] = "信用卡不存在";
+            $this->returnJson($json);
+        }
+        switch ($this->c_code) {
+            case "hlb":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+                $helipay = new Heli();
+                $card_data = array(
+                    "hash" => $u_id,
+                    "order_id" => 'UD'.$u_id. time(),
+                    "bind_id" => $bank_card_info["bind_id"]
+                );
+                $re = $helipay->card_unbind($card_data);
+                if (!$re) {
+                    $json["status"] = 310;
+                    $json["info"] = "解绑卡失败";
+                    $this->returnJson($json);
+                }
+                if ($re['rt2_retCode'] != '0000') {
+                    $json["status"] = 310;
+                    $json["info"] = "解绑卡失败(".$re['rt3_retMsg'].")";
+                    $this->returnJson($json);
+                }else{
+                    if($re['rt7_bindStatus']=="SUCCESS"){
+                        $r_s = $this->cart_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0]);
+                        if($r_s){
+                            $json["status"] = 200;
+                            $json["info"] = "银行卡已经解绑成功";
+                            $this->returnJson($json);
+                        }else{
+                            $json["status"] = 311;
+                            $json["info"] = "解绑卡成功，更新数据失败，请联系客服";
+                            $this->returnJson($json);
+                        }
+                    }
+                    $json["status"] = 310;
+                    $json["info"] = "解绑卡失败(".$re['rt3_retMsg'].")";
+                    $this->returnJson($json);
+                }
+                break;
+
+            default:
+                $json["status"] = 311;
+                $json["info"] = "非法请求";
+                $this->returnJson($json);
+                break;
+        }
     }
 }

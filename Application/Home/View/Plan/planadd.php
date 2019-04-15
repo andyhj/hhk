@@ -153,7 +153,7 @@
                                         </option>
                                     <?php }?>
                                     <option value="-1">------添加银行卡------</option>
-                                    <!--<option value="-2">------解除银行卡------</option>-->
+                                    <option value="-2">------解除银行卡------</option>
                                 </select>
                             </span>
                     </li>
@@ -234,6 +234,7 @@
                     return;
                 }
                 if (id == -2) {
+                    location.href = "<?php echo $cart_url; ?>";
                     return;
                 } else {
                     $.ajax({
