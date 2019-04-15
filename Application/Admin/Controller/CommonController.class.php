@@ -4,7 +4,6 @@ namespace Admin\Controller;
 use Think\Controller;
 
 class CommonController extends Controller {
-    protected $http='http://';
 
     public $loginMarked;
 
@@ -18,10 +17,6 @@ class CommonController extends Controller {
         header("Content-Type:text/html; charset=utf-8");
         header('Content-Type:application/json; charset=utf-8');
         $systemConfig = include WEB_ROOT . 'Application/Common/Conf/systemConfig.php';
-        if(!empty($_SERVER["HTTPS"])&&$_SERVER["HTTPS"]='on'){
-            $this->http='https://';
-        }
-        $systemConfig["WEB_ROOT"] = $this->http.$systemConfig["WEB_ROOT"];
         if (empty($systemConfig['TOKEN']['admin_marked'])) {
             $systemConfig['TOKEN']['admin_marked'] = "andy";
             $systemConfig['TOKEN']['admin_timeout'] = 3600;
