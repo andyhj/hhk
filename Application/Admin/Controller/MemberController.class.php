@@ -4,98 +4,23 @@ class MemberController extends CommonController {
     public function index(){
         $current_page = (int)I('p',1);
         $view_datas['search_key'] = $search_key = I('search_key');
-        $is_proxy = I('is_proxy',3);
-        $view_datas['status'] = $status = I('status',3);
-        $coinnum_sort = I('csort');
-        $bankcoin_sort = I('asort');
-        $return_url = "user/memberlist.html";
-        $view_datas['return_url'] = $return_url;
-        $db_config = C("DB_CONFIG2");
-        $M = M("user",$db_config["DB_PREFIX"],$db_config);
         $m_user = D("User");
-        $m_order = D("Order");
-        $page_url = "";
-        $sort_name = "uid";
-        $sort = "DESC";
-        $where["uid"] = array("EGT","100000");
+        $where = [];
         if($search_key){
-            $where_s['uid']  = array('like', "%{$search_key}%");
-            $where_s['nickname']  = array('like',"%{$search_key}%");
+            $where_s['id']  = array('like', "%{$search_key}%");
+            $where_s['login_id']  = array('like',"%{$search_key}%");
             $where_s['_logic'] = 'or';
             $where['_complex'] = $where_s;
         }
-        if($is_proxy!=3){
-            $where['is_proxy'] = $is_proxy;
-        }
-        if($status==1){
-            $where['offline'] = 1;
-        }
-        $count = $M->where($where)->count();
+        $count = $m_user->where($where)->count();
         $per_page = 15;//每页显示条数
         $page       = getpage($count,$per_page);// 实例化分页类 传入总记录数和每页显示的记录数
         $showPage       = $page->show();// 分页显示输出
-        $user_list = $M->where($where)->order("uid DESC")->page($current_page.','.$per_page)->select();
-        if($coinnum_sort){
-            $sort_name = "coinnum";
-            $sort = $coinnum_sort;
-            $page_url = "&csort=".$coinnum_sort;
-            $user_list = $M->where($where)->order("coinnum ".$coinnum_sort)->page($current_page.','.$per_page)->select();
-            if($coinnum_sort=="ASC"){
-                $coinnum_sort = "DESC";
-            }else{
-                $coinnum_sort = "ASC";
-            }
-            $view_datas['c_sort_url'] = U('member/index')."?status=".$status."&csort=".$coinnum_sort;
-        }else{
-            $view_datas['c_sort_url'] = U('member/index')."?status=".$status."&csort=ASC";
-        }
-        if($bankcoin_sort){
-            $sort_name = "bankcoin";
-            $sort = $bankcoin_sort;
-            $page_url = "&asort=".$bankcoin_sort;
-            $user_list = $M->where($where)->order("bankcoin ".$bankcoin_sort)->page($current_page.','.$per_page)->select();
-            if($bankcoin_sort=="ASC"){
-                $bankcoin_sort = "DESC";
-            }else{
-                $bankcoin_sort = "ASC";
-            }
-            $view_datas['a_sort_url'] = U('member/index')."?status=".$status."&asort=".$bankcoin_sort;
-        }else{
-            $view_datas['a_sort_url'] = U('member/index')."?status=".$status."&asort=ASC";
-        }
+        $view_datas['list'] = $m_user->where($where)->order("id DESC")->page($current_page.','.$per_page)->select();
         
-        if($user_list){
-            foreach ($user_list as $val) {
-                $val["id"] = $val["uid"];
-                $user_info = $m_user->getUserOne($val["id"]);
-                $val["type"] = isset($user_info["type"])?$user_info["type"]:1;
-                $val["status"] = isset($user_info["status"])?$user_info["status"]:0;
-                $sql = "SELECT sum(amount) AS amount FROM dz_order WHERE u_id=".$val["id"]." AND type IN(1,2) AND `status`=200";
-                $order_info = current($m_order->getOneBySql($sql));
-                $val["amount"] = 0;
-                $user_agency = $m_user->getUserAgencyByUserId($val["id"]);
-                $val["grade"] = "注册用户";
-                if($user_agency&&!empty($user_agency)){
-                    $val["grade"] = $m_user->getLevelText($user_agency["grade"]);
-                }
-                if($order_info&&$order_info["amount"]){
-                    $val["amount"] = $order_info["amount"];
-                }
-                $room_id = $val["last_room"];
-                $val["room_name"] = "";
-                if($room_id){
-                    $room_info = $m_user->getRoom($room_id);
-                    if($room_info){
-                        $val["room_name"] = $room_info["name"]."-".$room_info["summary"];
-                    }
-                }
-                $view_datas['list'][] = $val;
-            }
-        }
         $view_datas['num'] = $count;
         $this->assign("datas", $view_datas);
         $this->assign("page", $showPage);
-        $this->assign("is_proxy", $is_proxy);
         $this->display("memberlist");
     }
     

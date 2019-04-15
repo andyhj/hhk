@@ -23,6 +23,7 @@ class WxH5Login {
         $customer_m = M("customer_info",$db_config["DB_PREFIX"],$db_config);
         $cunstomer_wx_binding_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
         $openid_bind_m = M("openid_bind",$db_config["DB_PREFIX"],$db_config);
+        $customer_bankaccount_m = M("customer_bankaccount",$db_config["DB_PREFIX"],$db_config);
         $rc_user_info=[]; //推荐用户信息
         if ($recommend) {
             $rc_user_info = $customer_m->where(["id"=>$recommend])->find(); 
@@ -72,9 +73,34 @@ class WxH5Login {
         $unionid = isset($data["unionid"]) ? $data["unionid"] : '';         
         $cunstomer_wx_binding_info = $cunstomer_wx_binding_m->where(["open_id"=>$openid])->find(); //查询有没微信登陆用户
         if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)&&$cunstomer_wx_binding_info["user_id"]){
+            $hsq_user_info = $customer_m->where(["id"=>$cunstomer_wx_binding_info["user_id"]])->find(); 
+            if (!$hsq_user_info||!$hsq_user_info['auditState']) {
+                return 113;
+            }
             $state = 0;
             if ($data["subscribe"]) { //是否关注
                 $state = 1;
+            }
+            $user_info = M('user')->where(['u_id'=>$cunstomer_wx_binding_info["user_id"]])->find();
+            if(!$user_info){
+                $customer_bankaccount = $customer_bankaccount_m->where(['userId'=>$cunstomer_wx_binding_info["user_id"]])->find();
+                $user_data['u_id'] = $cunstomer_wx_binding_info["user_id"];
+                $user_data['superior_id'] = $hsq_user_info["agentsId"];
+                $user_data['login_id'] = $hsq_user_info["loginId"];
+                $user_data['password'] = $hsq_user_info["password"];
+                $user_data['u_name'] = $hsq_user_info["name"];
+                $user_data['id_card'] = $hsq_user_info["idCard"];
+                $user_data['name'] = $customer_bankaccount["accountName"];
+                $user_data['open_id'] = $openid;
+                $user_data['wx_tx'] = $headurl;
+                $user_data['wx_name'] = $nickname;
+                M('user')->add($user_data);
+            }else{
+                $user_data['open_id'] = $openid;
+                $user_data['wx_tx'] = $headurl;
+                $user_data['wx_name'] = $nickname;
+                $user_data['lasttime'] = date('Y-m-d H:i:s');
+                M('user')->where(['u_id'=>$cunstomer_wx_binding_info["user_id"]])->save($user_data);
             }
             $wx_bd_data["state"] = $state;
             $wx_bd_data["wx_tx"] = $headurl;

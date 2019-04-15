@@ -11,21 +11,6 @@ namespace Common\Model;
 use Think\Model;
 use Common\WxApi\class_weixin_adv;
 class UserModel extends Model{
-    protected $db_config;
-    function __construct() {
-        $this->db_config = C("DB_CONFIG2");
-    }
-    public function getLevelText($level){
-        $level_arr = array(
-            0=>"注册用户",
-            1=>"贵宾用户",
-            2=>"金尊用户",
-            3=>"白金代理",
-            4=>"钻石代理"
-        );
-        return $level_arr[$level];
-    }
-
     /**
      * 根据用户id查找用户
      * @param type $user_id
@@ -35,10 +20,10 @@ class UserModel extends Model{
         if(!$user_id){
             return false;
         }
-        $model = M("customer_info",$this->db_config["DB_PREFIX"],$this->db_config);
-        return $model->where(["id"=>$user_id])->find();
+        $user_info = $this->where(["id"=>$user_id])->find();
+        return $user_info;
     }
-    /**
+     /**
      * 根据条件查找用户,返回一条数据
      * @param type $where
      * @return boolean
@@ -47,8 +32,8 @@ class UserModel extends Model{
         if(empty($where)){
             return false;
         }
-        $model = M("customer_info",$this->db_config["DB_PREFIX"],$this->db_config);
-        return $model->where($where)->find();
+        $user_info = $this->where($where)->find();
+        return $user_info;
     }
 
     /**
@@ -60,13 +45,11 @@ class UserModel extends Model{
         if(!$msg_uid||!$title||!$keyword1||!$keyword2||!$keyword3||!$keyword4){
             return false;
         }
-        $db_config = C("DB_CONFIG2");
-        $customer_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
-        $cunstomer_wx_binding_info = $customer_m->where(["user_id"=>$msg_uid,"state"=>1])->find();
-        if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)){
+        $user_info = $this->getUserOne($msg_uid);
+        if($user_info&&!empty($user_info)){
             require_once APP_ROOT ."Application/Common/Concrete/wxapi/example/weixin.api.php";
             $weixin = new class_weixin_adv();
-            $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
+            $msg_data["touser"] = $user_info["open_id"];
             $msg_data["template_id"] = "qq5apA1Ku6rbm0IWkD_QMHRjAaSOuCu9Fv62SjPpmrE";
             $msg_data["url"] = $url;//HTTP_HOST.'/index/user/plusdes.html';
             $msg_data["data"] = array(
