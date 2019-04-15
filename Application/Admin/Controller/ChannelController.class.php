@@ -4,10 +4,14 @@
  */
 namespace Admin\Controller;
 class ChannelController  extends CommonController{
+    public function index(){
+        $this->display();
+    }
+
     /**
      * 通道列表
      */
-    public function index(){
+    public function channel(){
         $current_page = (int)I('p',1);
         $per_page = 15;//每页显示条数
         $channel_m = M("channel");
@@ -45,7 +49,7 @@ class ChannelController  extends CommonController{
                     $admin_log_data["info"] = $info;
                     $admin_log_data["add_time"] = time();
                     $m_admin_log->add($admin_log_data);
-                    $this->success("添加成功",U("channel/index"));die();
+                    $this->success("添加成功",U("channel/channel"));die();
                 }
                 $info = "添加通道失败";
                 $admin_log_data["a_id"] = $admin_info["aid"];
@@ -70,7 +74,7 @@ class ChannelController  extends CommonController{
         }
         $channel_info = M("channel")->where(["id"=>$id])->find();
         if(!$channel_info){
-            $this->error("通道不存在",U("channel/index"));die();
+            $this->error("通道不存在",U("channel/channel"));die();
         }
         $data["name"] = I("name",$channel_info["name"]); //通道名称
         $data["fee"] = I("fee",$channel_info["fee"]); //通道成本费率
@@ -95,7 +99,7 @@ class ChannelController  extends CommonController{
                     $admin_log_data["info"] = $info;
                     $admin_log_data["add_time"] = time();
                     $m_admin_log->add($admin_log_data);
-                    $this->success("修改通道成功",U("channel/index"));die();
+                    $this->success("修改通道成功",U("channel/channel"));die();
                 }
                 $info = "修改通道失败";
                 $admin_log_data["a_id"] = $admin_info["aid"];

@@ -6,7 +6,7 @@
         <php>
             $addCss="";
             $addJs="";
-            $currentNav ='通道管理 > 通道列表';
+            $currentNav ='通道管理 > 通道管理';
         </php>
         <include file="Common:intoHead" />
     </head>
@@ -17,39 +17,9 @@
                 <include file="Common:left" />
                 <div id="Right">
                     <div class="Item hr">
-                        <div class="current">通道列表</div>
+                        <div class="current">通道管理</div>
                     </div>
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
-                        <tr>
-                            <td>通道ID</td>
-                            <td>通道名称</td>
-                            <td>通道成本费率</td>
-                            <td>通道成本结算费用（每笔）</td>
-                            <td>普通用户交易费率</td>
-                            <td>plus用户交费率</td>
-                            <td>普通用户结算费用（每笔）</td>
-                            <td>plus用户结算费用（每笔）</td>
-                            <td>通道编码</td>
-                            <td>操作</td>
-                        </tr>
-                        <?php if(!empty($channel_list)): ?>
-                        <?php foreach($channel_list as $n => $data): ?>
-                        <tr id="tr_user_<?php echo $data['id']; ?>">
-                            <td><?php echo $data['id']; ?></td>
-                            <td><?php echo $data['name']; ?></td>
-                            <td><?php echo $data['fee']; ?></td>
-                            <td><?php echo $data['close_rate']; ?></td>
-                            <td><?php echo $data['user_fee']; ?></td>
-                            <td><?php echo $data['plus_user_fee']; ?></td>
-                            <td><?php echo $data['user_close_rate']; ?></td>
-                            <td><?php echo $data['plus_user_close_rate']; ?></td>
-                            <td><?php echo $data['code']; ?></td>
-                            <td>[<a href="<?php echo U('channel/editChannel/',['id'=>$data['id']]); ?>" title="编辑">编辑</a>]</td>
-                        </tr>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
-                    </table>
-                    <div class="pages"><?php echo $page; ?></div>
+                   
                 </div>
             </div>
         </div>
