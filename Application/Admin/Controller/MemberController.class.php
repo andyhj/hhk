@@ -16,7 +16,7 @@ class MemberController extends CommonController {
         $per_page = 15;//每页显示条数
         $page       = getpage($count,$per_page);// 实例化分页类 传入总记录数和每页显示的记录数
         $showPage       = $page->show();// 分页显示输出
-        $view_datas['list'] = $m_user->where($where)->order("id DESC")->page($current_page.','.$per_page)->select();
+        $view_datas['list'] = $m_user->where($where)->order("add_time DESC")->page($current_page.','.$per_page)->select();
         
         $view_datas['num'] = $count;
         $this->assign("datas", $view_datas);
