@@ -155,7 +155,7 @@
                                     <option value="包商银行">包商银行</option>
                                     <option value="广州银行">广州银行</option>
                                     <option value="中国工商银行">中国工商银行</option>
-                                    <option value="中国农业银行">中国农业银行</option>
+                                    <!--<option value="中国农业银行">中国农业银行</option>-->
                                     <option value="中国建设银行">中国建设银行</option>
                                     <option value="中国民生银行">中国民生银行</option>
                                     <option value="中国光大银行">中国光大银行</option>
