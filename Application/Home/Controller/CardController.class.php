@@ -362,6 +362,12 @@ class CardController extends InitController {
             $json["info"] = "信用卡不存在";
             $this->returnJson($json);
         }
+        $plan_info = M("plan")->where(["u_id"=>$u_id,"bc_id"=>$id])->find();
+        if($plan_info&&($plan_info["status"]==3||$plan_info["status"]==4)){
+            $json["status"] = 307;
+            $json["info"] = "此卡片有在执行或待执行的计划，不能解绑";
+            $this->returnJson($json);
+        }
         switch ($this->c_code) {
             case "hlb":
                 require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
