@@ -62,7 +62,11 @@ class InitController extends Controller{
                 $user_vip_log_data["u_id"] = $user_des["id"];
                 $user_vip_log_data["add_time"] = time();
                 $user_vip_log_data["end_time"] = strtotime("+1 month");
-                $user_vip_log_m->add($user_vip_log_data);
+                $s=$user_vip_log_m->add($user_vip_log_data);
+                if($s){
+                    $user_m = D('User');
+                    $user_m->wxMessagewxYwlcMsg($user_des["id"],'恭喜您获得《会还款》一个月VIP','系统赠送《会还款》一个月VIP',date("Y-m-d H:i:s"),'请尽快领取','点击领取','',HTTP_HOST.'/index/user/plusdes.html');
+                }
             }
         }
         return $user_des;

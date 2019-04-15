@@ -9,6 +9,7 @@
 namespace Common\Model;
 
 use Think\Model;
+use Common\WxApi\class_weixin_adv;
 class UserModel extends Model{
     public function getLevelText($level){
         $level_arr = array(
@@ -714,525 +715,57 @@ class UserModel extends Model{
             return $user_s;
         }
     }
-    /**
-     * 注册推送微信消息
-     * @param type $msg_uid  推送的用户
-     * @param type $user_id  注册用户
-     * @param type $nickname 注册用户昵称
-     */
-    public function wxRegMessage($msg_uid,$user_id,$nickname){
-        if(!$msg_uid||!$user_id){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "76dBsTBTiwNCx5Q_uJ6bQN3TMq7KM4iYlyxUqyjw0Ho";
-        $msg_data["url"] = HTTP_HOST.'/index/user/info.html';
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>"您好，有新的用户成为你的下级",
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> $user_id,
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> $nickname,
-                "color"=>""
-            ),
-            "keyword3"=>array(
-                "value"=> "******",
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>"成功推荐用户，活动赠送2000开心豆已到账。",
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
     
     /**
-     * 注册推送旁系下属微信消息
-     * @param type $msg_uid  推送的用户
-     * @param type $user_id  注册用户
-     * @param type $nickname 注册用户昵称
+     * 公众号推送信息
+     * @param type $uid
+     * @param type $plan_des_info
      */
-    public function wxRegPxMessage($msg_uid,$user_id,$nickname,$recommend){
-        if(!$msg_uid||!$user_id){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $tj_user_info = $this->getUserOne($recommend);
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "76dBsTBTiwNCx5Q_uJ6bQN3TMq7KM4iYlyxUqyjw0Ho";
-        $msg_data["url"] = HTTP_HOST.'/index/user/info.html';
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>"您好，有新的用户成为你的旁系下级",
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> $user_id,
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> $nickname,
-                "color"=>""
-            ),
-            "keyword3"=>array(
-                "value"=> "******",
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>$tj_user_info["nickname"]." 成功推荐用户。",
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    /**
-     * 兑换失败
-     * @param type $msg_uid
-     * @param type $title
-     * @param type $cause
-     * @return boolean|array
-     */
-    public function wxExchangeFallMsg($msg_uid,$title,$cause,$des="请联系客服",$url=""){
-        if(!$msg_uid||!$title||!$cause){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $r_url = HTTP_HOST.'/index/user/order.html';
-        if($url){
-            $r_url = $url;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "iQuU72sRz6bJkKH19R8kNO99zeyKWxCOAjVkP3X58VQ";
-        $msg_data["url"] = $r_url;
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>$title,
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> $cause,
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> date("Y-m-d H:i:s"),
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>$des,
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    /**
-     * 兑换成功
-     * @param type $msg_uid
-     * @param type $title
-     * @param type $cause
-     * @return boolean|array
-     */
-    public function wxExchangeSucceedMsg($msg_uid,$title,$cause,$number){
-        if(!$msg_uid||!$title||!$cause||!$number){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "Be9TWhyaWCJfMHaJSfg05hBQpO8DLn-Z1e89jEp20ec";
-        $msg_data["url"] = HTTP_HOST.'/index/user/order.html';
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>$title,
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> $cause,
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> date("Y-m-d H:i:s"),
-                "color"=>""
-            ),
-            "keyword3"=>array(
-                "value"=> $number,
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>"点击查看详情",
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    /**
-     * 新用户关注推送消息
-     * @param type $user_id
-     */
-    public function subscribeMsg($user_id){
-        if(!$user_id){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($user_id);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "Z-9C8tLdC9HcgRRj9P1X-QUbMPXBnGk22y-63bSfFr0";
-        $msg_data["url"] = HTTP_HOST;
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>"您已成功登录开心逗棋牌",
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> date("Y-m-d H:i:s"),
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> getIP(),
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>"您已获得系统赠送的新手礼包20000开心豆，祝您游戏愉快！\n回复“兑换礼品”了解如何兑换话费、手机等礼品；",
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    /**
-     * 用户等级发生变化推送信息
-     * @param type $user_id
-     */
-    public function agencyMsg($user_id,$state){
-        if(!$user_id){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($user_id);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "fdjerfyJHRbOjPznHnvSAHBHZGE2B6Z_u1vVTTbzAPk";
-        $msg_data["url"] = HTTP_HOST.'/index/user/instruction.html';
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>"亲爱的用户，\n非常高兴的通知你",
-                "color"=>""
-            ),
-            "reason"=>array(
-                "value"=> "您已成功发展5个相同等级下线",
-                "color"=>""
-            ),
-            "state"=>array(
-                "value"=> $state,
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>"如果您再发展5个相同等级用户，您的等级就会往上提升，点击查看等级详情介绍",
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    /**
-     * 用户成为代理推送消息
-     * @param type $msg_uid
-     * @param type $title
-     * @param type $cause
-     * @return boolean|array
-     */
-    public function wxDlSucceedMsg($msg_uid,$title,$remark,$url){
-        if(!$msg_uid||!$title||!$remark){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "75h958qd_8mhHqxgOTsK0SIX3DWkPnkKvnX_yAye8MA";
-        $msg_data["url"] = $url;
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>$title,
-                "color"=>""
-            ),
-            "date"=>array(
-                "value"=> date("Y-m-d H:i:s"),
-                "color"=>""
-            ),
-            "expiry"=>array(
-                "value"=> "----",
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>$remark,
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    
-    /**
-     * 发货通知
-     * @param type $msg_uid
-     * @param type $title
-     * @param type $cause
-     * @return boolean|array
-     */
-    public function wxFhMsg($msg_uid,$title,$keyword1,$keyword2,$url){
-        if(!$msg_uid||!$title||!$keyword1||!$keyword2){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "PO-7jNlZ0EEtYezeBYXwIHIvvIJq67kbwbgYofcpIyQ";
-        $msg_data["url"] = $url;
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>$title,
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> $keyword1,
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> $keyword2,
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>"点击查看详情",
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    
-    /**
-     * 比赛开赛提醒
-     * @param type $msg_uid
-     * @param type $title
-     * @param type $cause
-     * @return boolean|array
-     */
-    public function wxCustomMsg($msg_uid,$title,$custom_name,$custom_date,$url,$game_name="开心斗地主",$remark="点击进入比赛"){
-        if(!$msg_uid||!$title||!$custom_name){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "aKVigfLGpniMofqvIbkkP65BU7JoHleHmoWDQwr89sw";
-        $msg_data["url"] = $url;
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>$title,
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> $game_name,
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> $custom_name,
-                "color"=>""
-            ),
-            "keyword3"=>array(
-                "value"=> date("Y-m-d H:i:s",$custom_date),
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>$remark,
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    
-    /**
-     * 退款通知
-     * @param type $msg_uid
-     * @param type $title
-     * @param type $cause
-     *  内容示例: 
-     *  退款成功
-        订单号：648-234323423
-        退款金额：327
-        体验完善的余额服务，请使用全民手游
-     * @return boolean|array
-     */
-    public function wxTkMsg($msg_uid,$title,$keyword1,$keyword2,$url){
-        if(!$msg_uid||!$title||!$keyword1||!$keyword2){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "XEs5AvWT90jTkybiThRYKg4taOONk9zIPkQZGv3h39g";
-        $msg_data["url"] = $url;
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>$title,
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> $keyword1,
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> $keyword2,
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>"点击查看详情",
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    
-    /**
-     * 比赛结果告知
-     * @param type $msg_uid
-     * @param type $title
-     * @param type $cause
-     *  内容示例: 
-     *  恭喜亲，您参与的好友赛已结束！
-        是否有效：有效
-        结束时间：09月15日23:00
-        点击查看结果
-     * @return boolean|array
-     */
-    public function wxBsJgMsg($msg_uid,$title,$result,$time,$url){
-        if(!$msg_uid||!$title||!$result||!$time){
-            return false;
-        }
-        $dl_user_info = $this->getUserOne($msg_uid);
-        if(!$dl_user_info||!$dl_user_info["other_id"]){
-            return false;
-        }
-        $msg_data["touser"] = $dl_user_info["other_id"];
-        $msg_data["template_id"] = "75Njv-2iOGQk_YFSz_W1H0sgjmCvuiCqH-DsZnsm_OM";
-        $msg_data["url"] = $url;
-        $msg_data["data"] = array(
-            "first"=>array(
-                "value"=>$title,
-                "color"=>""
-            ),
-            "keyword1"=>array(
-                "value"=> $result,
-                "color"=>""
-            ),
-            "keyword2"=>array(
-                "value"=> $time,
-                "color"=>""
-            ),
-            "remark"=>array(
-                "value"=>"点击查看结果",
-                "color"=>""
-            )
-        );
-        return $msg_data;
-    }
-    /**
-     * 38妇女节送豆活动
-     * @param type $user_id
-     */
-    public function addActivity38($user_id){
-        if(!$user_id){
+    public function wxMessagewxYwlcMsg($msg_uid,$title,$keyword1,$keyword2,$keyword3,$keyword4,$remark='',$url=''){
+        if(!$msg_uid||!$title||!$keyword1||!$keyword2||!$keyword3||!$keyword4){
             return false;
         }
         $db_config = C("DB_CONFIG2");
-        $maill_model = M("user_mail",$db_config["DB_PREFIX"],$db_config);
-        $where["uid"] = $user_id;
-        $where["title"] = "38约惠女人节活动";
-        $mail_info = $maill_model->where($where)->find();
-        if(!$mail_info&&empty($mail_info)){
-            $data["uid"] = $user_id;
-            $data["title"] = "38约惠女人节活动";
-            $data["sender"] = "系统";
-            $data["describe"] = "3.8日女性玩家登录游戏即送3800开心豆！";
-            $data["coin"] = 3800;
-            return $this->addGameMail($data);
-        }
-        return false;
-    }
-    /**
-     * 我的推广列表
-     */
-    public function agencyList($user_id){
-        if(!$user_id){
-            return false;
-        }
-        $user_agency = $this->getUserAgencyByUserId($user_id);
-        $user_up = [];  //直系上级
-        $user_down = []; //直系下级
-        if($user_agency["parent_id"]&&$user_agency["parent_id"]!=10001){
-            $user_info = $this->getUserOne($user_agency["parent_id"]); //发展我的用户(直系上级)
-            $user_grade = $this->getUserAgencyByUserId($user_info["id"]); //查找用户代理等级
-            $user_up["id"] = $user_info["id"];
-            $user_up["headurl"] = $user_info["headurl"]; //用户头像
-            $user_up["nickname"] = $user_info["nickname"]; //用户昵称
-            $user_up["regtime"] = $user_info["regtime"];  //初次注册时间
-            $user_up["grade"] = $user_grade["grade"];   //用户代理等级
-        }
-        
-        $user_agency_list = $this->getUserAgencySubordinates(['parent_id'=>$user_id]); //直系下级
-        if($user_agency_list&&!empty($user_agency_list)){
-            foreach ($user_agency_list as $value) {
-                $user_info = $this->getUserOne($value["u_id"]); //用户信息
-                $down["id"] = $user_info["id"];
-                $down["headurl"] = $user_info["headurl"]; //用户头像
-                $down["nickname"] = $user_info["nickname"]; //用户昵称
-                $down["regtime"] = $user_info["regtime"];  //初次注册时间
-                $down["grade"] = $value["grade"];   //用户代理等级
-                $user_down[] = $down;
+        $customer_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
+        $cunstomer_wx_binding_info = $customer_m->where(["user_id"=>$msg_uid,"state"=>1])->find();
+        if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)){
+            require_once APP_ROOT ."Application/Common/Concrete/wxapi/example/weixin.api.php";
+            $weixin = new class_weixin_adv();
+            $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
+            $msg_data["template_id"] = "qq5apA1Ku6rbm0IWkD_QMHRjAaSOuCu9Fv62SjPpmrE";
+            $msg_data["url"] = $url;//HTTP_HOST.'/index/user/plusdes.html';
+            $msg_data["data"] = array(
+                "first"=>array(
+                    "value"=> $title,
+                    "color"=>""
+                ),
+                "keyword1"=>array(
+                    "value"=> $keyword1,
+                    "color"=>""
+                ),
+                "keyword2"=>array(
+                    "value"=> $keyword2,
+                    "color"=>""
+                ),
+                "keyword3"=>array(
+                    "value"=> $keyword3,
+                    "color"=>""
+                ),
+                "keyword4"=>array(
+                    "value"=> $keyword4,
+                    "color"=>""
+                ),
+                "remark"=>array(
+                    "value"=> $remark,
+                    "color"=>""
+                )
+            );
+            $return_status = $weixin->send_user_message($msg_data);
+            add_log("wxMessage.log", "wxmessage", "计划失败公众号消息推送状态：". var_export($return_status, true));
+            $return_status = json_decode($return_status, true);
+            if($return_status["errcode"]===0){
+                return true;
             }
-        }
-        return array("user_up"=>$user_up,"user_down"=>$user_down);
-    }
-    
-    /**
-     * 查询房间信息
-     * @param type $room_id
-     * @return type
-     */
-    public function getRoom($room_id){
-        if(!$room_id){
-            return false;
-        }
-        $db_config = C("DB_CONFIG2");
-        $m = M("mm_room",$db_config["DB_PREFIX"],$db_config);
-        $sql = "SELECT *  FROM mm_room WHERE room_id = {$room_id} ";
-        $result = $m->query($sql);
-        if($result){
-            return $result[0];
         }
         return false;
     }

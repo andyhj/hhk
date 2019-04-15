@@ -117,18 +117,4 @@ class WxH5Login {
           $str);
        return $str;
     }
-    private function updAgency($user_id) {
-        require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/wxapi/example/weixin.api.php";
-        $m_user = D("user");
-        $weixin = new class_weixin_adv();
-        $user_agency_info = $m_user->getUserAgencyByUserId($user_id);
-        $grade = $user_agency_info["grade"];
-        $return_status = $m_user->updUserAgency($user_id);
-        if ($return_status === 2) {
-            $state = "您的代理等级从".$m_user->getLevelText($grade)."升级为".$m_user->getLevelText($grade+1);
-            $msg_data = $m_user->agencyMsg($user_id,$state);
-            $return_status = $weixin->send_user_message($msg_data);
-            $this->updAgency($user_agency_info["superior_id"]);
-        }
-    }
 }
