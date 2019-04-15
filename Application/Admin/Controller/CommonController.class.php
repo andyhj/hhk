@@ -4,6 +4,7 @@ namespace Admin\Controller;
 use Think\Controller;
 
 class CommonController extends Controller {
+    protected $http='http://';
 
     public $loginMarked;
 
@@ -17,6 +18,10 @@ class CommonController extends Controller {
         header("Content-Type:text/html; charset=utf-8");
         header('Content-Type:application/json; charset=utf-8');
         $systemConfig = include WEB_ROOT . 'Application/Common/Conf/systemConfig.php';
+        if(!empty($_SERVER["HTTPS"])&&$_SERVER["HTTPS"]='on'){
+            $this->http='https://';
+        }
+        $systemConfig["WEB_ROOT"] = $this->http.$systemConfig["WEB_ROOT"];
         if (empty($systemConfig['TOKEN']['admin_marked'])) {
             $systemConfig['TOKEN']['admin_marked'] = "andy";
             $systemConfig['TOKEN']['admin_timeout'] = 3600;
@@ -117,7 +122,7 @@ class CommonController extends Controller {
      */
     private function show_menu() {
         $_action = explode('/', __ACTION__);
-        $model_name = convertUnderline($_action[2]);
+        $model_name =  camelize("_".$_action[2]);
 //        $cache = $this->menu()['admin_big_menu'];
         $cache = M("node")->where(["level"=>2,"status"=>1])->select();
         $count = count($cache);
@@ -145,7 +150,7 @@ class CommonController extends Controller {
             $url = $val["name"];
             $name = $val["title"];
             if($admin_info["aid"]!=1){
-                $mo = str_replace('_','',$url); 
+                $mo = strtolower(str_replace('_','',$url)); 
                 if(!in_array("$mo",$model_list)){
                     continue;
                 }
@@ -172,7 +177,7 @@ class CommonController extends Controller {
      */
     private function show_sub_menu() {
         $_action = explode('/', __ACTION__);
-        $big = convertUnderline($_action[2]);
+        $big = camelize("_".$_action[2]);
 //        $cache = $this->menu()['admin_sub_menu'];
         $big_title = M("node")->where(["level"=>2,"name"=>"$big","status"=>1])->find();
         $sub_menu = array();
@@ -200,7 +205,7 @@ class CommonController extends Controller {
                 $url = $val["name"];
                 $title = $val["title"];
                 if($admin_info["aid"]!=1){
-                    $mo = str_replace('_','',$url); 
+                    $mo = strtolower(str_replace('_','',$url)); 
                     if(!in_array("$mo",$model_list)){
                         continue;
                     }
