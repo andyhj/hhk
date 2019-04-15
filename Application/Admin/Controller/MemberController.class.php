@@ -44,6 +44,7 @@ class MemberController extends CommonController {
             }
             $user_vip_log_m = M("user_vip_log");
             $user_vip_log_data["u_id"] = $user_id;
+            $user_vip_log_data["vip_m"] = $vip_m;
             $user_vip_log_data["type"] = 2;
             $user_vip_log_data["add_time"] = time();
             $user_vip_log_data["end_time"] = strtotime("+1 month");
