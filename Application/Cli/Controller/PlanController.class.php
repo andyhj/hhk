@@ -125,6 +125,7 @@ class PlanController extends InitController {
                         if ($hlb_dh['rt2_retCode'] == '0000') {
                             $upd_plan_des_data["message"] = "还款成功";
                             $upd_plan_des_data["order_state"] = 1;
+                            $upd_plan_des_data["d_time"] = time();
                             $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
                             if((int)($plan_info["periods"]*2)==$plan_des_info["num"]){
                                 $plan_status = 1;
