@@ -36,7 +36,25 @@ class IndexController extends CommonController {
     public function myInfo() {
         if (IS_POST) {
             $this->checkToken();
-            echo json_encode(D("Index")->my_info($_POST));
+            $M = M("Admin");
+            if (md5($_POST['email'].$_POST['pwd0']) != $_SESSION['my_info']['pwd']) {
+                $this->ajaxReturn(array('status' => 0, 'info' => "旧密码错误"));
+            }
+            if (trim($_POST['pwd']) == '') {
+                $this->ajaxReturn(array('status' => 0, 'info' => "密码不能为空"));
+            }
+            if (trim($_POST['pwd']) != trim($_POST['pwd1'])) {
+                $this->ajaxReturn(array('status' => 0, 'info' => "两次密码不一致"));
+            }
+            $data['aid'] = $_SESSION['my_info']['aid'];
+            $data['pwd'] = md5(trim($_POST['email']).trim($_POST['pwd']));
+            if ($M->save($data)) {
+                setcookie("$this->loginMarked", NULL, -3600, "/");
+                unset($_SESSION["$this->loginMarked"], $_COOKIE["$this->loginMarked"]);
+                $this->ajaxReturn(array('status' => 1, 'info' => "你的密码已经成功修改，请重新登录",'url'=>U('Access/index')));
+            } else {
+                $this->ajaxReturn(array('status' => 0, 'info' => "密码修改失败"));
+            }
         } else {
             $this->display();
         }
