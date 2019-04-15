@@ -74,7 +74,7 @@ class WxH5Login {
         $cunstomer_wx_binding_info = $cunstomer_wx_binding_m->where(["open_id"=>$openid])->find(); //查询有没微信登陆用户
         if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)&&$cunstomer_wx_binding_info["user_id"]){
             $hsq_user_info = $customer_m->where(["id"=>$cunstomer_wx_binding_info["user_id"]])->find(); 
-            if (!$hsq_user_info||!$hsq_user_info['auditState']) {
+            if (!$hsq_user_info||!$hsq_user_info['auditstate']) {
                 return 113;
             }
             $state = 0;
@@ -85,12 +85,12 @@ class WxH5Login {
             if(!$user_info){
                 $customer_bankaccount = $customer_bankaccount_m->where(['userId'=>$cunstomer_wx_binding_info["user_id"]])->find();
                 $user_data['u_id'] = $cunstomer_wx_binding_info["user_id"];
-                $user_data['superior_id'] = $hsq_user_info["agentsId"];
-                $user_data['login_id'] = $hsq_user_info["loginId"];
+                $user_data['superior_id'] = $hsq_user_info["agentsid"];
+                $user_data['login_id'] = $hsq_user_info["loginid"];
                 $user_data['password'] = $hsq_user_info["password"];
                 $user_data['u_name'] = $hsq_user_info["name"];
-                $user_data['id_card'] = $hsq_user_info["idCard"];
-                $user_data['name'] = $customer_bankaccount["accountName"];
+                $user_data['id_card'] = $hsq_user_info["idcard"];
+                $user_data['name'] = $customer_bankaccount["accountname"];
                 $user_data['open_id'] = $openid;
                 $user_data['wx_tx'] = $headurl;
                 $user_data['wx_name'] = $nickname;
