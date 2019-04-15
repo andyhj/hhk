@@ -20,7 +20,7 @@ class UserModel extends Model{
         if(!$user_id){
             return false;
         }
-        $user_info = $this->where(["id"=>$user_id])->find();
+        $user_info = $this->where(["u_id"=>$user_id])->find();
         return $user_info;
     }
      /**

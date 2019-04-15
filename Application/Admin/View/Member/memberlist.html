@@ -33,6 +33,7 @@
                                 <td>真实姓名</td>
                                 <td>微信昵称</td>
                                 <td>最后登陆时间</td>
+                                <?php if($admin_info["aid"]==1): ?><td></td><?php endif; ?>
                             </tr>
                             <?php if(!empty($datas["list"])): ?>
                             <?php foreach($datas["list"] as $n => $data): ?>
@@ -44,6 +45,7 @@
                                 <td><?php echo $data['name']; ?></td>
                                 <td><?php echo $data['wx_name']; ?></td>
                                 <td><?php echo $data['lasttime']; ?></td>
+                                <?php if($admin_info["aid"]==1): ?><td><a href='<?php echo U("member/sendvip",["u_id"=>$data["u_id"]]); ?>'>赠送VIP</a></td><?php endif; ?>
                             </tr>
                             <?php endforeach; ?>
                             <?php endif; ?>

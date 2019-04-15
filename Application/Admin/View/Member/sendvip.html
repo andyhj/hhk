@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>赠送VIP-后台管理-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='用户管理 > 赠送VIP';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">赠送VIP</div>
+                    </div>
+                <form  method="post" enctype="multipart/form-data">
+                    <?php if($user_info): ?>
+                    <input type="hidden" name="u_id" value="<?php echo $user_info['u_id']; ?>">
+                    <table width="100%" cellpadding="0" cellspacing="0" class="table1">
+                    <tbody>
+                        <tr>
+                            <td width="100">用户头像：</td>
+                            <td><?php if($user_info['wx_tx']): ?><img src="<?php echo $user_info['wx_tx']; ?>" width="50" height="50"><?php else: ?><?php endif; ?></td>
+                        </tr>
+                        <tr>
+                            <td width="100">用户ID：</td>
+                            <td><?php echo $user_info['u_id']; ?></td>
+                        </tr>
+                        <tr>
+                            <td width="100">用户名：</td>
+                            <td><?php echo $user_info['u_name']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="td_right">续费月数：</td>
+                            <td>
+                                <select id="vip_m" name="vip_m">
+                                    <option value="1">1个月</option>
+                                    <option value="2">2个月</option>
+                                    <option value="3">3个月</option>
+                                    <option value="4">4个月</option>
+                                    <option value="5">5个月</option>
+                                    <option value="6">6个月</option>
+                                    <option value="7">7个月</option>
+                                    <option value="8">8个月</option>
+                                    <option value="9">9个月</option>
+                                    <option value="10">10个月</option>
+                                    <option value="11">11个月</option>
+                                    <option value="12">12个月</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="100" style="height: 80px;"><input type="submit" value="提交" class="btn"/></td>
+                            <td><input type="button" value="返回" class="btn" onClick="location='<?php echo $return_url; ?>'" /></td>
+                        </tr>
+                    </tbody>
+                    </table>
+
+                    <?php endif; ?>
+                </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+        <js href="__PUBLIC__/kindeditor/kindeditor.js,__PUBLIC__/kindeditor/lang/zh_CN.js"/>
+    </body>
+</html>
