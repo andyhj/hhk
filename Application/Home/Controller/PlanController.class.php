@@ -104,12 +104,13 @@ class PlanController extends InitController {
      * 
      */
     public function plandes(){
+        $u_id = $this->user_info["id"];
         $p_id = I("id");
         $url = U("index/plan/index");
         if(!$p_id){
             $this->error("参数错误",$url);die();
         }
-        $plan_des_list = M("plan_des")->where(["p_id"=>$p_id])->select();
+        $plan_des_list = M("plan_des")->where(["u_id"=>$u_id,"p_id"=>$p_id])->select();
         if(!$plan_des_list||empty($plan_des_list)){
             $this->error("计划不存在",$url);die();
         }
