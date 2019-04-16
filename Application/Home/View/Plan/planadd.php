@@ -171,7 +171,7 @@
                         <span  style="float:right;"><input type="button" value="升级PLUS" class="sjplus"></span>
                         <?php }else{?>
                         当前费率：
-                        <span  style="float:right;"><?php echo $fee.'%+'.$close_rate;?> </span>
+                        <span  style="float:right;"><?php echo ($fee*100).'%+'.$close_rate;?> </span>
                         <?php }?>
                     </li>
                     <?php if(!$is_plus){?> 
