@@ -8,6 +8,7 @@
         text-align: center;
         position: fixed;
         bottom: 0px;
+        z-index: 50;
     }
     .sub_img{
         width: 0.4rem;
@@ -23,6 +24,7 @@
         text-align: center;
         position: fixed;
         bottom: 0px;
+        z-index: 50;
     }
     .sub_h img{
         width: 1.35rem;
