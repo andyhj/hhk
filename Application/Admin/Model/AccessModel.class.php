@@ -79,6 +79,8 @@ class AccessModel extends Model {
         }
         $datas['pwd'] = md5(trim($_POST['email']).trim($_POST['pwd']));
         $datas['time'] = time();
+        $datas['nickname'] = trim($_POST['nickname']);
+        $datas['remark'] = trim($_POST['remark']);
         if ($M->add($datas)) {
             M("role_user")->add(array('user_id' => $M->getLastInsID(), 'role_id' => (int) $_POST['role_id']));
             if (C("SYSTEM_EMAIL")) {
