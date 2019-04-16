@@ -64,5 +64,4 @@ class IndexController extends InitController {
     public function maintain(){
         $this->display();
     }
-
 }
