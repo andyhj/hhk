@@ -145,9 +145,36 @@ class PlanController extends InitController {
                 $plan_des_arr[] = $val;
             }
         }
+        $plan_info = M("plan")->where(["u_id"=>$u_id,"id"=>$p_id])->find();
+        $this->assign("plan_info",$plan_info);
         $this->assign("plan_des_list",$plan_des_arr);
+        $this->assign('cancel_url', U("index/plan/cancel"));
         $this->display("des");
         
+    }
+    public function cancel(){
+        $u_id = $this->user_info["id"];
+        $p_id = I("post.p_id");
+        if(!$p_id){
+            $json["status"] = 306;
+            $json["info"] = "参数错误";
+            $this->returnJson($json);
+        }
+        $plan_info = M("plan")->where(["u_id"=>$u_id,"id"=>$p_id])->find();
+        if(!$plan_info||empty($plan_info)){
+            $json["status"] = 306;
+            $json["info"] = "计划不存在";
+            $this->returnJson($json);
+        }
+        $s = M("plan")->where(["u_id"=>$u_id,"id"=>$p_id])->save(["status"=>2]);
+        if($s){
+            $json["status"] = 200;
+            $json["info"] = "计划终止成功";
+            $this->returnJson($json);
+        }
+        $json["status"] = 307;
+        $json["info"] = "计划终止失败";
+        $this->returnJson($json);
     }
 
     /**

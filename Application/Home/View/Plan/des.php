@@ -34,12 +34,20 @@
                 text-shadow: 0 1px 0 #FFFFFF;
                 border-collapse: separate;
                 width: 98%;
+                padding-bottom: 0.2rem;
             }
             .tab td {
                 line-height: 24px;
                 border-width: 1px;
                 border-style: solid;
                 border-color: #fff #fff #ddd #ddd;
+            }
+            .cancel{
+                border: 0;
+                border-radius: 0.1rem;
+                height: 0.6rem;
+                width: 2rem;
+                letter-spacing: 0.04rem;
             }
         </style>
     </head>
@@ -77,10 +85,40 @@
                             </td>
                         </tr>
                         <?php endforeach; ?>
+                        <?php if($plan_info['status']==4){ ?><tr align="center" height='50'><td colspan='2'><input type="button" value="取消计划" id="cancel" class="cancel"></td></tr><?php } ?>
                     </table>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </body>
+    <script>
+            var _lock = false;
+            $(".cancel").click(function(){
+                if(_lock){
+                    alert('正在提交....');
+                    return false;
+                }
+                if(!confirm('是否取消计划？')){
+                    return false;
+                }
+                _lock = true;
+                var p_id = "<?php echo $data['p_id']; ?>";
+                $.ajax({
+                    url: "<?php echo $cancel_url; ?>",
+                    data: {p_id: p_id},
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.status == 200) {
+                            alert(data.info);
+                            window.location.reload();
+                        } else {
+                            _lock = false;
+                            alert(data.info);
+                        }
+                    }
+                });
+            });
+        </script>
 </html>

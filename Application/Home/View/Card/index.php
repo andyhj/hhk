@@ -133,7 +133,6 @@
 <?php include T('Common/footer'); ?>
         
         <script>
-            //选择付款账户
             $("#add_card").click(function () {
                 location.href = "<?php echo $add_card_url; ?>";
             });

@@ -171,8 +171,8 @@
                                     <td>
                                         <span style="font-size: 0.36rem;color: #595757;font-weight:bold;"><?php echo $v['bank_name']?></span>
                                     </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
-                                        共<span style="font-size: 0.6rem;color: #fc8b5a"><?php echo $v['periods']?></span>期
+                                    <td rowspan="2" style="text-align: right;font-size: 0.3rem;">
+                                        共<span style="font-size: 0.5rem;color: #fc8b5a"><?php echo $v['periods']?></span>期
                                     </td>
                                 </tr>
                                 <tr>
@@ -184,13 +184,16 @@
                                     <td>
                                         每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
                                     </td>
+                                    <td style="text-align: right;">
+                                        还款总额：<?php echo $v['amount']?>元
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：<?php echo $v['amount']?>元
-                                    </td>
-                                    <td  style="text-align: right;">
                                         费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        状态：<?php if($v['status']==2){ echo '用户终止计划';}elseif($v['status']==4){ echo '待执行';}if($v['status']==5){ echo '计划中断';}?>
                                     </td>
                                 </tr>
                                 <?php if($v["message"]): ?>
