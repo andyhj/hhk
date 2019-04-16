@@ -57,12 +57,13 @@ class PlanController extends InitController {
         $this->assign('wx_share_url', $this->http . $_SERVER['HTTP_HOST'] . '/' . $this->user_info["id"] . '-0-0-0-0.html');
     }
     public function index(){
+        $u_id = $this->user_info["id"];
         $plan_model = M("plan");
         $current_page = 1;
         $per_page = 10;
-        $plan_list1 = $plan_model->where(["status"=>3])->order("add_time desc")->page($current_page.','.$per_page)->select(); //正在执行
-        $plan_list2 = $plan_model->where(["status"=>1])->order("add_time desc")->page($current_page.','.$per_page)->select(); //已完成
-        $plan_list3 = $plan_model->where(["status"=>array('in','2,4,5')])->order("add_time desc,status desc")->page($current_page.','.$per_page)->select(); //未执行
+        $plan_list1 = $plan_model->where(["u_id"=>$u_id,"status"=>3])->order("add_time desc")->page($current_page.','.$per_page)->select(); //正在执行
+        $plan_list2 = $plan_model->where(["u_id"=>$u_id,"status"=>1])->order("add_time desc")->page($current_page.','.$per_page)->select(); //已完成
+        $plan_list3 = $plan_model->where(["u_id"=>$u_id,"status"=>array('in','2,4,5')])->order("add_time desc,status desc")->page($current_page.','.$per_page)->select(); //未执行
         $plan_arr1 = [];
         $plan_arr2 = [];
         $plan_arr3 = [];
