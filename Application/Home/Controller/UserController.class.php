@@ -182,6 +182,10 @@ class UserController extends InitController {
         $json["info"] = "没有数据";
         $this->returnJson($json,$session_name);
     }
+    public function rate(){
+        $this->display();
+    }
+
     protected function returnJson($data,$session_name=""){
         if($session_name){
             session($session_name, null);

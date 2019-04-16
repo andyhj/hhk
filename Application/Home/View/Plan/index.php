@@ -99,6 +99,7 @@
             .plan{
                 height: 7.5rem;
                 overflow-y: auto;
+                padding-bottom: 0.5rem;
             }
         </style>
     </head>

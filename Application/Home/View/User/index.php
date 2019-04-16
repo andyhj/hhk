@@ -77,7 +77,7 @@
                     </a>
                 </div>
                 <div class="vipsan">
-                    <a href="">
+                    <a href="rate.html">
                     <div class="col-xs-6 text-left">
                         <span class="iccs"><img src="/src/img/user/flsx.png" alt=""></span>
                         <span class="lzz">费率事项</span>
