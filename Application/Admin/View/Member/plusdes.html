@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>用户列表-{$site.SITE_INFO.name}</title>
+        <title>用户VIP记录-{$site.SITE_INFO.name}</title>
         <php>
             $addCss="";
             $addJs="";
-            $currentNav ='用户管理 > 用户列表';
+            $currentNav ='用户管理 > 用户VIP记录';
         </php>
         <include file="Common:intoHead" />
     </head>
@@ -17,39 +17,35 @@
                 <include file="Common:left" />
                 <div id="Right">
                     <div class="Item hr">
-                        <div class="current">用户列表</div>
+                        <div class="current">用户VIP记录</div>
                     </div>
                     <form id="search_form" method="get">
-                        <input type="text" class="input" name="search_key" value="<?php echo $datas['search_key']; ?>" style="width: 200px;"  placeholder="根据用户登陆账号或者用户ID查找"/> 
+                        <input type="text" class="input" name="search_key" value="<?php echo $datas['search_key']; ?>" style="width: 200px;"  placeholder="根据用户ID查找"/> 
                         <input type="submit" class="btn" value="搜索" />
                     </form>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
                         <tbody>
                                 <tr>
                                 <td>用户ID</td>
-                            	<td>上级用户ID</td>
                                 <td>登陆账号</td>
                                 <td>用户名称</td>
-                                <td>真实姓名</td>
-                                <td>微信昵称</td>
-                                <td>是否VIP</td>
-                                <td>VIP到期时间</td>
-                                <td>最后登陆时间</td>
-                                <?php if($admin_info["aid"]==1): ?><td></td><?php endif; ?>
+                                <td>VIP月数</td>
+                                <td>类型</td>
+                                <td>添加时间</td>
+                                <td>过期时间</td>
+                                <td>领取时间</td>
                             </tr>
                             <?php if(!empty($datas["list"])): ?>
                             <?php foreach($datas["list"] as $n => $data): ?>
                             <tr id="tr_user_<?php echo $data['u_id']; ?>">
                                 <td><?php echo str_replace($datas['search_key'], '<span style="color:red;">' . $datas['search_key'] . '</span>', $data['u_id']); ?></td>
-                                <td><?php echo $data['superior_id']; ?></td>
-                                <td><?php echo str_replace($datas['search_key'], '<span style="color:red;">' . $datas['search_key'] . '</span>', $data['login_id']); ?></td>
+                                <td><?php echo $data['login_id']; ?></td>
                                 <td><?php echo $data['u_name']; ?></td>
-                                <td><?php echo $data['name']; ?></td>
-                                <td><?php echo $data['wx_name']; ?></td>
-                                <td><?php echo $data['is_plus']; ?></td>
-                                <td><?php echo $data['vip_end_time']; ?></td>
-                                <td><?php echo $data['lasttime']; ?></td>
-                                <?php if($admin_info["aid"]==1): ?><td><a href='<?php echo U("member/sendvip",["u_id"=>$data["u_id"]]); ?>'>赠送VIP</a></td><?php endif; ?>
+                                <td><?php echo $data['vip_m']; ?></td>
+                                <td><?php if($data['type']==1){ echo '注册赠送';}elseif($data['type']==2){ echo '系统赠送';}elseif($data['type']==3){ echo '邀请好友赠送';}elseif($data['type']==4){ echo '充值续费';} ?></td>
+                                <td><?php echo $data['add_time']?date('Y-m-d H:i:s',$data['add_time']):''; ?></td>
+                                <td><?php echo $data['end_time']?date('Y-m-d H:i:s',$data['end_time']):''; ?></td>
+                                <td><?php echo $data['get_time']?date('Y-m-d H:i:s',$data['get_time']):''; ?></td>
                             </tr>
                             <?php endforeach; ?>
                             <?php endif; ?>
