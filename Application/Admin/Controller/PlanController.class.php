@@ -157,39 +157,49 @@ class PlanController extends CommonController{
         if ($status) {
             $where['order_state'] = $status;
         }
-        $count = M("plan_des")->where($where)->count();
-        $page = getpage($count, $per_page);
-        $plan_des_list = M("plan_des")->where($where)->order('order_state desc,s_time asc')->page($current_page.','.$per_page)->select();
+        $plan_list = M("plan")->field('id')->where(["status"=>array('in','3,4')])->field('id')->select(); 
         $plan_des_arr = [];
-        if($plan_des_list&&!empty($plan_des_list)){
-            foreach ($plan_des_list as $val) {
-                $val["type_name"] = ""; 
-                if($val["type"]==1){
-                    $val["type_name"] = "消费"; 
+        $count = 0;
+        if($plan_list){
+            $pid_arr = [];
+            foreach ($plan_list as $value) {
+                $pid_arr[] = $value['id'];
+            }
+            $pid_str = implode(",", $pid_arr);
+            $where['p_id'] = array('in',$pid_str);
+            $count = M("plan_des")->where($where)->count();
+            $plan_des_list = M("plan_des")->where($where)->order('order_state desc,s_time asc')->page($current_page.','.$per_page)->select();
+            if($plan_des_list&&!empty($plan_des_list)){
+                foreach ($plan_des_list as $val) {
+                    $val["type_name"] = ""; 
+                    if($val["type"]==1){
+                        $val["type_name"] = "消费"; 
+                    }
+                    if($val["type"]==2){
+                        $val["type_name"] = "还款"; 
+                    }
+                    switch ($val["order_state"]) {
+                        case 1:
+                            $val["status_name"] = "成功";
+                            break;
+                        case 2:
+                            $val["status_name"] = "待执行";
+                            break;
+                        case 3:
+                            $val["status_name"] = "执行中";
+                            break;
+                        case 4:
+                            $val["status_name"] = "失败";
+                            break;
+                        default:
+                            $val["status_name"] = "";
+                            break;
+                    }
+                    $plan_des_arr[] = $val;
                 }
-                if($val["type"]==2){
-                    $val["type_name"] = "还款"; 
-                }
-                switch ($val["order_state"]) {
-                    case 1:
-                        $val["status_name"] = "成功";
-                        break;
-                    case 2:
-                        $val["status_name"] = "待执行";
-                        break;
-                    case 3:
-                        $val["status_name"] = "执行中";
-                        break;
-                    case 4:
-                        $val["status_name"] = "失败";
-                        break;
-                    default:
-                        $val["status_name"] = "";
-                        break;
-                }
-                $plan_des_arr[] = $val;
             }
         }
+        $page = getpage($count, $per_page);
         $this->assign("plan_des_list",$plan_des_arr);
         $this->assign("status", $status);
         $this->assign("page",$page->show());
