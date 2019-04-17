@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>计划详情列表-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='计划管理 > 计划详情列表';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">计划详情列表</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <input type="text" class="input" name="search_key" value="<?php echo $search_key; ?>" style="width: 200px;"  placeholder="根据用户ID、计划ID或订单号查找"/> 
+                       状态： <select id="status" name="status">
+                                <option value="0"  <?php if($status==0){echo 'selected = "selected"';} ?>>---全部---</option>
+                                <option value="1" <?php if($status==1){echo 'selected = "selected"';} ?>>成功</option>
+                                <option value="2" <?php if($status==2){echo 'selected = "selected"';} ?>>待执行</option>
+                                <option value="3" <?php if($status==3){echo 'selected = "selected"';} ?>>执行中</option>
+                                <option value="4" <?php if($status==4){echo 'selected = "selected"';} ?>>失败</option>
+                            </select>
+                        <input type="submit" class="btn" value="搜索" />
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tr>
+                            <td>ID</td>
+                            <td>计划ID</td>
+                            <td>用户ID</td>
+                            <td>订单号</td>
+                            <td>类型</td>
+                            <td>金额</td>
+                            <td>执行时间</td>
+                            <td>实际执行时间</td>
+                            <td>补单订单号</td>
+                            <td>补单时间</td>
+                            <td>信息</td>
+                            <td>状态</td>
+                            <td>操作</td>
+                        </tr>
+                        <?php if(!empty($plan_des_list)): ?>
+                        <?php $i=1; ?>
+                        <?php foreach($plan_des_list as $n => $data): ?>
+                        <tr id="tr_user_<?php echo $data['id']; ?>">
+                            <td><?php echo $data['id']; ?></td>
+                            <td><?php echo $data['u_id']; ?></td>
+                            <td><?php echo $data['order_id']; ?></td>
+                            <td><?php echo $data['type_name']; ?></td>
+                            <td><?php echo $data['amount']; ?></td>
+                            <td><?php echo date("Y-m-d H:i:s",$data['s_time']); ?></td>
+                            <td><?php echo $data['d_time']?date("Y-m-d H:i:s",$data['d_time']):""; ?></td>
+                            <td><?php echo $data['remedy_id']; ?></td>
+                            <td><?php echo $data['remedy_time']?date("Y-m-d H:i:s",$data['remedy_time']):""; ?></td>
+                            <td><?php echo $data['message']; ?></td>
+                            <td><?php echo $data['status_name']; ?></td>
+                            <td><?php if($data['order_state']==4): ?><input type="button" value="补单" data-bdid="<?php echo $data['id']; ?>" class="btn bd" /><?php endif; ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+        <script>
+            
+            var _lock = false;
+            $(".bd").click(function(){
+                if(_lock){
+                    alert('正在提交....');
+                    return false;
+                }
+                if(!confirm('是否补单？')){
+                    return false;
+                }
+                _lock = true;
+                var bd_id = $(this).attr('data-bdid');
+                $.ajax({
+                    url: "<?php echo $bd_url; ?>",
+                    data: {id:bd_id},
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        alert(data.info);
+                        window.location.reload();
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

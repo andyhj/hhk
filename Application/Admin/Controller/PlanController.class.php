@@ -138,6 +138,64 @@ class PlanController extends CommonController{
         $this->assign("bd_url",U("plan/reporder"));
         $this->display();
     }
+    /**
+     * 计划详情
+     */
+    public function plandes(){
+        $current_page = (int)I('p',1);
+        $search_key = I('search_key',"");
+        $status = I('status', 0);
+        $per_page = 15;//每页显示条数
+        $where = [];
+        if($search_key){
+            $where_s['u_id'] = $search_key;
+            $where_s['p_id'] = $search_key;
+            $where_s['order_id'] = $search_key;
+            $where_s['_logic'] = 'or';
+            $where['_complex'] = $where_s;
+        }
+        if ($status) {
+            $where['order_state'] = $status;
+        }
+        $count = M("plan_des")->where($where)->count();
+        $page = getpage($count, $per_page);
+        $plan_des_list = M("plan_des")->where($where)->order('order_state desc,s_time asc')->page($current_page.','.$per_page)->select();
+        $plan_des_arr = [];
+        if($plan_des_list&&!empty($plan_des_list)){
+            foreach ($plan_des_list as $val) {
+                $val["type_name"] = ""; 
+                if($val["type"]==1){
+                    $val["type_name"] = "消费"; 
+                }
+                if($val["type"]==2){
+                    $val["type_name"] = "还款"; 
+                }
+                switch ($val["order_state"]) {
+                    case 1:
+                        $val["status_name"] = "成功";
+                        break;
+                    case 2:
+                        $val["status_name"] = "待执行";
+                        break;
+                    case 3:
+                        $val["status_name"] = "执行中";
+                        break;
+                    case 4:
+                        $val["status_name"] = "失败";
+                        break;
+                    default:
+                        $val["status_name"] = "";
+                        break;
+                }
+                $plan_des_arr[] = $val;
+            }
+        }
+        $this->assign("plan_des_list",$plan_des_arr);
+        $this->assign("status", $status);
+        $this->assign("page",$page->show());
+        $this->assign("bd_url",U("plan/reporder"));
+        $this->display();
+    }
     //补单
     public function reporder(){
         $pd_id = I("post.id");  //计划详情id
