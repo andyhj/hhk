@@ -89,6 +89,7 @@ class PlanController extends CommonController{
                 $plan_arr[] = $val;
             }
         }
+        $this->assign("status", $status);
         $this->assign("page",$page->show());
         $this->assign("plan_list",$plan_arr);
         $this->assign("search_key",$search_key);
