@@ -41,15 +41,18 @@ class UserModel extends Model{
      * @param type $uid
      * @param type $plan_des_info
      */
-    public function wxMessagewxYwlcMsg($msg_uid,$title,$keyword1,$keyword2,$keyword3,$keyword4,$remark='',$url=''){
+    public function wxMessagewxYwlcMsg($msg_uid,$title,$keyword1,$keyword2,$keyword3,$keyword4,$remark='',$url='',$open_id=''){
         if(!$msg_uid||!$title||!$keyword1||!$keyword2||!$keyword3||!$keyword4){
             return false;
         }
-        $user_info = $this->getUserOne($msg_uid);
-        if($user_info&&!empty($user_info)){
+        if($open_id==''){
+            $user_info = $this->getUserOne($msg_uid);
+            $open_id = $user_info["open_id"];
+        }
+        if($open_id){
             require_once APP_ROOT ."Application/Common/Concrete/wxapi/example/weixin.api.php";
             $weixin = new class_weixin_adv();
-            $msg_data["touser"] = $user_info["open_id"];
+            $msg_data["touser"] = $open_id;
             $msg_data["template_id"] = "qq5apA1Ku6rbm0IWkD_QMHRjAaSOuCu9Fv62SjPpmrE";
             $msg_data["url"] = $url;//HTTP_HOST.'/index/user/plusdes.html';
             $msg_data["data"] = array(
@@ -79,7 +82,8 @@ class UserModel extends Model{
                 )
             );
             $return_status = $weixin->send_user_message($msg_data);
-            add_log("wxMessage.log", "wxmessage", "计划失败公众号消息推送状态：". var_export($return_status, true));
+            add_log("wxMessage.log", "wxmessage", "公众号推送信息数据：". var_export($msg_data, true));
+            add_log("wxMessage.log", "wxmessage", "公众号推送信息：". var_export($return_status, true));
             $return_status = json_decode($return_status, true);
             if($return_status["errcode"]===0){
                 return true;

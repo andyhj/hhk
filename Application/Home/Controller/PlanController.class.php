@@ -397,6 +397,25 @@ class PlanController extends InitController {
             $return_status = $plan_des_model->addAll($plan_des_arr);
             if($return_status){
                 M()->commit();
+                //赠送上级会员
+                $user_m = D('User');
+                $db_config = C("DB_CONFIG2");
+                $cunstomer_wx_binding_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
+                $user_wx_binding = $cunstomer_wx_binding_m->where(["user_id"=>$this->user_info["agentsid"],"state"=>1])->find();
+                if($user_wx_binding&&!empty($user_wx_binding)){
+                    $user_vip_log_m = M("user_vip_log");
+                    $user_vip_log_info = $user_vip_log_m->where(["u_id"=>$user_wx_binding["user_id"],"type"=>3])->find();
+                    if(!$user_vip_log_info&&empty($user_vip_log_info)){
+                        $user_vip_log_data["u_id"] = $user_wx_binding["user_id"];
+                        $user_vip_log_data["add_time"] = time();
+                        $user_vip_log_data["end_time"] = strtotime("+1 month");
+                        $s=$user_vip_log_m->add($user_vip_log_data);
+                        if($s){
+                            $user_m->wxMessagewxYwlcMsg($user_wx_binding["user_id"],'恭喜您获得《会还款》一个月VIP','下级用户制定《会还款》计划成功赠送',date("Y-m-d H:i:s"),'请尽快领取','点击领取','',HTTP_HOST.'/index/user/plusdes.html',$user_wx_binding["open_id"]);
+                        }
+                    }
+                }
+        
                 $json["status"] = 200;
                 $json["info"] = "生成计划成功";
                 $this->returnJson($json,$session_name);
