@@ -198,6 +198,16 @@
                             </span>
                     </li>
                     <li>
+                        每天执行次数：
+                            <span  style="float:right;">
+                                <select id="nums" name="nums" >
+                                    <option value="0">---系统默认---</option>
+                                    <option value="1"> 一次</option>
+                                    <option value="2"> 两次</option>
+                                </select>
+                            </span>
+                    </li>
+                    <li>
                         每期还款金额：
                         <span  style="float:right;" id="p_amount"></span>
                     </li>
@@ -319,6 +329,7 @@
                 var b_id = $("#bc_id").val();
                 var amount = $("#amount").val();
                 var periods = $("#periods").val();
+                var nums = $("#nums").val();
                 if(b_id<1){
                     _lock = false;
                     alert("请选择银行卡");
@@ -341,7 +352,7 @@
                 }
                 $.ajax({
                     url: "<?php echo $add_plan_url; ?>",
-                    data: {c_id: c_id,b_id:b_id,amount:amount,periods:periods},
+                    data: {c_id: c_id,b_id:b_id,amount:amount,periods:periods,nums:nums},
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {

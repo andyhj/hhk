@@ -276,6 +276,7 @@ class PlanController extends InitController {
         $u_id = $this->user_info["id"];
         $amount = I("amount"); //金额
         $periods = I("periods"); //期数(6,12,24)
+        $nums = (int)I("nums",0);//每天执行次数
         $session_name = "plan_submit_".$u_id;
         if(session($session_name)){
             $json["status"] = 305;
@@ -382,6 +383,14 @@ class PlanController extends InitController {
         //如果时间大于期数加预留时间，则每天执行一次代扣和代还
         if($periods+$reserved_days<$days){
             $num = 1;
+        }
+        if($nums){
+            if($nums<$num){
+                $json["status"] = 321;
+                $json["info"] = "距离还款日较短，不能选择每天执行一次";
+                $this->returnJson($json,$session_name);
+            }
+            $num = $nums;
         }
         $plan_des_arr = $this->getPlanDes($plan_id, $u_id, $p_amount, $p_fee, $is_include, $periods, $num);
         if($plan_des_arr&&!empty($plan_des_arr)){
