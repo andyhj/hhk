@@ -23,10 +23,12 @@ class PlanController extends InitController {
         $plan_model = M("plan");
         $plan_des_model = M("plan_des");
         $plan_list = $plan_model->where(["status"=>array('in','3,4')])->select(); 
+            add_log("execute_plan.log", "cli", "计划:".$plan_list);
         if($plan_list){
             foreach ($plan_list as $pl) {
                 $p_id = $pl["id"];
                 $plan_des_info = $plan_des_model->where(["p_id"=>$p_id,"order_state"=>2,"s_time"=>array('ELT', time())])->order("s_time ASC")->find();
+                add_log("execute_plan.log", "cli", "计划详情:".$plan_des_info);
                 if($plan_des_info){
                     $this->channelPay($pl, $plan_des_info);
                 }
