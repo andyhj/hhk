@@ -21,6 +21,14 @@
                     </div>
                     <form id="search_form" method="get">
                         <input type="text" class="input" name="search_key" value="<?php echo $search_key; ?>" style="width: 200px;"  placeholder="根据登陆账号或者用户ID查找"/> 
+                       状态： <select id="status" name="status">
+                                <option value="0"  <?php if($status==0){echo 'selected = "selected"';} ?>>---全部---</option>
+                                <option value="1" <?php if($status==1){echo 'selected = "selected"';} ?>>计划完成</option>
+                                <option value="2" <?php if($status==2){echo 'selected = "selected"';} ?>>用户终止计划</option>
+                                <option value="3" <?php if($status==3){echo 'selected = "selected"';} ?>>执行中</option>
+                                <option value="4" <?php if($status==4){echo 'selected = "selected"';} ?>>待执行</option>
+                                <option value="5" <?php if($status==5){echo 'selected = "selected"';} ?>>计划中断</option>
+                            </select>
                         <input type="submit" class="btn" value="搜索" />
                     </form>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">

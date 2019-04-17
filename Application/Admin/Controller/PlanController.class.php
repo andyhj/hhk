@@ -15,6 +15,7 @@ class PlanController extends CommonController{
     public function index(){
         $current_page = (int)I('p',1);
         $search_key = I('search_key',"");
+        $status = I('status', 0);
         $per_page = 15;//每页显示条数
         $plan_m = M("plan");
         $plan_des_m = M("plan_des");
@@ -33,6 +34,9 @@ class PlanController extends CommonController{
             }else{
                 $where["u_id"] = "";
             }
+        }
+        if ($status) {
+            $where['status'] = $status;
         }
         $count = $plan_m->where($where)->count();
         $page = getpage($count, $per_page);
