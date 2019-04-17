@@ -198,7 +198,7 @@
                             </span>
                     </li>
                     <li>
-                        每天执行次数：
+                        每天执行扣款次数：
                             <span  style="float:right;">
                                 <select id="nums" name="nums" >
                                     <option value="0">---系统默认---</option>
