@@ -35,7 +35,7 @@
                             <td>每期扣款额度</td>
                             <td>每期手续费</td>
                             <td>交易费率</td>
-                            <td>结算费率(每笔)</td>
+                            <td>银行卡</td>
                             <td>任务开始时间</td>
                             <td>任务结束时间</td>
                             <td>添加时间</td>
@@ -53,8 +53,8 @@
                             <td><?php echo $data['amount']; ?></td>
                             <td><?php echo $data['periods']; ?></td>
                             <td><?php echo $data['p_amount']; ?></td>
-                            <td><?php echo $data['p_fee']; ?></td>
-                            <td><?php echo $data['fee']; ?></td>
+                            <td><?php echo ($data['p_fee']*100).'%+'.$data['fee'];?> </td>
+                            <td><?php echo $data['bank_name'].'('.$data['card_no'].')'; ?></td>
                             <td><?php echo $data['close_rate']; ?></td>
                             <td><?php echo $data['channel_start_time']; ?></td>
                             <td><?php echo $data['channel_end_time']; ?></td>

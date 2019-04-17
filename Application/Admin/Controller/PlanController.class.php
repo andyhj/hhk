@@ -40,6 +40,7 @@ class PlanController extends CommonController{
         $plan_arr = [];
         if($plan_list&&!empty($plan_list)){
             foreach ($plan_list as $val) {
+                $bank_card_info = M("bank_card_".$val['c_code'])->where(["id"=>$val["bc_id"]])->find();
                 $customer_info = $customer_m->where(["id"=>$val["u_id"]])->find();
                 $channel_info = $channel_m->where(["id"=>$val["c_id"]])->find();
                 $plan_des_list = $plan_des_m->where(["p_id"=>$val["id"]])->select();
@@ -48,6 +49,8 @@ class PlanController extends CommonController{
                 $val["channel_name"] = "";    //通道名称
                 $val["channel_start_time"] = "";    //任务开始时间
                 $val["channel_end_time"] = "";    //任务结束时间
+                $val["card_no"] = substr($bank_card_info['card_no'],-4); 
+                $val["bank_name"] = $bank_card_info['bank_name'];    
                 if($customer_info&&!empty($customer_info)){
                     $val["user_loginid"] = $customer_info["loginid"];  //登陆账号
                     $val["user_name"] = $customer_info["name"];    //商户名称
