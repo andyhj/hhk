@@ -36,7 +36,7 @@ class PlanController extends CommonController{
         }
         $count = $plan_m->where($where)->count();
         $page = getpage($count, $per_page);
-        $plan_list = $plan_m->where($where)->page($current_page.','.$per_page)->select();
+        $plan_list = $plan_m->where($where)->order('status desc,id desc')->page($current_page.','.$per_page)->select();
         $plan_arr = [];
         if($plan_list&&!empty($plan_list)){
             foreach ($plan_list as $val) {
