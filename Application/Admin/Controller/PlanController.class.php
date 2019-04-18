@@ -202,6 +202,7 @@ class PlanController extends CommonController{
         $page = getpage($count, $per_page);
         $this->assign("plan_des_list",$plan_des_arr);
         $this->assign("status", $status);
+        $this->assign("search_key",$search_key);
         $this->assign("page",$page->show());
         $this->assign("bd_url",U("plan/reporder"));
         $this->display();
