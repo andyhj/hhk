@@ -356,7 +356,7 @@ class CardController extends InitController {
             $json["info"] = "参数错误";
             $this->returnJson($json);
         }
-        $bank_card_info = $this->card_m->where(["uid"=>$u_id,"id"=>$id,"success"=>1])->select();
+        $bank_card_info = $this->card_m->where(["uid"=>$u_id,"id"=>$id,"success"=>1])->find();
         if(!$bank_card_info||!$bank_card_info["bind_id"]){
             $json["status"] = 306;
             $json["info"] = "信用卡不存在";
