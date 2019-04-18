@@ -157,7 +157,7 @@ class PlanController extends CommonController{
         if ($status) {
             $where['order_state'] = $status;
         }
-        $plan_list = M("plan")->field('id')->where(["status"=>array('in','3,4')])->field('id')->select(); 
+        $plan_list = M("plan")->field('id')->where(["status"=>array('in','3,4,5')])->field('id')->select(); 
         $plan_des_arr = [];
         $count = 0;
         if($plan_list){
