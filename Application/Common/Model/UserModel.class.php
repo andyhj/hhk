@@ -42,10 +42,13 @@ class UserModel extends Model{
      * @param type $plan_des_info
      */
     public function wxMessagewxYwlcMsg($msg_uid,$title,$keyword1,$keyword2,$keyword3,$keyword4,$remark='',$url='',$open_id=''){
-        if(!$msg_uid||!$title||!$keyword1||!$keyword2||!$keyword3||!$keyword4){
+        if(!$title||!$keyword1||!$keyword2||!$keyword3||!$keyword4){
             return false;
         }
         if($open_id==''){
+            if(!$msg_uid){
+                 return false;
+            }
             $user_info = $this->getUserOne($msg_uid);
             $open_id = $user_info["open_id"];
         }

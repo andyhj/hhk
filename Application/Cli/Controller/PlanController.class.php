@@ -27,7 +27,7 @@ class PlanController extends InitController {
         if($plan_list){
             foreach ($plan_list as $pl) {
                 $p_id = $pl["id"];
-                $plan_des_info = $plan_des_model->where(["p_id"=>$p_id,"order_state"=>2,"s_time"=>array('ELT', time())])->order("s_time ASC")->find();
+                $plan_des_info = $plan_des_model->where(["p_id"=>$p_id,"s_time"=>array('ELT', time()),"order_state"=>2])->order("s_time ASC")->find();
                 add_log("execute_plan.log", "cli", "计划详情:".var_export($plan_des_info, true));
                 if($plan_des_info){
                     $this->channelPay($pl, $plan_des_info);
@@ -255,14 +255,34 @@ class PlanController extends InitController {
         $date_tod = date('Y-m-d');
         $db_config = C("DB_CONFIG2");
         $pay_records_m = M("pay_records",$db_config["DB_PREFIX"],$db_config);
+        $plan_des_m = M("plan_des");
         
         $pay_records_info = $pay_records_m->where("state = 1 and created > '".$date_yes."' and created < '".$date_tod."' ")->sum('pay');
-        $sum_yes = $pay_records_info?$pay_records_info:0; //昨日交易额
-
+        $sum_yes = $pay_records_info?$pay_records_info:0; //会收钱昨日交易额
         $pay_records_info1 = $pay_records_m->where("state = 1 and created > '".$date_tod."' ")->sum('pay');
-        $sum_today = $pay_records_info1?$pay_records_info1:0; //今日交易额
-
+        $sum_today = $pay_records_info1?$pay_records_info1:0; //会收钱今日交易额
         
-        $msg = '昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today;
+        $plan_des_info = $plan_des_m->where("s_time > '".strtotime($date_yes)."' and s_time < '".strtotime($date_tod)."' and order_state=1 and type=1 ")->sum('amount');
+        $hhk_sum_yes = $plan_des_info?$plan_des_info:0; //会还款昨日交易额
+        $plan_des_info1 = $plan_des_m->where("s_time > '".strtotime($date_tod)."' and order_state=1 and type=1 ")->sum('amount');
+        $hhk_sum_today = $plan_des_info1?$plan_des_info1:0; //会还款今日交易额
+        
+        
+        $msg = '《会收钱》昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
+        $this->preparereport($msg);
+    }
+    private function preparereport($msg)
+    {
+        $db_config = C("DB_CONFIG2");
+        $account_status_m = M("account_status",$db_config["DB_PREFIX"],$db_config);
+        $type = 4;
+	$sqllist = "SELECT c.open_id,c.wx_name FROM l_account_status a INNER JOIN l_cunstomer_wx_binding c ON a.list = c.user_id WHERE a.type = '".$type."' AND a.isToPush = '1'";
+        $open_ids = $account_status_m->query($sqllist);
+        if ($open_ids) {
+            $user_m = D("User");
+            foreach ($open_ids as $value) {
+                $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
+            }
+        }
     }
 }
