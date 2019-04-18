@@ -388,21 +388,16 @@ class CardController extends InitController {
                     $json["info"] = "解绑卡失败(".$re['rt3_retMsg'].")";
                     $this->returnJson($json);
                 }else{
-                    if($re['rt7_bindStatus']=="SUCCESS"){
-                        $r_s = $this->card_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0]);
-                        if($r_s){
-                            $json["status"] = 200;
-                            $json["info"] = "银行卡已经解绑成功";
-                            $this->returnJson($json);
-                        }else{
-                            $json["status"] = 311;
-                            $json["info"] = "解绑卡成功，更新数据失败，请联系客服";
-                            $this->returnJson($json);
-                        }
+                    $r_s = $this->card_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0]);
+                    if($r_s){
+                        $json["status"] = 200;
+                        $json["info"] = "银行卡已经解绑成功";
+                        $this->returnJson($json);
+                    }else{
+                        $json["status"] = 311;
+                        $json["info"] = "解绑卡成功，更新数据失败，请联系客服";
+                        $this->returnJson($json);
                     }
-                    $json["status"] = 310;
-                    $json["info"] = "解绑卡失败(".$re['rt3_retMsg'].")";
-                    $this->returnJson($json);
                 }
                 break;
 
