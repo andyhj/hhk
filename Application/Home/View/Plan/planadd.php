@@ -202,14 +202,18 @@
                             <span  style="float:right;">
                                 <select id="nums" name="nums" >
                                     <option value="0">---系统默认---</option>
-                                    <option value="1"> 一次</option>
-                                    <option value="2"> 两次</option>
+                                    <option value="1">每天扣款一次</option>
+                                    <option value="2">每天扣款两次</option>
                                 </select>
                             </span>
                     </li>
                     <li>
                         每期还款金额：
                         <span  style="float:right;" id="p_amount"></span>
+                    </li>
+                    <li>
+                        每期扣款金额：
+                        <span  style="float:right;" id="k_amount"></span>
                     </li>
                     <li>
                         每期手续费：
@@ -222,12 +226,11 @@
                     <li style="border-bottom: 0px;height: 3px;background-color: #eeeeee;padding: 0px;margin: 0px;width: 110%;left: -5%;">
                         
                     </li>
-                    <li style="border-bottom:0px;height: 43px;padding-top: 9px;display:none" id="plus_fee">
-                        
-                    </li>
+                    <li style="border-bottom:0px;height: 43px;padding-top: 9px;display:none" id="plus_fee"></li>
                 </ul>
             </div>
         </div>
+        <div style="color:red;font-size: 12px;padding-left: 5px;padding-right: 5px;" id="att"></div>
         <div class="channel_submit"><div id="save">提交计划</div></div>
         <?php include T('Common/footer'); ?>
         <script>
@@ -286,8 +289,10 @@
                                     '<option value="24"> 24期 × 每期 '+p_fee24+'</option>';
                     $("#periods").html(p_html);
                     $("#p_amount").html();
+                    $("#k_amount").html();
                     $("#p_fee").html();
                     $("#p_amount_count").html();
+                    $("#att").html();
                 }
             });
             $("#periods").change(function () {
@@ -305,9 +310,12 @@
                     periods = parseInt(periods);
                     var p_amount=(amount/periods).toFixed(2);//扣款额度
                     var p_fee = (p_amount*fee+close_rate).toFixed(2); //每期手续费
+                    var ye = (parseFloat(p_amount)+(parseFloat(p_fee)*periods)).toFixed(2); //卡余额
                     $("#p_amount").html(p_amount);
+                    $("#k_amount").html((parseFloat(p_amount)+parseFloat(p_fee)).toFixed(2));
                     $("#p_fee").html(p_fee);
                     $("#p_amount_count").html((p_fee*periods).toFixed(2));
+                    $("#att").html('注意：卡额度必须大于 '+ye);
                     if(!is_plus){
                         var plus_fee = <?php echo $channel_info["plus_user_fee"];?>;
                         var plus_user_close_rate = <?php echo $channel_info["plus_user_close_rate"];?>;
@@ -320,6 +328,16 @@
             });
             var _lock = false;
             $("#save").click(function(){
+                var p_amount = $("#p_amount").html();
+                var p_amount_count = $("#p_amount_count").html();
+                var msg = '确定卡里余额大于每期扣款金额加手续费总额？';
+                if(p_amount !=='' && p_amount_count !==''){
+                    var ye = (parseFloat(p_amount)+parseFloat(p_amount_count)).toFixed(2); //卡余额
+                    msg = '确定卡里余额大于'+ye+'？';
+                }
+                if(!confirm(msg)){
+                    return false;
+                }
                 if(_lock){
                     alert('正在提交....');
                     return false;
