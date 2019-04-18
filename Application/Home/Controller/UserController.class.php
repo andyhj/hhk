@@ -185,6 +185,31 @@ class UserController extends InitController {
     public function rate(){
         $this->display();
     }
+    /**
+     * 通道列表
+     */
+    public function channel(){
+        $channel_moblie_m = M("channel_moblie");
+        $where["state"] = 1;
+        $num = $channel_moblie_m->where($where)->count();
+        $channel_moblie_list = $channel_moblie_m->where($where)->select();
+        if($num==1&&$channel_moblie_list){
+            $channel_info = M("channel")->where(["id"=>$channel_moblie_list[0]["c_id"]])->find();
+            $url = U("index/card/index",["c_code"=>$channel_info["code"]]);
+            header('Location: ' . $url);
+            die();
+        }
+        $channels_arr = [];
+        if($channel_moblie_list){
+            foreach ($channel_moblie_list as $value) {
+                $channel_info = M("channel")->where(["id"=>$value["c_id"]])->find();
+                $value["channel_info"] = $channel_info;
+                $channels_arr[] = $value;
+            }
+        }
+        $this->assign('channels', $channels_arr);
+        $this->display();
+    }
 
     protected function returnJson($data,$session_name=""){
         if($session_name){

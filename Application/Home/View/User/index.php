@@ -54,8 +54,8 @@
                 </a>
             </div>
             <div class="des">
-<!--                <div class="vipsan">
-                    <a href="">
+                <div class="vipsan">
+                    <a href="channel.html">
                     <div class="col-xs-6 text-left">
                         <span class="iccs"><img src="/src/img/user/card.png" alt=""></span>
                         <span class="lzz">我的银行卡</span>
@@ -64,7 +64,7 @@
                         <span class="icc"><img src="/src/img/user/jt.png" alt=""></span>
                     </div>
                     </a>
-                </div>-->
+                </div>
                 <div class="vipsan">
                     <a href="">
                     <div class="col-xs-6 text-left">
