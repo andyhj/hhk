@@ -358,7 +358,7 @@ class PlanController extends CommonController{
                         'orderAmount'=>$plan_des_info["amount"],
                         'terminalType'=>'IMEI',
                         'terminalId'=>'122121212121',
-                        'queryUrl'=>U("index/callback/hlbPay"),
+                        'queryUrl'=>HTTP_HOST."/index/callback/hlbPay",
                         'Code'=>'',
                     );
                     $hlb_dh = $heli_pay->bindingCardPay($arg);//执行代扣
@@ -506,7 +506,7 @@ class PlanController extends CommonController{
             require_once $_SERVER['DOCUMENT_ROOT'] ."/Application/Common/Concrete/wxapi/example/weixin.api.php";
             $weixin = new class_weixin_adv();
             $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
-            $msg_data["template_id"] = "DVlfjMCemVIaf6RbPAqARRYMVckz76r_LJXZ_IS566Y";
+            $msg_data["template_id"] = "qq5apA1Ku6rbm0IWkD_QMHRjAaSOuCu9Fv62SjPpmrE";
             $msg_data["url"] = HTTP_HOST.'/index/plan/plandes.html?id='.$plan_info["id"];
             $msg_data["data"] = array(
                 "first"=>array(
