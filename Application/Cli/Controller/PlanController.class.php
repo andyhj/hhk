@@ -197,7 +197,8 @@ class PlanController extends InitController {
                 )
             );
             $return_status = $weixin->send_user_message($msg_data);
-            add_log("callback_helipay.log", "callback", "公众号消息推送状态：". var_export($return_status, true));
+            add_log("callback_helipay.log", "callback", "计划成功公众号消息推送数据：". var_export($msg_data, true));
+            add_log("callback_helipay.log", "callback", "计划成功公众号消息推送状态：". var_export($return_status, true));
         }
     }
     
@@ -214,7 +215,7 @@ class PlanController extends InitController {
             require_once APP_ROOT ."Application/Common/Concrete/wxapi/example/weixin.api.php";
             $weixin = new class_weixin_adv();
             $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
-            $msg_data["template_id"] = "DVlfjMCemVIaf6RbPAqARRYMVckz76r_LJXZ_IS566Y";
+            $msg_data["template_id"] = "qq5apA1Ku6rbm0IWkD_QMHRjAaSOuCu9Fv62SjPpmrE";
             $msg_data["url"] = HTTP_HOST.'/index/plan/plandes.html?id='.$plan_info["id"];
             $msg_data["data"] = array(
                 "first"=>array(
@@ -243,7 +244,25 @@ class PlanController extends InitController {
                 )
             );
             $return_status = $weixin->send_user_message($msg_data);
+            add_log("callback_helipay.log", "callback", "计划失败公众号消息推送数据：". var_export($msg_data, true));
             add_log("callback_helipay.log", "callback", "计划失败公众号消息推送状态：". var_export($return_status, true));
         }
+    }
+    
+    
+    public function timereport(){
+        $date_yes = date("Y-m-d",strtotime("-1 day"));
+        $date_tod = date('Y-m-d');
+        $db_config = C("DB_CONFIG2");
+        $pay_records_m = M("pay_records",$db_config["DB_PREFIX"],$db_config);
+        
+        $pay_records_info = $pay_records_m->where("state = 1 and created > '".$date_yes."' and created < '".$date_tod."' ")->sum('pay');
+        $sum_yes = $pay_records_info?$pay_records_info:0; //昨日交易额
+
+        $pay_records_info1 = $pay_records_m->where("state = 1 and created > '".$date_tod."' ")->sum('pay');
+        $sum_today = $pay_records_info1?$pay_records_info1:0; //今日交易额
+
+        
+        $msg = '昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today;
     }
 }
