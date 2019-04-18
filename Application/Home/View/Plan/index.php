@@ -35,7 +35,7 @@
                 letter-spacing: 2px;
                 height: 1.35rem;
                 position: fixed;
-                top: 1rem;
+                top: 1.1rem;
             }
             .ui{
                  width:100%;
