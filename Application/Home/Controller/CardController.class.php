@@ -11,7 +11,7 @@ use Common\HeliPay\Heli;
 class CardController extends InitController {
     private $user_info;
     private $c_code;
-    private $cart_m;
+    private $card_m;
     public function __construct() {
         header("Content-type: text/html; charset=utf-8"); 
         parent::__construct();
@@ -42,7 +42,7 @@ class CardController extends InitController {
         $table_name ="bank_card_".$this->c_code;
         $isTable = M()->query('SHOW TABLES LIKE "'. C("DB_PREFIX").$table_name.'"');
         if(!empty($isTable) ){
-            $this->cart_m = M($table_name);
+            $this->card_m = M($table_name);
         }else{
             $this->error("非法请求");die();
         }
@@ -56,10 +56,10 @@ class CardController extends InitController {
     }
     public function index(){
         $u_id = $this->user_info["id"];
-        $bank_card_list = $this->cart_m->where(["uid"=>$u_id,"success"=>1])->select();
+        $bank_card_list = $this->card_m->where(["uid"=>$u_id,"success"=>1])->select();
         $this->assign('bank_card_list', $bank_card_list);
         $this->assign('add_card_url', U("index/card/addCard",["c_code"=>$this->c_code]));
-        $this->assign('del_cart_url', U("index/cart/delCard",["c_code"=>$this->c_code]));
+        $this->assign('del_card_url', U("index/card/delCard",["c_code"=>$this->c_code]));
         $this->display();
     }
     /**
@@ -81,7 +81,7 @@ class CardController extends InitController {
         $this->assign('account_name', $customer_bankaccount_info["accountname"]);
         $this->assign('get_code_url', U("index/card/sendCode"));
         $this->assign('add_card_url', U("index/card/submitCard"));
-        $this->assign('cart_url', U("index/card/index",["c_code"=>$this->c_code]));
+        $this->assign('card_url', U("index/card/index",["c_code"=>$this->c_code]));
         $this->display();
     }
     /**
@@ -145,7 +145,7 @@ class CardController extends InitController {
             $json["info"] = "请完善个人资料";
             $this->returnJson($json, $session_name);
         }
-        $card_info = $this->cart_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->find();
+        $card_info = $this->card_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->find();
         if(!$card_info){
             $json["status"] = 309;
             $json["info"] = "请先获取短信验证码";
@@ -184,7 +184,7 @@ class CardController extends InitController {
                     $this->returnJson($json, $session_name);
                 }else{
                     if($re['rt7_bindStatus']=="SUCCESS"){
-                        $r_s = $this->cart_m->where(["card_no"=>$card_no])->save(["success"=>1,"bind_id"=>$re['rt10_bindId']]);
+                        $r_s = $this->card_m->where(["card_no"=>$card_no])->save(["success"=>1,"bind_id"=>$re['rt10_bindId']]);
                         if($r_s){
                             $json["status"] = 200;
                             $json["info"] = "银行卡已经绑定成功";
@@ -268,7 +268,7 @@ class CardController extends InitController {
             $json["info"] = "请完善个人资料";
             $this->returnJson($json, $session_name);
         }
-        $card_info = $this->cart_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->find();
+        $card_info = $this->card_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->find();
         $card_id = 0;
         if($card_info){
             if($card_info["success"]){
@@ -320,9 +320,9 @@ class CardController extends InitController {
                     $this->returnJson($json, $session_name);
                 }else{
                     if($card_id){
-                        $r_s = $this->cart_m->where(["id"=>$card_id])->save($add_card_data);
+                        $r_s = $this->card_m->where(["id"=>$card_id])->save($add_card_data);
                     }else{
-                        $r_s = $this->cart_m->add($add_card_data);
+                        $r_s = $this->card_m->add($add_card_data);
                     }
                     
                     if($r_s){
@@ -356,7 +356,7 @@ class CardController extends InitController {
             $json["info"] = "参数错误";
             $this->returnJson($json);
         }
-        $bank_card_info = $this->cart_m->where(["uid"=>$u_id,"id"=>$id,"success"=>1])->select();
+        $bank_card_info = $this->card_m->where(["uid"=>$u_id,"id"=>$id,"success"=>1])->select();
         if(!$bank_card_info||!$bank_card_info["bind_id"]){
             $json["status"] = 306;
             $json["info"] = "信用卡不存在";
@@ -389,7 +389,7 @@ class CardController extends InitController {
                     $this->returnJson($json);
                 }else{
                     if($re['rt7_bindStatus']=="SUCCESS"){
-                        $r_s = $this->cart_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0]);
+                        $r_s = $this->card_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0]);
                         if($r_s){
                             $json["status"] = 200;
                             $json["info"] = "银行卡已经解绑成功";

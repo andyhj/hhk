@@ -149,7 +149,7 @@
                 var id = $(this).attr('data-id');
                 var c_code = "<?php echo $c_code; ?>";
                 $.ajax({
-                    url: "<?php echo $del_cart_url; ?>",
+                    url: "<?php echo $del_card_url; ?>",
                     data: {id: id,c_code:c_code},
                     type: 'post',
                     dataType: 'json',

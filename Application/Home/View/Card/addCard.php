@@ -318,7 +318,7 @@
                 success: function (data) {
                     if (data.status == 200) {
                         alert("添加成功");
-                        location='<?php echo $cart_url;?>';
+                        location='<?php echo $card_url;?>';
                     } else {
                         _lock1 = false;
                         alert(data.info);
