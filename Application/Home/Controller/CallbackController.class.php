@@ -55,6 +55,7 @@ class CallbackController extends InitController {
 //        $r_s = $plan_des_model->where(["id"=>$plan_des_info["id"]])->save(["order_state"=>1,"d_time"=> $time,"message"=>"消费成功"]);
         $r_s = M()->execute("update __PREFIX__plan_des set order_state=1,d_time={$time},message='消费成功' where id=".$plan_des_info["id"]);
         add_log("callback_helipay.log", "callback", "执行SQL：".M()->getLastSql());
+        add_log("callback_helipay.log", "callback", "执行SQL状态：".$r_s);
         if($r_s){
             $this->sendWxMessage($plan_info, $plan_des_info);
             die('success');
