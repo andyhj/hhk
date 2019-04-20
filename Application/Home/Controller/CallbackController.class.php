@@ -22,6 +22,7 @@ class CallbackController extends InitController {
          //接受请求的数据
         $result_arr = I('post.');
         add_log("callback_helipay.log", "callback", "收款异步post回调参数：". var_export($result_arr, true));
+        sleep(2);
         // 验签
         $this->checked($result_arr);
         $order_id =  $result_arr['rt5_orderId'];
@@ -36,6 +37,10 @@ class CallbackController extends InitController {
         if($plan_des_info&&!empty($plan_des_info)&&$plan_des_info["order_state"]==1){
             add_log("callback_helipay.log", "callback", "已付款成功：". var_export($plan_des_info, true));
             die('success');
+        }
+        if($plan_des_info&&!empty($plan_des_info)&&$plan_des_info["order_state"]==2){
+            add_log("callback_helipay.log", "callback", "待执行：". var_export($plan_des_info, true));
+            die();
         }
         $plan_info = $plan_model->where(["id"=>$plan_des_info["p_id"]])->find();
         // 如果订单状态没有成功
