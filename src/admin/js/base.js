@@ -13,7 +13,9 @@ var autoSize = function(){
     var rh=btns>0?h-50:h;
     $('#Right').css({
         height:rh+'px',
-        width:(webBodyWidth-230)+'px'
+        width:(webBodyWidth-230)+'px',
+        'overflow-x':'auto',
+        '-webkit-overflow-scrolling':'touch'
     });
     if(btns>0){
         $(".commonBtnArea").css({
