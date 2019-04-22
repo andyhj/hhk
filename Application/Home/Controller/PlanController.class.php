@@ -20,7 +20,7 @@ class PlanController extends InitController {
     private $user_info;
     private $user_wx_info;
     public function __construct() {
-        header("Content-type: text/html; charset=utf-8"); 
+        header("Content-type: text/html; charset=utf-8");
         parent::__construct();
         $recommend = delTrim(I("rec", session("rec"))); //推荐人
         $this->user_info = $this->getUserInfo();
@@ -101,7 +101,7 @@ class PlanController extends InitController {
         $this->display();
     }
     /**
-     * 
+     *
      */
     public function plandes(){
         $u_id = $this->user_info["id"];
@@ -114,16 +114,16 @@ class PlanController extends InitController {
         if(!$plan_des_list||empty($plan_des_list)){
             $this->error("计划不存在",$url);die();
         }
-        
+
         $plan_des_arr = [];
         if($plan_des_list&&!empty($plan_des_list)){
             foreach ($plan_des_list as $val) {
-                $val["type_name"] = ""; 
+                $val["type_name"] = "";
                 if($val["type"]==1){
-                    $val["type_name"] = "消费"; 
+                    $val["type_name"] = "消费";
                 }
                 if($val["type"]==2){
-                    $val["type_name"] = "还款"; 
+                    $val["type_name"] = "还款";
                 }
                 switch ($val["order_state"]) {
                     case 1:
@@ -150,7 +150,7 @@ class PlanController extends InitController {
         $this->assign("plan_des_list",$plan_des_arr);
         $this->assign('cancel_url', U("index/plan/cancel"));
         $this->display("des");
-        
+
     }
     public function cancel(){
         $u_id = $this->user_info["id"];
@@ -214,7 +214,7 @@ class PlanController extends InitController {
         $channel_model = M("channel");
         $channel_moblie_m = M("channel_moblie");
         $user_vip_model = M("user_vip");
-        $channel_info = $channel_model->where(["id"=>$c_id])->find(); 
+        $channel_info = $channel_model->where(["id"=>$c_id])->find();
         if(!$channel_info){
             echo '<script>alert("通道不存在");</script>';
             die();
@@ -300,7 +300,7 @@ class PlanController extends InitController {
             $this->returnJson($json,$session_name);
         }
         //查询通道
-        $channel_info = $channel_model->where(["id"=>$c_id])->find(); 
+        $channel_info = $channel_model->where(["id"=>$c_id])->find();
         if(!$channel_info){
             $json["status"] = 306;
             $json["info"] = "通道不存在";
@@ -333,10 +333,10 @@ class PlanController extends InitController {
         $reserved_days = 3; //预留天数
         $p_d = $periods/2+$reserved_days;
         $date_1 = date("Y-m-d");
-	$date_2 = $repayment;
-	$d1 = strtotime($date_1);
-	$d2 = strtotime($date_2);
-	$days = round(($d2-$d1)/3600/24); //计算距离还款日天数
+        $date_2 = $repayment;
+        $d1 = strtotime($date_1);
+        $d2 = strtotime($date_2);
+        $days = round(($d2-$d1)/3600/24); //计算距离还款日天数
         if($days<=$p_d){
             $json["status"] = 308;
             $json["info"] = "选择{$periods}期距离还款日必须大于{$p_d}天";
@@ -353,7 +353,7 @@ class PlanController extends InitController {
             $close_rate = $channel_info["plus_user_close_rate"];   //plus用户结算费用（每笔）
         }
         $p_fee = round($p_amount*$fee+$close_rate,2); //每期手续费
-        
+
         $plan_data = array(
             "u_id" => $u_id,
             "c_id" => $c_id,
@@ -366,13 +366,6 @@ class PlanController extends InitController {
             "fee" => $fee,
             "close_rate" => $close_rate
         );
-        M()->startTrans();
-        $plan_id = $plan_model->add($plan_data);
-        if(!$plan_id){
-            $json["status"] = 309;
-            $json["info"] = "生成计划失败";
-            $this->returnJson($json,$session_name);
-        }
         $is_include = 2; //是否包含今天
         //如果用户在8点前制定计划，加上这一天
         if(date("H")<8){
@@ -391,6 +384,13 @@ class PlanController extends InitController {
                 $this->returnJson($json,$session_name);
             }
             $num = $nums;
+        }
+        M()->startTrans();
+        $plan_id = $plan_model->add($plan_data);
+        if(!$plan_id){
+            $json["status"] = 309;
+            $json["info"] = "生成计划失败";
+            $this->returnJson($json,$session_name);
         }
         $plan_des_arr = $this->getPlanDes($plan_id, $u_id, $p_amount, $p_fee, $is_include, $periods, $num);
         if($plan_des_arr&&!empty($plan_des_arr)){
@@ -419,7 +419,7 @@ class PlanController extends InitController {
                         }
                     }
                 }
-        
+
                 $json["status"] = 200;
                 $json["info"] = "生成计划成功";
                 $this->returnJson($json,$session_name);
@@ -457,6 +457,9 @@ class PlanController extends InitController {
             $a = 1;
             for($i=0;$i<$periods;$i++){
                 $begintime = $date." 08:10:00";
+                if(strtotime($begintime)<time()){
+                    $begintime = date("Y-m-d H:i:s");
+                }
                 $endtime = $date." 11:30:00";
                 $k_time = randomDate($begintime,$endtime); //随机生成执行时间
                 //代扣
@@ -498,6 +501,9 @@ class PlanController extends InitController {
             $a = 1;
             for($i=0;$i<($periods/2);$i++){
                 $begintime = $date." 08:10:00";
+                if(strtotime($begintime)<time()){
+                    $begintime = date("Y-m-d H:i:s");
+                }
                 $endtime = $date." 10:00:00";
                 $k1_time = randomDate($begintime,$endtime); //随机生成执行时间
                 //代扣
@@ -527,7 +533,7 @@ class PlanController extends InitController {
                     "type" => 2,
                     "days" => $date,
                 );
-                
+
                 $begintime = $date." 14:00:00";
                 $endtime = $date." 16:00:00";
                 $k2_time = randomDate($begintime,$endtime); //随机生成执行时间
@@ -565,7 +571,7 @@ class PlanController extends InitController {
         }
         return $plan_des_arr;
     }
-    
+
     //补单
     public function repOrder(){
         $pd_id = I("post.id");  //计划详情id
@@ -621,7 +627,7 @@ class PlanController extends InitController {
             $json["info"] = "已过还款期";
             $this->returnJson($json,$session_name);
         }
-        
+
         //判断是否最后一期，如果是 直接补单
         if($periods*2==$plan_des_info["num"]){
             if($plan_des_info["type"]==1){
@@ -631,7 +637,7 @@ class PlanController extends InitController {
             }
             $this->replacementOrder($plan_info, $plan_des_info,$bank_card_hlb_info,$session_name); //通道补单
         }
-        
+
         $plan_des_next_info = $plan_des_model->where(["num"=>$plan_des_info["num"]+1,"u_id"=>$plan_des_info["u_id"],"p_id"=>$plan_des_info["p_id"]])->find();  //查询下一期计划
         if(!$plan_des_next_info||empty($plan_des_next_info)){
             $json["status"] = 312;
@@ -645,7 +651,7 @@ class PlanController extends InitController {
             }
             $this->replacementOrder($plan_info, $plan_des_info,$bank_card_hlb_info,$session_name); //通道补单
         }
-        
+
         //如果当前期数补单时间大于下一期时间，则要修改之后期数时间
         $residue_periods = $periods*2-$plan_des_info["num"]; //查询剩余期数
         $date_2 = $repayment;
@@ -670,7 +676,7 @@ class PlanController extends InitController {
                 if($k==0){
                     $pd1 = strtotime($pdl["days"]);
                     $pd2 = strtotime($t_time);
-                    $d = round(($pd2-$pd1)/3600/24)+1; 
+                    $d = round(($pd2-$pd1)/3600/24)+1;
                 }
                 $pds_data["s_time"] = strtotime("+$d day",$pdl["s_time"]);
                 $pds_data["days"] = date("Y-m-d",strtotime("+$d day",$pdl["s_time"]));
