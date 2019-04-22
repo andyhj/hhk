@@ -25,7 +25,7 @@ class PlanController extends CommonController{
         $where = [];
         if($search_key){
             $condition['id'] = $search_key;
-            $condition['loginid'] = $search_key;
+            $condition['loginId'] = $search_key;
             $condition['_logic'] = 'OR';
             // 把查询条件传入查询方法
             $customer_info = $customer_m->where($condition)->find();
