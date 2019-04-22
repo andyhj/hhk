@@ -25,10 +25,10 @@ class PlanController extends CommonController{
         $where = [];
         if($search_key){
             $condition['id'] = $search_key;
-            $condition['loginId'] = $search_key;
+            $condition['loginid'] = $search_key;
             $condition['_logic'] = 'OR';
             // 把查询条件传入查询方法
-            $customer_info = $customer_m->where($condition)->find(); 
+            $customer_info = $customer_m->where($condition)->find();
             if($customer_info&&!empty($customer_info)){
                 $where["u_id"] = $customer_info["id"];
             }else{
@@ -53,8 +53,8 @@ class PlanController extends CommonController{
                 $val["channel_name"] = "";    //通道名称
                 $val["channel_start_time"] = "";    //任务开始时间
                 $val["channel_end_time"] = "";    //任务结束时间
-                $val["card_no"] = substr($bank_card_info['card_no'],-4); 
-                $val["bank_name"] = $bank_card_info['bank_name'];    
+                $val["card_no"] = substr($bank_card_info['card_no'],-4);
+                $val["bank_name"] = $bank_card_info['bank_name'];
                 if($customer_info&&!empty($customer_info)){
                     $val["user_loginid"] = $customer_info["loginid"];  //登陆账号
                     $val["user_name"] = $customer_info["name"];    //商户名称
@@ -107,12 +107,12 @@ class PlanController extends CommonController{
         $plan_des_arr = [];
         if($plan_des_list&&!empty($plan_des_list)){
             foreach ($plan_des_list as $val) {
-                $val["type_name"] = ""; 
+                $val["type_name"] = "";
                 if($val["type"]==1){
-                    $val["type_name"] = "消费"; 
+                    $val["type_name"] = "消费";
                 }
                 if($val["type"]==2){
-                    $val["type_name"] = "还款"; 
+                    $val["type_name"] = "还款";
                 }
                 switch ($val["order_state"]) {
                     case 1:
@@ -157,7 +157,7 @@ class PlanController extends CommonController{
         if ($status) {
             $where['order_state'] = $status;
         }
-        $plan_list = M("plan")->field('id')->where(["status"=>array('in','3,4,5')])->field('id')->select(); 
+        $plan_list = M("plan")->field('id')->where(["status"=>array('in','3,4,5')])->field('id')->select();
         $plan_des_arr = [];
         $count = 0;
         if($plan_list){
@@ -171,12 +171,12 @@ class PlanController extends CommonController{
             $plan_des_list = M("plan_des")->where($where)->order('order_state desc,s_time asc')->page($current_page.','.$per_page)->select();
             if($plan_des_list&&!empty($plan_des_list)){
                 foreach ($plan_des_list as $val) {
-                    $val["type_name"] = ""; 
+                    $val["type_name"] = "";
                     if($val["type"]==1){
-                        $val["type_name"] = "消费"; 
+                        $val["type_name"] = "消费";
                     }
                     if($val["type"]==2){
-                        $val["type_name"] = "还款"; 
+                        $val["type_name"] = "还款";
                     }
                     switch ($val["order_state"]) {
                         case 1:
@@ -262,7 +262,7 @@ class PlanController extends CommonController{
             $json["info"] = "已过还款期";
             $this->returnJson($json,$session_name);
         }
-        
+
         //判断是否最后一期，如果是 直接补单
         if($periods*2==$plan_des_info["num"]){
             if($plan_des_info["type"]==1){
@@ -272,7 +272,7 @@ class PlanController extends CommonController{
             }
             $this->replacementOrder($plan_info, $plan_des_info,$bank_card_hlb_info,$session_name); //通道补单
         }
-        
+
         $plan_des_next_info = $plan_des_model->where(["num"=>$plan_des_info["num"]+1,"u_id"=>$plan_des_info["u_id"],"p_id"=>$plan_des_info["p_id"]])->find();  //查询下一期计划
         if(!$plan_des_next_info||empty($plan_des_next_info)){
             $json["status"] = 312;
@@ -286,7 +286,7 @@ class PlanController extends CommonController{
             }
             $this->replacementOrder($plan_info, $plan_des_info,$bank_card_hlb_info,$session_name); //通道补单
         }
-        
+
         //如果当前期数补单时间大于下一期时间，则要修改之后期数时间
         $residue_periods = $periods*2-$plan_des_info["num"]; //查询剩余期数
         $date_2 = $repayment;
@@ -311,7 +311,7 @@ class PlanController extends CommonController{
                 if($k==0){
                     $pd1 = strtotime($pdl["days"]);
                     $pd2 = strtotime($t_time);
-                    $d = round(($pd2-$pd1)/3600/24)+1; 
+                    $d = round(($pd2-$pd1)/3600/24)+1;
                 }
                 $pds_data["s_time"] = strtotime("+$d day",$pdl["s_time"]);
                 $pds_data["days"] = date("Y-m-d",strtotime("+$d day",$pdl["s_time"]));
