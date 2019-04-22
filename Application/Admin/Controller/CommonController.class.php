@@ -139,13 +139,13 @@ class CommonController extends Controller {
             foreach ($access_list as $value) {
                 $model_list[] = strtolower($value["module"]);
             }
-            
+
         }
         foreach ($cache as $key => $val) {
             $url = $val["name"];
             $name = $val["title"];
             if($admin_info["aid"]!=1){
-                $mo = strtolower(str_replace('_','',$url)); 
+                $mo = strtolower(str_replace('_','',$url));
                 if(!in_array("$mo",$model_list)){
                     continue;
                 }
@@ -200,7 +200,7 @@ class CommonController extends Controller {
                 $url = $val["name"];
                 $title = $val["title"];
                 if($admin_info["aid"]!=1){
-                    $mo = strtolower(str_replace('_','',$url)); 
+                    $mo = strtolower(str_replace('_','',$url));
                     if(!in_array("$mo",$model_list)){
                         continue;
                     }
@@ -212,6 +212,12 @@ class CommonController extends Controller {
         } else {
             return $sub_menu[] = array('url' => '#', 'title' => "该菜单组不存在");
         }
+    }
+    protected function returnJson($data,$session_name=""){
+        if($session_name){
+            session($session_name, null);
+        }
+        $this->ajaxReturn($data);
     }
 
 }
