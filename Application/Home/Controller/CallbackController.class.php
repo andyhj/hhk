@@ -22,6 +22,7 @@ class CallbackController extends InitController {
          //接受请求的数据
         $result_arr = I('post.');
         add_log("callback_helipay.log", "callback", "收款异步post回调参数：". var_export($result_arr, true));
+        sleep(2);
         // 验签
         $this->checked($result_arr);
         $order_id =  $result_arr['rt5_orderId'];
@@ -36,6 +37,10 @@ class CallbackController extends InitController {
         if($plan_des_info&&!empty($plan_des_info)&&$plan_des_info["order_state"]==1){
             add_log("callback_helipay.log", "callback", "已付款成功：". var_export($plan_des_info, true));
             die('success');
+        }
+        if($plan_des_info&&!empty($plan_des_info)&&$plan_des_info["order_state"]==2){
+            add_log("callback_helipay.log", "callback", "待执行：". var_export($plan_des_info, true));
+            die();
         }
         $plan_info = $plan_model->where(["id"=>$plan_des_info["p_id"]])->find();
         // 如果订单状态没有成功
@@ -52,12 +57,12 @@ class CallbackController extends InitController {
         }
         $time = time();
         $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>$plan_status]);
-//        $r_s = $plan_des_model->where(["id"=>$plan_des_info["id"]])->save(["order_state"=>1,"d_time"=> $time,"message"=>"消费成功"]);
-        $r_s = M()->execute("update __PREFIX__plan_des set order_state=1,d_time={$time},message='消费成功' where id=".$plan_des_info["id"]);
-        add_log("callback_helipay.log", "callback", "执行SQL：".M()->getLastSql());
-        add_log("callback_helipay.log", "callback", "更新后数据：".var_export($plan_des_model->where(['id'=>$plan_des_info["id"]])->find(),true));
-        add_log("callback_helipay.log", "callback", "执行SQL：".M()->getLastSql());
-        add_log("callback_helipay.log", "callback", "执行SQL状态：".$r_s);
+        $r_s = $plan_des_model->where(["id"=>$plan_des_info["id"]])->save(["order_state"=>1,"d_time"=> $time,"message"=>"消费成功"]);
+        //$r_s = M()->execute("update __PREFIX__plan_des set order_state=1,d_time={$time},message='消费成功' where id=".$plan_des_info["id"]);
+        // add_log("callback_helipay.log", "callback", "执行SQL：".M()->getLastSql());
+        // add_log("callback_helipay.log", "callback", "更新后数据：".var_export($plan_des_model->where(['id'=>$plan_des_info["id"]])->find(),true));
+        // add_log("callback_helipay.log", "callback", "执行SQL：".M()->getLastSql());
+        // add_log("callback_helipay.log", "callback", "执行SQL状态：".$r_s);
         if($r_s){
             $this->sendWxMessage($plan_info, $plan_des_info);
             die('success');

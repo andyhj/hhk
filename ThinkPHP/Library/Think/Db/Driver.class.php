@@ -197,9 +197,9 @@ abstract class Driver {
             $that   =   $this;
             $this->queryStr =   strtr($this->queryStr,array_map(function($val) use($that){ return '\''.$that->escapeString($val).'\''; },$this->bind));
         }
-        if(strpos($this->queryStr,'plan_des') !== false){
-            file_put_contents('./Public/logs/sql.log', $this->queryStr.PHP_EOL,FILE_APPEND);
-        }
+        // if(strpos($this->queryStr,'plan_des') !== false){
+        //     file_put_contents('./Public/logs/sql.log', $this->queryStr.PHP_EOL,FILE_APPEND);
+        // }
 
         if($fetchSql){
             return $this->queryStr;
