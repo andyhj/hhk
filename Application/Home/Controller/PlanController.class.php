@@ -364,7 +364,8 @@ class PlanController extends InitController {
             "p_amount" => $p_amount,
             "p_fee" => $p_fee,
             "fee" => $fee,
-            "close_rate" => $close_rate
+            "close_rate" => $close_rate,
+            "add_time" => date("Y-m-d H:i:s")
         );
         $is_include = 2; //是否包含今天
         //如果用户在8点前制定计划，加上这一天
