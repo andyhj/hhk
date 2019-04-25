@@ -314,6 +314,12 @@ class PlanController extends InitController {
             $json["info"] = "银行卡不存在";
             $this->returnJson($json,$session_name);
         }
+        $plan_info = $plan_model->where("`bc_id`={$b_id} AND (`status`=3 OR `status`=4)")->find();
+        if($plan_info){
+            $json["status"] = 323;
+            $json["info"] = "此银行卡有正在执行计划或待执行计划";
+            $this->returnJson($json,$session_name);
+        }
         $bill = date("Y-m")."-".$bank_card_hlb_info["bill"];  //账单日
         $repayment = date("Y-m")."-".$bank_card_hlb_info["repayment"]; //还款日
         if($bank_card_hlb_info["bill"]>$bank_card_hlb_info["repayment"]){
