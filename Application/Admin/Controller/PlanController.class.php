@@ -490,7 +490,7 @@ class PlanController extends CommonController{
                 )
             );
             $return_status = $weixin->send_user_message($msg_data);
-            add_log("callback_helipay.log", "callback", "公众号消息推送状态：". var_export($return_status, true));
+            add_log("sendWxMessage.log", "admin", "公众号消息推送状态：". var_export($return_status, true));
         }
     }
     /**
@@ -535,7 +535,7 @@ class PlanController extends CommonController{
                 )
             );
             $return_status = $weixin->send_user_message($msg_data);
-            add_log("callback_helipay.log", "callback", "计划失败公众号消息推送状态：". var_export($return_status, true));
+            add_log("sendWxMessage.log", "admin", "计划失败公众号消息推送状态：". var_export($return_status, true));
         }
     }
 }

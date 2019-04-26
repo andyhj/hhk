@@ -197,8 +197,8 @@ class PlanController extends InitController {
                 )
             );
             $return_status = $weixin->send_user_message($msg_data);
-            add_log("callback_helipay.log", "callback", "计划成功公众号消息推送数据：". var_export($msg_data, true));
-            add_log("callback_helipay.log", "callback", "计划成功公众号消息推送状态：". var_export($return_status, true));
+            add_log("sendWxMessage.log", "cli", "计划成功公众号消息推送数据：". var_export($msg_data, true));
+            add_log("sendWxMessage.log", "cli", "计划成功公众号消息推送状态：". var_export($return_status, true));
         }
     }
     
@@ -244,8 +244,8 @@ class PlanController extends InitController {
                 )
             );
             $return_status = $weixin->send_user_message($msg_data);
-            add_log("callback_helipay.log", "callback", "计划失败公众号消息推送数据：". var_export($msg_data, true));
-            add_log("callback_helipay.log", "callback", "计划失败公众号消息推送状态：". var_export($return_status, true));
+            add_log("sendWxMessage.log", "cli", "计划失败公众号消息推送数据：". var_export($msg_data, true));
+            add_log("sendWxMessage.log", "cli", "计划失败公众号消息推送状态：". var_export($return_status, true));
         }
     }
     
