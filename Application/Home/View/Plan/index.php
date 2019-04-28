@@ -194,7 +194,7 @@
                                         费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                     <td style="text-align: right;">
-                                        状态：<?php if($v['status']==2){ echo '用户终止计划';}elseif($v['status']==4){ echo '待执行';}if($v['status']==5){ echo '计划中断';}?>
+                                        状态：<?php if($v['status']==2){ echo '用户终止计划';}elseif($v['status']==4){ echo '待执行';}elseif($v['status']==5){ echo '计划中断';}elseif($v['status']==0){ echo '计划取消';}?>
                                     </td>
                                 </tr>
                                 <?php if($v["message"]): ?>

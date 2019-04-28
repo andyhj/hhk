@@ -68,7 +68,9 @@
                             <td><?php echo $data['channel_end_time']; ?></td>
                             <td><?php echo $data['add_time']; ?></td>
                             <td><?php echo $data['status_name']; ?></td>
-                            <td>[<a href="<?php echo U('plan/info/',['id'=>$data['id']]); ?>" title="查看计划详情">查看计划详情</a>]</td>
+                            <td>[<a href="<?php echo U('plan/info/',['id'=>$data['id']]); ?>" title="查看计划详情">查看计划详情</a>]
+                            <?php if($data['status']==4||$data['status']==5){ ?>[<a href="<?php echo U('plan/cancel/',['id'=>$data['id']]); ?>" title="取消计划">取消计划</a>]<?php } ?>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                         <?php endif; ?>

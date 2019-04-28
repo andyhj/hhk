@@ -67,6 +67,9 @@ class PlanController extends CommonController{
                     $val["channel_end_time"] = date("Y-m-d H:i:s",$plan_des_list[count($plan_des_list)-1]["s_time"]);    //任务结束时间
                 }
                 switch ($val["status"]) {
+                    case 0:
+                        $val["status_name"] = "计划取消";
+                        break;
                     case 1:
                         $val["status_name"] = "计划完成";
                         break;
@@ -115,17 +118,23 @@ class PlanController extends CommonController{
                     $val["type_name"] = "还款";
                 }
                 switch ($val["order_state"]) {
+                    case 0:
+                        $val["status_name"] = "计划取消";
+                        break;
                     case 1:
-                        $val["status_name"] = "成功";
+                        $val["status_name"] = "计划完成";
                         break;
                     case 2:
-                        $val["status_name"] = "待执行";
+                        $val["status_name"] = "用户终止计划";
                         break;
                     case 3:
                         $val["status_name"] = "执行中";
                         break;
                     case 4:
-                        $val["status_name"] = "失败";
+                        $val["status_name"] = "待执行";
+                        break;
+                    case 5:
+                        $val["status_name"] = "计划中断";
                         break;
                     default:
                         $val["status_name"] = "";
@@ -179,17 +188,23 @@ class PlanController extends CommonController{
                         $val["type_name"] = "还款";
                     }
                     switch ($val["order_state"]) {
+                        case 0:
+                        $val["status_name"] = "计划取消";
+                        break;
                         case 1:
-                            $val["status_name"] = "成功";
+                            $val["status_name"] = "计划完成";
                             break;
                         case 2:
-                            $val["status_name"] = "待执行";
+                            $val["status_name"] = "用户终止计划";
                             break;
                         case 3:
                             $val["status_name"] = "执行中";
                             break;
                         case 4:
-                            $val["status_name"] = "失败";
+                            $val["status_name"] = "待执行";
+                            break;
+                        case 5:
+                            $val["status_name"] = "计划中断";
                             break;
                         default:
                             $val["status_name"] = "";
@@ -206,6 +221,40 @@ class PlanController extends CommonController{
         $this->assign("page",$page->show());
         $this->assign("bd_url",U("plan/reporder"));
         $this->display();
+    }
+    /**
+     * 取消计划
+     *
+     * @return boolean
+     */
+    public function cancel(){
+        $id = I("id");
+        if(!$id){
+            $this->error("参数错误",U("plan/index"));die();
+        }
+        $plan_info = M("plan")->where(["id"=>$id])->find();
+        if(!$plan_info){
+            $this->error("计划不存在",U("plan/index"));die();
+        }
+        $s = M("plan")->where(["id"=>$id])->save(["status"=>0]);
+        $admin_info = $_SESSION['my_info'];
+        $m_admin_log = M("admin_log");
+        if($s){
+            $info = "取消计划".$id."成功 ";
+            $admin_log_data["a_id"] = $admin_info["aid"];
+            $admin_log_data["a_username"] = $admin_info["email"];
+            $admin_log_data["info"] = $info;
+            $admin_log_data["add_time"] = time();
+            $m_admin_log->add($admin_log_data);
+            $this->success("取消计划成功",U("plan/index"));die();
+        }
+        $info = "取消计划失败";
+        $admin_log_data["a_id"] = $admin_info["aid"];
+        $admin_log_data["a_username"] = $admin_info["email"];
+        $admin_log_data["info"] = $info;
+        $admin_log_data["add_time"] = time();
+        $m_admin_log->add($admin_log_data);
+        $this->error($info,U("plan/index"));die();
     }
     //补单
     public function reporder(){
