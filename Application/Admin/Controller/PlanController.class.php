@@ -355,7 +355,7 @@ class PlanController extends CommonController{
                 $rt_s = $plan_des_model->where(["id"=>$pdl["id"]])->save($pds_data); //修改之后计划执行时间
             }
             if($rt_s){
-                $this->replacementOrder($plan_info, $plan_des_info,$session_name); //通道补单
+                $this->replacementOrder($plan_info, $plan_des_info,$bank_card_hlb_info,$session_name); //通道补单
             }
         }
         $json["status"] = 318;
