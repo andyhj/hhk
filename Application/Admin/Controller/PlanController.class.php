@@ -118,23 +118,17 @@ class PlanController extends CommonController{
                     $val["type_name"] = "还款";
                 }
                 switch ($val["order_state"]) {
-                    case 0:
-                        $val["status_name"] = "计划取消";
-                        break;
                     case 1:
-                        $val["status_name"] = "计划完成";
+                        $val["status_name"] = "成功";
                         break;
                     case 2:
-                        $val["status_name"] = "用户终止计划";
+                        $val["status_name"] = "待执行";
                         break;
                     case 3:
                         $val["status_name"] = "执行中";
                         break;
                     case 4:
-                        $val["status_name"] = "待执行";
-                        break;
-                    case 5:
-                        $val["status_name"] = "计划中断";
+                        $val["status_name"] = "失败";
                         break;
                     default:
                         $val["status_name"] = "";
@@ -188,23 +182,17 @@ class PlanController extends CommonController{
                         $val["type_name"] = "还款";
                     }
                     switch ($val["order_state"]) {
-                        case 0:
-                        $val["status_name"] = "计划取消";
-                        break;
                         case 1:
-                            $val["status_name"] = "计划完成";
+                            $val["status_name"] = "成功";
                             break;
                         case 2:
-                            $val["status_name"] = "用户终止计划";
+                            $val["status_name"] = "待执行";
                             break;
                         case 3:
                             $val["status_name"] = "执行中";
                             break;
                         case 4:
-                            $val["status_name"] = "待执行";
-                            break;
-                        case 5:
-                            $val["status_name"] = "计划中断";
+                            $val["status_name"] = "失败";
                             break;
                         default:
                             $val["status_name"] = "";
