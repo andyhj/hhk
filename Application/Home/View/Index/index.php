@@ -96,9 +96,9 @@
         <div style="width:100%;overflow:hidden;height: 100vh">
             <img src="/src/img/home/bg.jpg" style="width: 100%;display:block;">
         </div>
-        <!-- <div style="position:absolute;top:2%;left:80%; " id="cpjs">
+        <div style="position:absolute;top:2%;left:80%; " id="cpjs">
             <img src="/src/img/home/cpjs.png" style="width:1rem;">
-        </div> -->
+        </div>
         <div class="add" onclick="javascript:window.location.href='<?php echo $channel;?>'">
             <div><img src="/src/img/home/addjh.png"></div>
         </div>
@@ -106,28 +106,13 @@
             <div class="close">
                 <img src="/src/img/close1.png" style="width:0.8rem;">
             </div>
-            <div class="content">
-                &nbsp;&nbsp;&nbsp;&nbsp;去年年底，饿了么启动外卖包材“安心计划”，联合一次性餐盒生产企业、餐饮企业、中国包装联合会对一次性餐盒进行审核筛选，相继发布两批外卖包装“安心名录”。对于入选“安心名录”的企业，饿了么将联合相关部门对其定期复核审查，对市场流通的一次性餐盒进行质量和安全指标盲抽检测，不合格产品会直接移出名录。<br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;与前两批不同，网络订餐供应链联盟对新入选名录的企业和产品提出了更高要求。材料方面，除了聚丙烯塑料、纸和金属材质外，新增了可完全生物降解的聚乳酸类型产品和可重复使用的无纺布袋产品；品类方面，除了传统的外卖打包盒、打包杯，新增加了一次性刀叉勺、吸管、一次性筷子、送餐袋等产品。<br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;饿了么数据显示，平台先后在北京、上海、广州、深圳、杭州、武汉、福州、金华等地对一次性餐饮具、筷子的质量和安全指标进行自查抽检，在184批次一次性餐饮具中，有17批次不合格，49批次一次性筷子全部合格。
-<br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;饿了么数据显示，平台先后在北京、上海、广州、深圳、杭州、武汉、福州、金华等地对一次性餐饮具、筷子的质量和安全指标进行自查抽检，在184批次一次性餐饮具中，有17批次不合格，49批次一次性筷子全部合格。
-<br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;饿了么数据显示，平台先后在北京、上海、广州、深圳、杭州、武汉、福州、金华等地对一次性餐饮具、筷子的质量和安全指标进行自查抽检，在184批次一次性餐饮具中，有17批次不合格，49批次一次性筷子全部合格。
-            </div>
         </div>
         <?php include T('Common/footer'); ?>
     </body>
     <script>
         $("#cpjs").click(function(){
             //$(".cpjs-des").show(500);
-        });
-        $(".close").click(function(){
-            $(".cpjs-des").hide(500);
+            window.location='https://mp.weixin.qq.com/s/iNcfIgWGXrnawJ3EeSdpmg';
         });
     </script>
 </html>
