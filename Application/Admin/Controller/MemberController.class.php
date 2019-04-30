@@ -8,7 +8,7 @@ class MemberController extends CommonController {
         $user_vip_model = M("user_vip");
         $where = [];
         if($search_key){
-            $where_s['id']  = array('like', "%{$search_key}%");
+            $where_s['u_id']  = array('like', "%{$search_key}%");
             $where_s['login_id']  = array('like',"%{$search_key}%");
             $where_s['_logic'] = 'or';
             $where['_complex'] = $where_s;
