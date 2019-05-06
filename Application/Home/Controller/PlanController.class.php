@@ -322,20 +322,23 @@ class PlanController extends InitController {
         }
         $bill = date("Y-m")."-".$bank_card_hlb_info["bill"];  //账单日
         $repayment = date("Y-m")."-".$bank_card_hlb_info["repayment"]; //还款日
-        if($bank_card_hlb_info["bill"]>$bank_card_hlb_info["repayment"]){
+        $d = date("Y-m-d", time());
+        if(strtotime($d)< strtotime($bill)&&strtotime($d)<strtotime($repayment)&&$bank_card_hlb_info["bill"]>$bank_card_hlb_info["repayment"]){
+            $bill = date("Y-m",strtotime("-1 month"))."-".$bank_card_hlb_info["bill"]; //账单日
+        }
+        if(strtotime($bill)>strtotime($repayment)){
             $repayment = date("Y-m",strtotime("+1 month"))."-".$bank_card_hlb_info["repayment"]; //还款日
         }
-        $d = date("Y-m-d", time());
-        // if(strtotime($d)<= strtotime($bill)){
-        //     $json["status"] = 308;
-        //     $json["info"] = "请在账单日后制定计划";
-        //     $this->returnJson($json,$session_name);
-        // }
-        // if(strtotime($d)>= strtotime($repayment)){
-        //     $json["status"] = 308;
-        //     $json["info"] = "请在还款日前制定计划";
-        //     $this->returnJson($json,$session_name);
-        // }
+        if(strtotime($d)<= strtotime($bill)){
+            $json["status"] = 308;
+            $json["info"] = "请在账单日后制定计划";
+            $this->returnJson($json,$session_name);
+        }
+        if(strtotime($d)>= strtotime($repayment)){
+            $json["status"] = 308;
+            $json["info"] = "请在还款日前制定计划";
+            $this->returnJson($json,$session_name);
+        }
         $reserved_days = 3; //预留天数
         $p_d = $periods/2+$reserved_days;
         $date_1 = date("Y-m-d");
