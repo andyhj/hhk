@@ -19,7 +19,7 @@ define('CDN_HOST','');
 define('HSQ_HOST','http://hsq.ysetong.com');
 define('ADMIN_HOST','');
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
-define('APP_DEBUG',false);
+define('APP_DEBUG',true);
 define('__APP__', '');
 //系统根目录
 define('APP_ROOT',dirname(__FILE__).'/');

@@ -293,12 +293,28 @@ class PlanController extends InitController {
         $user_vip_model = M("user_vip");
         $plan_model = M("plan");
         $plan_des_model = M("plan_des");
-        $p_amount = round($amount/$periods, 2); //每期扣款额度
-        if($p_amount<200){
+        if($periods==6&&$amount<1500){
             $json["status"] = 306;
-            $json["info"] = "每期扣款额度不能低于200";
+            $json["info"] = "选择6期，还款总额不能小于1500";
             $this->returnJson($json,$session_name);
         }
+        if($periods==12&&$amount<3000){
+            $json["status"] = 306;
+            $json["info"] = "选择12期，还款总额不能小于3000";
+            $this->returnJson($json,$session_name);
+        }
+        if($periods==24&&$amount<6000){
+            $json["status"] = 306;
+            $json["info"] = "选择24期，还款总额不能小于6000";
+            $this->returnJson($json,$session_name);
+        }
+        $p_amount =roundResolve($amount,$periods);; //每期扣款额度
+        // $p_amount = round($amount/$periods, 2); //每期扣款额度
+        // if($p_amount<200){
+        //     $json["status"] = 306;
+        //     $json["info"] = "每期扣款额度不能低于200";
+        //     $this->returnJson($json,$session_name);
+        // }
         //查询通道
         $channel_info = $channel_model->where(["id"=>$c_id])->find();
         if(!$channel_info){
@@ -361,7 +377,7 @@ class PlanController extends InitController {
             $fee = $channel_info["plus_user_fee"]; //plus用户交费率
             $close_rate = $channel_info["plus_user_close_rate"];   //plus用户结算费用（每笔）
         }
-        $p_fee = round($p_amount*$fee+$close_rate,2); //每期手续费
+        // $p_fee = round($p_amount*$fee+$close_rate,2); //每期手续费
 
         $plan_data = array(
             "u_id" => $u_id,
@@ -370,8 +386,8 @@ class PlanController extends InitController {
             "bc_id" => $b_id,
             "amount" => $amount,
             "periods" => $periods,
-            "p_amount" => $p_amount,
-            "p_fee" => $p_fee,
+            "p_amount" => 0,
+            "p_fee" => 0,
             "fee" => $fee,
             "close_rate" => $close_rate,
             "add_time" => date("Y-m-d H:i:s")
@@ -402,7 +418,7 @@ class PlanController extends InitController {
             $json["info"] = "生成计划失败";
             $this->returnJson($json,$session_name);
         }
-        $plan_des_arr = $this->getPlanDes($plan_id, $u_id, $p_amount, $p_fee, $is_include, $periods, $num);
+        $plan_des_arr = $this->getPlanDes($plan_id, $u_id, $p_amount, $fee, $close_rate, $is_include, $periods, $num);
         if($plan_des_arr&&!empty($plan_des_arr)){
             $return_status = $plan_des_model->addAll($plan_des_arr);
             if($return_status){
@@ -455,7 +471,7 @@ class PlanController extends InitController {
      * @param type $periods 期数
      * @param type $num 每天执行次数（1，执行一次；2，执行两次；最多两次）
      */
-    private function getPlanDes($p_id,$uid,$p_amount,$p_fee,$type,$periods,$num){
+    private function getPlanDes($p_id,$uid,$p_amount, $fee, $close_rate,$type,$periods,$num){
         $date = date("Y-m-d");
         $plan_des_arr = [];
         $letters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9','Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
@@ -472,13 +488,14 @@ class PlanController extends InitController {
                 }
                 $endtime = $date." 11:30:00";
                 $k_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $p_fee = round($p_amount[$i+1]*$fee+$close_rate,2); //每期手续费
                 //代扣
                 $plan_des_arr [] = array(
                     "num" => $a,
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => round($p_amount+$p_fee, 2),
+                    "amount" => round($p_amount[$i+1]+$p_fee, 2),
                     "s_time" => strtotime($k_time),
                     "type" => 1,
                     "days" => $date,
@@ -494,7 +511,7 @@ class PlanController extends InitController {
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => $p_amount,
+                    "amount" => $p_amount[$i+1],
                     "s_time" => strtotime($h_time),
                     "type" => 2,
                     "days" => $date,
@@ -516,13 +533,15 @@ class PlanController extends InitController {
                 }
                 $endtime = $date." 10:00:00";
                 $k1_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $j = $i*2+1;
+                $p_fee = round($p_amount[$j]*$fee+$close_rate,2); //每期手续费
                 //代扣
                 $plan_des_arr [] = array(
                     "num" => $a,
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => round($p_amount+$p_fee, 2),
+                    "amount" => round($p_amount[$j]+$p_fee, 2),
                     "s_time" => strtotime($k1_time),
                     "type" => 1,
                     "days" => $date,
@@ -538,7 +557,7 @@ class PlanController extends InitController {
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => $p_amount,
+                    "amount" => $p_amount[$j],
                     "s_time" => strtotime($h1_time),
                     "type" => 2,
                     "days" => $date,
@@ -548,13 +567,14 @@ class PlanController extends InitController {
                 $endtime = $date." 16:00:00";
                 $k2_time = randomDate($begintime,$endtime); //随机生成执行时间
                 $a ++;
+                $p_fee = round($p_amount[$j+1]*$fee+$close_rate,2); //每期手续费
                 //代扣
                 $plan_des_arr [] = array(
                     "num" => $a,
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => round($p_amount+$p_fee, 2),
+                    "amount" => round($p_amount[$j+1]+$p_fee, 2),
                     "s_time" => strtotime($k2_time),
                     "type" => 1,
                     "days" => $date,
@@ -570,7 +590,7 @@ class PlanController extends InitController {
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => $p_amount,
+                    "amount" => $p_amount[$j+1],
                     "s_time" => strtotime($h2_time),
                     "type" => 2,
                     "days" => $date,

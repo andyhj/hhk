@@ -135,12 +135,12 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：<?php echo $v['amount']?>元
+                                        
                                     </td>
                                     <td  style="text-align: right;">
                                         费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
@@ -183,10 +183,10 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                     <td style="text-align: right;">
-                                        还款总额：<?php echo $v['amount']?>元
+                                        
                                     </td>
                                 </tr>
                                 <tr>
@@ -234,12 +234,12 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        每期扣款金额：<?php echo round(($v['p_amount']+$v['p_fee']),2); ?>元
+                                        还款总额：<?php echo $v['amount']?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：<?php echo $v['amount']?>元
+                                        
                                     </td>
                                     <td  style="text-align: right;">
                                         费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>

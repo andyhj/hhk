@@ -956,3 +956,53 @@ function hideStr($string, $bengin = 0, $len = 4, $type = 0, $glue = "@") {
     }
     return $string;
 }
+/**
+ * Undocumented function
+ *把一个数随机分成n份
+ * @param [type] $total  总数
+ * @param [type] $num   份数
+ * @return void
+ */
+function roundResolve($total,$num){
+    $area = $total/100; //各份数间允许的最大差值
+    
+    $average = round($total/$num*100);
+    $sum = 0;
+    $result = array_fill( 1, $num, 0 );
+    
+    for( $i = 1; $i < $num; $i++ ){
+        //根据已产生的随机数情况，调整新随机数范围，以保证各份间差值在指定范围内
+        if( $sum > 0 ){
+            $max = 0;
+            $min = 0 - round($area/2*100);
+        }elseif( $sum < 0 ){
+            $min = 0;
+            $max = round($area/2*100);
+        }else{
+            $max = round($area/2*100);
+            $min = 0 - round($area/2*100);
+        }
+        
+        //产生各份的份额
+        $random = mt_rand( $min, $max );
+        $sum += $random;
+        $result[$i] = round(($average + $random)/100,2);
+    }
+    
+    //最后一份的份额由前面的结果决定，以保证各份的总和为指定值
+    $result[$num] = round(($average - $sum)/100,2);
+    
+    $result_sum = array_sum( $result );
+    $balance = $total-$result_sum;
+    $result_max = max($result);
+    $result_min = min($result);
+    if($balance>0){
+        $subscript = array_search($result_min,$result);
+        $result[$subscript]=$result[$subscript]+$balance;
+    }
+    if($balance<0){
+        $subscript = array_search($result_max,$result);
+        $result[$subscript]=$result[$subscript]+$balance;
+    }
+    return $result;
+}

@@ -207,7 +207,7 @@
                                 </select>
                             </span>
                     </li>
-                    <li>
+                    <!-- <li>
                         每期还款金额：
                         <span  style="float:right;" id="p_amount"></span>
                     </li>
@@ -218,7 +218,7 @@
                     <li>
                         每期手续费：
                         <span  style="float:right;" id="p_fee"></span>
-                    </li>
+                    </li> -->
                     <li>
                         手续费总额：
                         <span  style="float:right;" id="p_amount_count"></span>
@@ -277,20 +277,20 @@
                         $("#amount").val("");
                         return false;
                     }
-                    var p_amount6=(amount/6).toFixed(2);//6期扣款额度
-                    var p_amount12=(amount/12).toFixed(2);//12期扣款额度
-                    var p_amount24=(amount/24).toFixed(2);//12期扣款额度
-                    var p_fee6 = (parseFloat(p_amount6)+(p_amount6*fee+close_rate)).toFixed(2); //6期手续费
-                    var p_fee12 = (parseFloat(p_amount12)+(p_amount12*fee+close_rate)).toFixed(2); //6期手续费
-                    var p_fee24 = (parseFloat(p_amount24)+(p_amount24*fee+close_rate)).toFixed(2); //6期手续费
-                    var p_html = '<option value="0">---选择期数---</option>'+
-                                    '<option value="6"> 6 期 × 每期 '+p_fee6+'</option>'+
-                                    '<option value="12"> 12期 × 每期 '+p_fee12+'</option>'+
-                                    '<option value="24"> 24期 × 每期 '+p_fee24+'</option>';
-                    $("#periods").html(p_html);
-                    $("#p_amount").html();
-                    $("#k_amount").html();
-                    $("#p_fee").html();
+                    // var p_amount6=(amount/6).toFixed(2);//6期扣款额度
+                    // var p_amount12=(amount/12).toFixed(2);//12期扣款额度
+                    // var p_amount24=(amount/24).toFixed(2);//12期扣款额度
+                    // var p_fee6 = (parseFloat(p_amount6)+(p_amount6*fee+close_rate)).toFixed(2); //6期手续费
+                    // var p_fee12 = (parseFloat(p_amount12)+(p_amount12*fee+close_rate)).toFixed(2); //6期手续费
+                    // var p_fee24 = (parseFloat(p_amount24)+(p_amount24*fee+close_rate)).toFixed(2); //6期手续费
+                    // var p_html = '<option value="0">---选择期数---</option>'+
+                    //                 '<option value="6"> 6 期 × 每期 '+p_fee6+'</option>'+
+                    //                 '<option value="12"> 12期 × 每期 '+p_fee12+'</option>'+
+                    //                 '<option value="24"> 24期 × 每期 '+p_fee24+'</option>';
+                    // $("#periods").html(p_html);
+                    // $("#p_amount").html();
+                    // $("#k_amount").html();
+                    // $("#p_fee").html();
                     $("#p_amount_count").html();
                     $("#att").html();
                 }
@@ -310,17 +310,18 @@
                     periods = parseInt(periods);
                     var p_amount=(amount/periods).toFixed(2);//扣款额度
                     var p_fee = (p_amount*fee+close_rate).toFixed(2); //每期手续费
-                    var ye = (parseFloat(p_amount)+(parseFloat(p_fee)*periods)).toFixed(2); //卡余额
-                    $("#p_amount").html(p_amount);
-                    $("#k_amount").html((parseFloat(p_amount)+parseFloat(p_fee)).toFixed(2));
-                    $("#p_fee").html(p_fee);
-                    $("#p_amount_count").html((p_fee*periods).toFixed(2));
+                    var p_amount_count = (amount*fee+close_rate*periods); //手续费总额
+                    var ye = (parseFloat(p_amount)+(parseFloat(amount)/100/2)+parseFloat(p_amount_count)).toFixed(2); //卡余额
+                    // $("#p_amount").html(p_amount);
+                    // $("#k_amount").html((parseFloat(p_amount)+parseFloat(p_fee)).toFixed(2));
+                    // $("#p_fee").html(p_fee);
+                    $("#p_amount_count").html(p_amount_count.toFixed(2));
                     $("#att").html('注意：卡额度必须大于 '+ye);
                     if(!is_plus){
                         var plus_fee = <?php echo $channel_info["plus_user_fee"];?>;
                         var plus_user_close_rate = <?php echo $channel_info["plus_user_close_rate"];?>;
-                        var p_plus_fee = (p_amount*plus_fee+plus_user_close_rate).toFixed(2); //plus每期手续费
-                        var html = '<span  class="splus" style="font-size: 0.26rem;">PLUS会员手续费总额：'+((p_plus_fee*periods).toFixed(2))+'</span>';
+                        var p_amount_count = (amount*plus_fee+plus_user_close_rate*periods).toFixed(2); //手续费总额
+                        var html = '<span  class="splus" style="font-size: 0.26rem;">PLUS会员手续费总额：'+(p_amount_count)+'</span>';
                         $("#plus_fee").show();
                         $("#plus_fee").html(html);
                     }
@@ -328,11 +329,25 @@
             });
             var _lock = false;
             $("#save").click(function(){
-                var p_amount = $("#p_amount").html();
+                var amount = $("#amount").val();
+                var periods = $("#periods").val();
                 var p_amount_count = $("#p_amount_count").html();
                 var msg = '确定卡里余额大于每期扣款金额加手续费总额？';
+                var p_amount=(amount/periods).toFixed(2);//扣款额度
+                if(periods==6&&amount<1500){
+                    alert("选择6期，还款总额不能小于1500");
+                    return false;
+                }
+                if(periods==12&&amount<3000){
+                    alert("选择12期，还款总额不能小于3000");
+                    return false;
+                }
+                if(periods==24&&amount<6000){
+                    alert("选择24期，还款总额不能小于6000");
+                    return false;
+                }
                 if(p_amount !=='' && p_amount_count !==''){
-                    var ye = (parseFloat(p_amount)+parseFloat(p_amount_count)).toFixed(2); //卡余额
+                    var ye = (parseFloat(p_amount)+(parseFloat(amount)/100/2)+parseFloat(p_amount_count)).toFixed(2); //卡余额
                     msg = '确定卡里余额大于'+ye+'？';
                 }
                 if(!confirm(msg)){
