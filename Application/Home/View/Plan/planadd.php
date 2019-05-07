@@ -8,7 +8,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>制定计划</title>
         <link rel="stylesheet" href="/src/css/main.f23740f4.css">
-        <script src="/src/js/vconsole.min.js"></script>
+        <!-- <script src="/src/js/vconsole.min.js"></script> -->
         <?php include T('Common/header'); ?>
         <script>
             wx.config({
@@ -235,7 +235,7 @@
         <div class="channel_submit"><div id="save">提交计划</div></div>
         <?php include T('Common/footer'); ?>
         <script>
-            var vConsole = new VConsole();
+            // var vConsole = new VConsole();
             //选择付款账户
             $("#bc_id").change(function () {
                 var id = $(this).val();
