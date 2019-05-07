@@ -308,7 +308,7 @@ class PlanController extends InitController {
             $json["info"] = "选择24期，还款总额不能小于6000";
             $this->returnJson($json,$session_name);
         }
-        $p_amount =roundResolve($amount,$periods);; //每期扣款额度
+        $p_amount =roundResolve($amount,$periods); //每期扣款额度
         // $p_amount = round($amount/$periods, 2); //每期扣款额度
         // if($p_amount<200){
         //     $json["status"] = 306;
