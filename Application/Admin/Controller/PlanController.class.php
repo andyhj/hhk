@@ -280,7 +280,7 @@ class PlanController extends CommonController{
             $this->returnJson($json,$session_name);
         }
         $bank_card_hlb_model = M("bank_card_".$plan_info["c_code"]);
-        $bank_card_hlb_info = $bank_card_hlb_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
+        $bank_card_hlb_info = $bank_card_hlb_model->where(["id"=>$plan_info["bc_id"],"success"=>1])->find(); //查询银行卡信息
         if(!$bank_card_hlb_info||empty($bank_card_hlb_info)){
             $json["status"] = 308;
             $json["info"] = "银行卡不存在";
@@ -327,9 +327,9 @@ class PlanController extends CommonController{
         //如果当前期数补单时间大于下一期时间，则要修改之后期数时间
         $residue_periods = $periods*2-$plan_des_info["num"]; //查询剩余期数
         $date_2 = $repayment;
-	$d1 = strtotime($t_time);
-	$d2 = strtotime($date_2);
-	$days = round(($d2-$d1)/3600/24); //计算距离还款日天数
+        $d1 = strtotime($t_time);
+        $d2 = strtotime($date_2);
+        $days = round(($d2-$d1)/3600/24); //计算距离还款日天数
         $d_periods = ceil($residue_periods/4); //每天最多执行（代扣+代还）4次，计算出要几天
         if($days<$d_periods){
             $json["status"] = 313;

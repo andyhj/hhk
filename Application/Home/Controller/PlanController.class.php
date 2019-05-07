@@ -618,7 +618,7 @@ class PlanController extends InitController {
             $this->returnJson($json,$session_name);
         }
         $bank_card_hlb_model = M("bank_card_".$plan_info["c_code"]);
-        $bank_card_hlb_info = $bank_card_hlb_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
+        $bank_card_hlb_info = $bank_card_hlb_model->where(["id"=>$plan_info["bc_id"],"success"=>1])->find(); //查询银行卡信息
         if(!$bank_card_hlb_info||empty($bank_card_hlb_info)){
             $json["status"] = 308;
             $json["info"] = "银行卡不存在";
