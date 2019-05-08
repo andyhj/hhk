@@ -78,7 +78,7 @@
     <script>
         $("#export").click(function(){
             var arg = $("form").serialize();
-            var url = "http://hhk.91hefu.com/admin/statistics/export.html?"+arg;
+            var url = "http://<?php echo $_SERVER['HTTP_HOST'];?>/admin/statistics/export.html?"+arg;
             window.open(url);
         });
     </script>

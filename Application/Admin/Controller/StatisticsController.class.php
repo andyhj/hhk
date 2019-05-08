@@ -51,52 +51,43 @@ class StatisticsController extends CommonController{
         }
         $sql = "SELECT pd.order_id, pd.s_time, pd.amount AS amount, p.fee, p.close_rate, (pd.amount * p.fee) + p.close_rate AS sxf, (pd.amount * 0.005) + 1 AS cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id;
         $plan_des_list = $plan_des_model->query($sql);
-        //p($data);
+        // print_r($plan_des_list);die();
         // 创建csv下载
         $file_name = "tdlrtj_".$date.".csv";
 
-        $content = "订单金额,费率,加收,手续费,通道成本,收益,日期"."\r\n";
+        $content[] = array(
+            iconv("UTF-8", "gbk//IGNORE", "订单金额"),
+            iconv("UTF-8", "gbk//IGNORE", "费率"),
+            iconv("UTF-8", "gbk//IGNORE", "加收"),
+            iconv("UTF-8", "gbk//IGNORE", '手续费'),
+            iconv("UTF-8", "gbk//IGNORE", '通道成本'),
+            iconv("UTF-8", "gbk//IGNORE", '收益'),
+            iconv("UTF-8", "gbk//IGNORE", '日期')
+        );  
 
         foreach ($plan_des_list as $key => $value) {
-
-            $content .= $value['amount']
-            .",".$value['fee']
-            .",".$value['close_rate']
-            .",".round($value['sxf'],2)
-            .",".round($value['cb'],2)
-            .",".round(($value['sxf']-$value['cb']),2)
-            .",".date("Y-m-d H:i:s",$value['s_time']);
-
-            $content .= "\r\n";
+            $content[] = array(
+                'amount' => iconv("UTF-8", "gbk//IGNORE", $value['amount']),
+                'fee' => iconv("UTF-8", "gbk//IGNORE", $value['fee']),
+                'close_rate' => iconv("UTF-8", "gbk//IGNORE", $value['close_rate']),
+                'sxf' => iconv("UTF-8", "gbk//IGNORE", round($value['sxf'],2)),
+                'cb' => iconv("UTF-8", "gbk//IGNORE", round($value['cb'],2)),
+                'lr' => iconv("UTF-8", "gbk//IGNORE", round(($value['sxf']-$value['cb']),2)),
+                's_time' => iconv("UTF-8", "gbk//IGNORE", date("Y-m-d H:i:s",$value['s_time']))
+            );  
+        }
+        $file = fopen("./Public/tdlrtj/" . $file_name, "w");
+        foreach ($content as $line) {
+            fputcsv($file, $line);
         }
 
-        $content = iconv("utf-8","gbk",$content);
-        //die($content) ;
-        //p($content);
-        // file_put_contents("./static/tdlrtj/".$file_name,$content);
-        //$file_name = "tdlrtj_11.csv";
-        // 下载
-        header("location:doexport?file_name=$file_name");
-
-        //die;
-    }
-    public function doexport(){
-        $file_name = I("file_name");
-
-        //p($file_name);
-        set_time_limit(0);
-        ini_set('memory_limit', '512M');
-
-        header('Content-Disposition: attachment; filename='.$file_name);
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Length: ' . filesize("./Public/tdlrtj/".$file_name));
+        fclose($file);
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . $file_name);
         header('Content-Transfer-Encoding: binary');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-
-        ob_end_clean();
-
-        readfile("./Public/tdlrtj/".$file_name);
+        header('Content-Length: ' . filesize("./Public/tdlrtj/" . $file_name));
+        readfile("./Public/tdlrtj/" . $file_name);
+        exit();
     }
 }
     
