@@ -40,6 +40,7 @@
                                 <?php endforeach; ?>
                             </select>
                         <input type="submit" class="btn" value="搜索" />
+                        <input type="button" value="导出" id="export" class="btn" role="button" aria-disabled="false">
                     </form>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
                         
@@ -74,4 +75,11 @@
         <div class="clear"></div>
         <include file="Common:foot" />
     </body>
+    <script>
+        $("#export").click(function(){
+            var arg = $("form").serialize();
+            var url = "http://hhk.91hefu.com/admin/statistics/export.html?"+arg;
+            window.open(url);
+        });
+    </script>
 </html>
