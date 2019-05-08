@@ -55,7 +55,7 @@
                             <?php if(!empty($plan_des_list)): ?>
                             <?php foreach($plan_des_list as $n => $data): ?>
                             <tr id="tr_user_<?php echo $data['id']; ?>">
-                                <td><?php echo $data['days']; ?></td>
+                                <td><?php echo date("Y-m-d",strtotime($data['days'])); ?></td>
                                 <td><?php echo $data['amount']; ?></td>
                                 <td><?php echo round($data['sxf'],2); ?></td>
                                 <td><?php echo round($data['cb'],2); ?></td>
