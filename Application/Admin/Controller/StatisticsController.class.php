@@ -80,5 +80,23 @@ class StatisticsController extends CommonController{
 
         //die;
     }
+    public function doexport(){
+        $file_name = I("file_name");
+
+        //p($file_name);
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+
+        header('Content-Disposition: attachment; filename='.$file_name);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Length: ' . filesize("./Public/tdlrtj/".$file_name));
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+
+        ob_end_clean();
+
+        readfile("./Public/tdlrtj/".$file_name);
+    }
 }
     
