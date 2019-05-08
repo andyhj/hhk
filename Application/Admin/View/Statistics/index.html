@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>统计中心-{$site.SITE_INFO.name}</title>
+        <title>订单列表-{$site.SITE_INFO.name}</title>
         <php>
             $addCss="";
             $addJs="";
-            $currentNav ='统计中心 > 统计中心';
+            $currentNav ='统计中心 > 订单列表';
         </php>
         <include file="Common:intoHead" />
     </head>
@@ -17,10 +17,58 @@
                 <include file="Common:left" />
                 <div id="Right">
                     <div class="Item hr">
-                        <div class="current">统计中心</div>
+                        <div class="current">订单列表</div>
                     </div>
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table1">
+                    <form id="search_form" method="get">
+                         时间： <select id="date" name="date">
+                                    <option value="<?php echo date('Y').'-01'; ?>"  <?php if($date== date('Y').'-01'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-01'; ?></option>
+                                    <option value="<?php echo date('Y').'-02'; ?>"  <?php if($date== date('Y').'-02'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-02'; ?></option>
+                                    <option value="<?php echo date('Y').'-03'; ?>"  <?php if($date== date('Y').'-03'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-03'; ?></option>
+                                    <option value="<?php echo date('Y').'-04'; ?>"  <?php if($date== date('Y').'-04'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-04'; ?></option>
+                                    <option value="<?php echo date('Y').'-05'; ?>"  <?php if($date== date('Y').'-05'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-05'; ?></option>
+                                    <option value="<?php echo date('Y').'-06'; ?>"  <?php if($date== date('Y').'-06'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-06'; ?></option>
+                                    <option value="<?php echo date('Y').'-07'; ?>"  <?php if($date== date('Y').'-07'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-07'; ?></option>
+                                    <option value="<?php echo date('Y').'-08'; ?>"  <?php if($date== date('Y').'-08'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-08'; ?></option>
+                                    <option value="<?php echo date('Y').'-09'; ?>"  <?php if($date== date('Y').'-09'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-09'; ?></option>
+                                    <option value="<?php echo date('Y').'-10'; ?>"  <?php if($date== date('Y').'-10'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-10'; ?></option>
+                                    <option value="<?php echo date('Y').'-11'; ?>"  <?php if($date== date('Y').'-11'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-11'; ?></option>
+                                    <option value="<?php echo date('Y').'-12'; ?>"  <?php if($date== date('Y').'-12'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-12'; ?></option>
+                                </select>
+                        通道：<select id="channel_id" name="channel_id">
+                                <option value="0"  <?php if($channel_id==0){echo 'selected = "selected"';} ?>>---全部---</option>
+                               <?php foreach($channel_list as $n => $cl): ?>
+                                <option value="<?php echo $cl['id']; ?>"  <?php if($channel_id==$cl['id']){echo 'selected = "selected"';} ?>><?php echo $cl['name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        <input type="submit" class="btn" value="搜索" />
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        
+                        <tbody>
+                                <tr>
+                                <td>时间</td>
+                                <td>交易总额</td>
+                                <td>手续费总额</td>
+                                <td>通道成本</td>
+                                <td>公司利润</td>
+                            </tr>
+                            <?php if(!empty($plan_des_list)): ?>
+                            <?php foreach($plan_des_list as $n => $data): ?>
+                            <tr id="tr_user_<?php echo $data['id']; ?>">
+                                <td><?php echo $data['days']; ?></td>
+                                <td><?php echo $data['amount']; ?></td>
+                                <td><?php echo round($data['sxf'],2); ?></td>
+                                <td><?php echo round($data['cb'],2); ?></td>
+                                <td><?php echo round(($data['sxf']-$data['cb']),2); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
                     </table>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">交易总额:<?php echo $count_amount?$count_amount["amount"]:0; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">手续费总额:<?php echo $count_amount?round($count_amount["sxf"],2):0; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">通道成本总额:<?php echo $count_amount?round($count_amount["cb"],2):0; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">公司利润总额:<?php echo $count_amount?round(($count_amount["sxf"]-$count_amount["cb"]),2):0; ?></div>
                 </div>
             </div>
         </div>

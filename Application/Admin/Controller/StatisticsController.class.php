@@ -1,293 +1,108 @@
 <?php
 namespace Admin\Controller;
 class StatisticsController extends CommonController{
-    /**
-     * 订单列表
+    
+    /*
+     * 通道交易额统计
      */
-    public function orderlist(){
-        $search_key = I('search_key');
-        $current_page = (int)I('p',1);
-        $status = I('post.status');
-        $rurl = base64_decode(I('rurl'));
-        $return_url = "";
-        if($rurl){
-            $return_url = U($rurl);
+    public function index(){
+        $date = I('date');
+        $channel_id = I('channel_id', 1);
+        $plan_des_model = M("plan_des");
+        $t_date = date("Y-m");
+        $e_date = date("Y-m",strtotime("+1 month"));
+        $where = '';
+        if($date){
+            $t_date = $date;
+            $e_date = date("Y-m",strtotime("+1 month",strtotime($t_date)));
+            $where  = ' pd.s_time>='.strtotime($t_date).' AND pd.s_time<'.strtotime($e_date);
+        }else{
+            $date = $t_date;
+            $where  = ' pd.s_time>='.strtotime($t_date).' AND pd.s_time<'.strtotime($e_date);
         }
-        $per_page = 15;//每页显示条数
-        $obj_order = D("order");
-        $where=[];
-        if($search_key){
-            $where_s['u_id']  = array('like', "%{$search_key}%");
-            $where_s['pay_number']  = array('like',"%{$search_key}%");
-            $where_s['_logic'] = 'or';
-            $where['_complex'] = $where_s;
-        }
-        $order_list = $obj_order->getList($where,$current_page,$per_page,"add_date DESC");
-        $show  = $obj_order->pageShow($per_page,$where);// 分页显示输出
-        $order_arr = [];
-        if($order_list){
-            foreach ($order_list as $val) {
-                $val["item_name"] = "";
-                if($val["type"]!=4){
-                    $game_shop_info = $obj_order->getGameShopOne($val["item_id"]);
-                    if($game_shop_info&&!empty($game_shop_info)){
-                        $val["item_name"] = strip_tags($game_shop_info["name"]);
-                    }
-                }
-                
-                $val["pay_type_name"] = '';
-                $val["type_name"] = '';
-                if($val["pay_type"]==1){
-                    $val["pay_type_name"] = '微信支付';
-                }
-                if($val["pay_type"]==2){
-                    $val["pay_type_name"] = '支付宝支付';
-                }
-                if($val["pay_type"]==3){
-                    $val["pay_type_name"] = '佣金支付';
-                }
-                if($val["pay_type"]==4){
-                    $val["pay_type_name"] = '苹果支付';
-                }
-                if($val["type"]==1){
-                    $val["type_name"] = '商城下单';
-                }
-                if($val["type"]==2){
-                    $val["type_name"] = '活动下单';
-                }
-                if($val["type"]==3){
-                    $val["type_name"] = '佣金兑换商城';
-                }
-                if($val["type"]==4){
-                    $val["type_name"] = '比赛报名费';
-                }
-                $order_arr[] = $val;
-            }
-        }
-        $order_r_amount_sql = "SELECT sum(amount) AS amount FROM __PREFIX__order WHERE status=200 AND pay_type in(1,2) ";  //人民币充值总额
-        $order_y_amount_sql = "SELECT sum(amount) AS amount FROM __PREFIX__order WHERE status=200 AND type=3 ";  //佣金充值总额
-        if($search_key){
-            $sql = " AND (pay_number like '%{$search_key}%' OR u_id like '%{$search_key}%')";
-            $order_r_amount_sql=$order_r_amount_sql.$sql;
-            $order_y_amount_sql=$order_y_amount_sql.$sql;
-        }
-        $r_amounts = current($obj_order->getOneBySql($order_r_amount_sql));
-        $y_amounts = current($obj_order->getOneBySql($order_y_amount_sql));
-        $r_amount = isset($r_amounts["amount"])?$r_amounts["amount"]:0;
-        $y_amount = isset($y_amounts["amount"])?$y_amounts["amount"]:0;
+        $sql = "SELECT pd.days,SUM(pd.amount) AS amount,SUM((pd.amount * p.fee)+p.close_rate) sxf ,SUM((pd.amount * 0.005)+1) cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id." GROUP BY pd.days";
+        $plan_des_list = $plan_des_model->query($sql);
+
+        $order_r_amount_sql = "SELECT pd.days,SUM(pd.amount) AS amount,SUM((pd.amount * p.fee)+p.close_rate) sxf ,SUM((pd.amount * 0.005)+1) cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id;  //总额
+        $count_amount = $plan_des_model->query($order_r_amount_sql);
         
-        $status_list = $obj_order->getStatus();
-        $this->assign('r_amount',$r_amount);
-        $this->assign('y_amount',$y_amount);
-        $this->assign('status',$status);
-        $this->assign('statusList',$status_list);
-        $this->assign('page',$show);// 赋值分页输出
-        $this->assign('orderList',$order_arr);
-        $this->assign('search_key',$search_key);
-        $this->assign("return_url", $return_url);
+        $this->assign("channel_list", M("channel")->order("id desc")->select());
+        $this->assign('plan_des_list',$plan_des_list);
+        $this->assign('count_amount',!empty($count_amount)?current($count_amount):'');
+        $this->assign("channel_id", $channel_id);
+        $this->assign("date", $date);
+        $this->display();
+    }
+    /**
+     * 通道提现记录
+     */
+    public function extractlog(){
+        $channel_id = I('channel_id', 0);
+        $current_page = (int)I('p',1);
+        $per_page = 15;//每页显示条数
+        $channel_extract_log_m = M("channel_extract_log");
+        $where=[];
+        if ($channel_id) {
+            $where['c_id'] = $channel_id;
+        }
+        $channel_extract_log_list = $channel_extract_log_m->where($where)->order("add_time DESC")->page($current_page . ',' . $per_page)->select();
+        $count = $channel_extract_log_m->where($where)->count();
+        $page = getpage($count, $per_page); // 实例化分页类 传入总记录数和每页显示的记录数
+        $order_r_amount_sql = "SELECT sum(amount) AS amount FROM __PREFIX__channel_extract_log";  //总额
+        
+        if ($channel_id) {
+            $order_r_amount_sql .= " WHERE c_id=".$channel_id;
+        }
+        $r_amounts = current($channel_extract_log_m->query($order_r_amount_sql));
+        $c_amount = isset($r_amounts["amount"])?$r_amounts["amount"]:0;
+        
+        $this->assign("channel_list", M("channel")->order("id desc")->select());
+        $this->assign('c_amount',$c_amount);
+        $this->assign('page',$page);// 赋值分页输出
+        $this->assign('extractList',$channel_extract_log_list);
+        $this->assign("channel_id", $channel_id);
         $this->display();
     }
     
     /*
-     * 每日时间段注册统计
+     * 添加通道提现记录
      */
-    public function index(){
-        $search_key = I('search_key');
-        $current_page = (int)I('p',1);
-        $where = [];
-        if($search_key){
-            $where['date_time'] = strtotime($search_key);
-        }
-        $m = M("user_reg_time");
-        $count = $m->where($where)->count();
-        $per_page = 15;//每页显示条数
-        $page       = getpage($count,$per_page);// 实例化分页类 传入总记录数和每页显示的记录数
-        $showPage       = $page->show();// 分页显示输出
-        $reg_list = $m->where($where)->order("date_time DESC")->page($current_page.','.$per_page)->select();
-        $this->assign("reg_list", $reg_list);
-        $this->assign("page", $showPage);
-        $this->assign("search_key", $search_key);
-        $this->display("reglog");
-    }
-    /**
-     * 更新每日注册统计
-     */
-    public function updreg(){
-        $date_time = I('date_time');
-        $return_url = U('statistics/index');
-        $m = M("user_reg_time");
-        if(!$date_time){
-            $this->error("时间不能为空",$return_url);
-        }else{
-            $s_date = strtotime(date("Ymd", strtotime($date_time)));
-            $n_date = $s_date+86400;
-            $sql = "SELECT id,regtime FROM __PREFIX__user WHERE regtime>={$s_date} AND regtime<{$n_date}";
-            $user_list = $m->query($sql);
-            $hours_00=0;$hours_01=0;$hours_02=0;$hours_03=0;$hours_04=0;$hours_05=0;$hours_06=0;$hours_07=0;$hours_08=0;$hours_09=0;$hours_10=0;$hours_11=0;
-            $hours_12=0;$hours_13=0;$hours_14=0;$hours_15=0;$hours_16=0;$hours_17=0;$hours_18=0;$hours_19=0;$hours_20=0;$hours_21=0;$hours_22=0;$hours_23=0;
-            $reg_num=0;
-            if($user_list&&!empty($user_list)){
-                foreach ($user_list as $value) {
-                    $d = date("H",$value["regtime"]);
-                    $reg_num ++;
-                    if($d==="00"){
-                        $hours_00 ++;
-                    }
-                    if($d==="01"){
-                        $hours_01 ++;
-                    }
-                    if($d==="02"){
-                        $hours_02 ++;
-                    }
-                    if($d==="03"){
-                        $hours_03 ++;
-                    }
-                    if($d==="04"){
-                        $hours_04 ++;
-                    }
-                    if($d==="05"){
-                        $hours_05 ++;
-                    }
-                    if($d==="06"){
-                        $hours_06 ++;
-                    }
-                    if($d==="07"){
-                        $hours_07 ++;
-                    }
-                    if($d==="08"){
-                        $hours_08 ++;
-                    }
-                    if($d==="09"){
-                        $hours_09 ++;
-                    }
-                    if($d==="10"){
-                        $hours_10 ++;
-                    }
-                    if($d==="11"){
-                        $hours_11 ++;
-                    }
-                    if($d==="12"){
-                        $hours_12 ++;
-                    }
-                    if($d==="13"){
-                        $hours_13 ++;
-                    }
-                    if($d==="14"){
-                        $hours_14 ++;
-                    }
-                    if($d==="15"){
-                        $hours_15 ++;
-                    }
-                    if($d==="16"){
-                        $hours_16 ++;
-                    }
-                    if($d==="17"){
-                        $hours_17 ++;
-                    }
-                    if($d==="18"){
-                        $hours_18 ++;
-                    }
-                    if($d==="19"){
-                        $hours_19 ++;
-                    }
-                    if($d==="20"){
-                        $hours_20 ++;
-                    }
-                    if($d==="21"){
-                        $hours_21 ++;
-                    }
-                    if($d==="22"){
-                        $hours_22 ++;
-                    }
-                    if($d==="23"){
-                        $hours_23 ++;
-                    }
-                }
-            }
-            $data["date_time"] = $s_date;
-            $data["hours_00"] = $hours_00;
-            $data["hours_01"] = $hours_01;
-            $data["hours_02"] = $hours_02;
-            $data["hours_03"] = $hours_03;
-            $data["hours_04"] = $hours_04;
-            $data["hours_05"] = $hours_05;
-            $data["hours_06"] = $hours_06;
-            $data["hours_07"] = $hours_07;
-            $data["hours_08"] = $hours_08;
-            $data["hours_09"] = $hours_09;
-            $data["hours_10"] = $hours_10;
-            $data["hours_11"] = $hours_11;
-            $data["hours_12"] = $hours_12;
-            $data["hours_13"] = $hours_13;
-            $data["hours_14"] = $hours_14;
-            $data["hours_15"] = $hours_15;
-            $data["hours_16"] = $hours_16;
-            $data["hours_17"] = $hours_17;
-            $data["hours_18"] = $hours_18;
-            $data["hours_19"] = $hours_19;
-            $data["hours_20"] = $hours_20;
-            $data["hours_21"] = $hours_21;
-            $data["hours_22"] = $hours_22;
-            $data["hours_23"] = $hours_23;
-            $data["reg_num"] = $reg_num;
-            $data["upd_time"] = time();
-            $reg_info = $m->where(["date_time"=>$data["date_time"]])->find();
-            if($reg_info){
-                $m->where(["date_time"=>$data["date_time"]])->delete();
-            }
-            $return_status = $m->add($data);
-            $admin_info = $_SESSION['my_info'];
-            $m_admin_log = M("admin_log");
-            if($return_status){
-                $info = "更新每日注册统计 ".date("Ymd", $s_date) ." 成功";
-                $admin_log_data["a_id"] = $admin_info["aid"];
-                $admin_log_data["a_username"] = $admin_info["email"];
-                $admin_log_data["info"] = $info;
-                $admin_log_data["add_time"] = time();
-                $m_admin_log->add($admin_log_data);
-                $this->success("更新成功",$return_url);
+    public function addExtractlog(){
+        $data["c_id"] = I("c_id",""); //通道id
+        $data["amount"] = I("amount",""); //金额
+        $error = "";
+        if(is_post()){
+            if(!$data["c_id"] || !$data["amount"]){
+                $error = "参数不完整错误";
             }else{
-                $info = "更新每日注册统计 ".date("Ymd", $s_date) ." 失败";
+                $channel_info = M('channel')->where(["id"=>$data["c_id"]])->find();
+                $data["c_name"] = $channel_info['name']; 
+                $r_id = M("channel_extract_log")->add($data);
+                $admin_info = $_SESSION['my_info'];
+                $m_admin_log = M("admin_log");
+                if($r_id){
+                    M('channel_tran_amount')->where(["c_id"=>$data["c_id"]])->setInc('extract',$data["amount"]); // 提现总额累加
+                    $info = "添加通道提现记录".$r_id."成功 ";
+                    $admin_log_data["a_id"] = $admin_info["aid"];
+                    $admin_log_data["a_username"] = $admin_info["email"];
+                    $admin_log_data["info"] = $info;
+                    $admin_log_data["add_time"] = time();
+                    $m_admin_log->add($admin_log_data);
+                    $this->success("添加成功",U("statistics/extractlog"));die();
+                }
+                $info = "添加通道提现记录失败";
                 $admin_log_data["a_id"] = $admin_info["aid"];
                 $admin_log_data["a_username"] = $admin_info["email"];
                 $admin_log_data["info"] = $info;
                 $admin_log_data["add_time"] = time();
                 $m_admin_log->add($admin_log_data);
-                $this->error("更新成功",$return_url);
+                $error = $info;
             }
         }
-    }
-    
-    /*
-     * 每日时间段充值统计
-     */
-    public function ordertimelog(){
-        $search_key = I('search_key');
-        $current_page = (int)I('p',1);
-        $where = [];
-        if($search_key){
-            $where['date_time'] = strtotime($search_key);
-        }
-        $m = M("order_time");
-        $count = $m->where($where)->count();
-        $per_page = 15;//每页显示条数
-        $page       = getpage($count,$per_page);// 实例化分页类 传入总记录数和每页显示的记录数
-        $showPage       = $page->show();// 分页显示输出
-        $order_list = $m->where($where)->order("date_time DESC")->page($current_page.','.$per_page)->select();
-        
-        $order_user_sql = "SELECT count(DISTINCT u_id) AS user_num FROM __PREFIX__order WHERE status=200 AND type in(1,2)";  //充值人数
-        $order_amount_sql = "SELECT sum(amount) AS amount FROM __PREFIX__order WHERE status=200 AND type in(1,2)";  //充值人数
-        $user_nums = current($m->query($order_user_sql));
-        $amounts = current($m->query($order_amount_sql));
-        $user_num = isset($user_nums["user_num"])?$user_nums["user_num"]:0;
-        $amount = isset($amounts["amount"])?$amounts["amount"]:0;
-        
-        $this->assign("user_num", $user_num);
-        $this->assign("amount", $amount);
-        $this->assign("order_list", $order_list);
-        $this->assign("page", $showPage);
-        $this->assign("search_key", $search_key);
-        $this->display("ordertimelog");
+        $this->assign("channel_list", M("channel")->order("id desc")->select());
+        $this->assign("error",$error);        
+        $this->assign("data",$data);
+        $this->display();
     }
     /*
      * 更新每日时间段充值统计
