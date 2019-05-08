@@ -68,7 +68,7 @@
                     <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">交易总额:<?php echo $count_amount?$count_amount["amount"]:0; ?></div>
                     <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">手续费总额:<?php echo $count_amount?round($count_amount["sxf"],2):0; ?></div>
                     <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">通道成本总额:<?php echo $count_amount?round($count_amount["cb"],2):0; ?></div>
-                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">公司利润总额:<?php echo $count_amount?round(($count_amount["sxf"]-$count_amount["cb"]),2):0; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;margin-bottom: 50px;">公司利润总额:<?php echo $count_amount?round(($count_amount["sxf"]-$count_amount["cb"]),2):0; ?></div>
                 </div>
             </div>
         </div>
