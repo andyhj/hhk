@@ -85,7 +85,7 @@
                             </td>
                         </tr>
                         <?php endforeach; ?>
-                        <?php if($plan_info['status']==4){ ?><tr align="center" height='50'><td colspan='2'><input type="button" value="取消计划" id="cancel" class="cancel"></td></tr><?php } ?>
+                        <?php if($plan_info['status']==4||$plan_info['status']==5){ ?><tr align="center" height='50'><td colspan='2'><input type="button" value="取消计划" id="cancel" class="cancel"></td></tr><?php } ?>
                     </table>
                     <?php endif; ?>
                 </div>
