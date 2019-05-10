@@ -56,7 +56,7 @@ class UserModel extends Model{
             require_once APP_ROOT ."Application/Common/Concrete/wxapi/example/weixin.api.php";
             $weixin = new class_weixin_adv();
             $msg_data["touser"] = $open_id;
-            $msg_data["template_id"] = "qq5apA1Ku6rbm0IWkD_QMHRjAaSOuCu9Fv62SjPpmrE";
+            $msg_data["template_id"] = "0rAKRWnyzyiW9ICydVIJj4W4NZAFR_PGNoM4XsUr92A";
             $msg_data["url"] = $url;//HTTP_HOST.'/index/user/plusdes.html';
             $msg_data["data"] = array(
                 "first"=>array(
