@@ -42,6 +42,17 @@ class IndexController extends InitController {
         $this->assign('channel', U("index/plan/channel"));
         $this->display();
     }
+
+    public function updatewx(){
+        $db_config = C("DB_CONFIG2");
+        $cunstomer_wx_binding_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
+        $user=M("user")->find();
+        $cunstomer_wx_binding=$cunstomer_wx_binding_m->find();
+        dump($cunstomer_wx_binding);
+        dump($user);
+
+        $this->display();
+    }
     
     public function logout(){
         session(null);
