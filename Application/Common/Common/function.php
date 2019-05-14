@@ -578,18 +578,20 @@ function curlSend($url, $post_data = "") {
  * @return Ambigous <mixed, Thinkmixed, object>
  */
 function get_accesstoken($APP_ID, $APP_SECRET) {
-    $ACCESS_TOKEN = S($APP_ID);
-    if ($ACCESS_TOKEN == false) {
-        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . $APP_ID . "&secret=" . $APP_SECRET;
-        $json = curlSend($url);
+    // $ACCESS_TOKEN = S($APP_ID);
+    // if ($ACCESS_TOKEN == false) {
+    //     $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . $APP_ID . "&secret=" . $APP_SECRET;
+    //     $json = curlSend($url);
 
-        $data = json_decode($json, true);
+    //     $data = json_decode($json, true);
 
-        S($APP_ID, $data[access_token], 7000);
-        $ACCESS_TOKEN = S($APP_ID);
-    }
+    //     S($APP_ID, $data[access_token], 7000);
+    //     $ACCESS_TOKEN = S($APP_ID);
+    // }
 
-    return $ACCESS_TOKEN;
+    $url = 'http://hsq.91hefu.com/common/get_access_tokens';
+    $access_token = file_get_contents($url);
+    return $access_token;
 }
 
 /**

@@ -22,17 +22,21 @@ class class_weixin_adv
         }
 
         //hardcode
-        $this->lasttime = 1395049256;
-        $this->access_token = "nRZvVpDU7LxcSi7GnG2LrUcmKbAECzRf0NyDBwKlng4nMPf88d34pkzdNcvhqm4clidLGAS18cN1RTSK60p49zIZY4aO13sF-eqsCs0xjlbad-lKVskk8T7gALQ5dIrgXbQQ_TAesSasjJ210vIqTQ";
+        // $this->lasttime = 1395049256;
+        // $this->access_token = "nRZvVpDU7LxcSi7GnG2LrUcmKbAECzRf0NyDBwKlng4nMPf88d34pkzdNcvhqm4clidLGAS18cN1RTSK60p49zIZY4aO13sF-eqsCs0xjlbad-lKVskk8T7gALQ5dIrgXbQQ_TAesSasjJ210vIqTQ";
 
-        if (time() > ($this->lasttime + 7200)){
-            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$this->appid."&secret=".$this->appsecret;
-            $res = $this->https_request($url);
-            $result = json_decode($res, true);
-            //save to Database or Memcache
-            $this->access_token = $result["access_token"];
-            $this->lasttime = time();
-        }
+        $url = 'http://hsq.91hefu.com/common/get_access_tokens';
+        $access_token = file_get_contents($url);
+        $this->access_token =$access_token;
+        
+        // if (time() > ($this->lasttime + 7200)){
+        //     $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$this->appid."&secret=".$this->appsecret;
+        //     $res = $this->https_request($url);
+        //     $result = json_decode($res, true);
+        //     //save to Database or Memcache
+        //     $this->access_token = $result["access_token"];
+        //     $this->lasttime = time();
+        // }
     }
 
     //获取关注者列表
