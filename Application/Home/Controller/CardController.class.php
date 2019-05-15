@@ -91,14 +91,14 @@ class CardController extends InitController {
         $db_config = C("DB_CONFIG2");
         $u_id = $this->user_info["id"];
         $bank_id = $this->user_info["bankid"];
-        $card_no = I("post.card_no");  //银行卡号
-        $card_cvv = I("post.card_cvv");  //cvv
-        $validity_date = I("post.validity_date"); //有效期
+        $card_no = trim(I("post.card_no"));  //银行卡号
+        $card_cvv = trim(I("post.card_cvv"));  //cvv
+        $validity_date = trim(I("post.validity_date")); //有效期
         $bank_name = I("post.bank_name");       //银行名称
-        $bill = I("post.bill");             //账单日
-        $repayment = I("post.repayment");  //还款日
-        $phone = I("post.phone");           //预留手机号
-        $code = I("post.code");             //验证码
+        $bill = (int)trim(I("post.bill"));             //账单日
+        $repayment = (int)trim(I("post.repayment"));  //还款日
+        $phone = trim(I("post.phone"));           //预留手机号
+        $code = trim(I("post.code"));             //验证码
         $session_name = "submitCard_".$u_id;
 //        session($session_name,null);
         if(session($session_name)){
