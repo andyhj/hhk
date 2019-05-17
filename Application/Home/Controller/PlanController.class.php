@@ -452,7 +452,7 @@ class PlanController extends InitController {
                     $this_time = time();
                     if($this_time>=$s_time&&$this_time<$e_time&&$created>=$s_time&&$created<$e_time){
                         $plan_des_info = $plan_des_model->where(["p_id"=>$plan_id])->order('s_time desc')->find();
-                        $user_m->wxMessagewxYwlcMsg($user_wx_binding["user_id"],'恭喜您获得520活动奖励资格','下级用户制定《会还款》计划成功',date("Y-m-d H:i:s"),'累计计划额度达标即可获得奖励','请在'.date('Y-m-d H:i:s',$plan_des_info["s_time"]).'计划完成后联系客服领取','点击查看活动介绍',HTTP_HOST,$user_wx_binding["open_id"]);
+                        $user_m->wxMessagewxYwlcMsg($user_wx_binding["user_id"],'恭喜您获得520活动奖励资格','下级用户制定《会还款》计划成功',date("Y-m-d H:i:s"),'累计计划额度达标即可获得奖励','请在'.date('Y-m-d H:i:s',$plan_des_info["s_time"]).'计划完成后联系客服领取','点击查看活动介绍','https://mp.weixin.qq.com/s/NN5sX_NjVeFmUKzMMFGUAQ',$user_wx_binding["open_id"]);
                     }
                 }
 
