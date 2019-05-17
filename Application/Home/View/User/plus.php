@@ -80,7 +80,7 @@
             <div><img src="/src/img/plus/content.png" class="cpjs-bg"></div>
             <div class="des">
                 <div style="text-align:center;margin-top:8%;"><img src="/src/img/plus/plus_card.png" style="width: 60%;"></div>
-                <div style="text-align:center;margin-top: 0.2rem;">（20元/月）</div>
+                <div style="text-align:center;margin-top: 0.2rem;">（200元/年）</div>
                 <div style="text-align:center;margin-top: 0.2rem;" id="buy_plus"><img src="/src/img/plus/button.png" style="width: 3rem;"></div>
                 <div style="margin-top: 0.2rem;width: 90%;border-bottom: 1px solid #e1e1e1;margin-left: 5%;"></div>
                 <div style="text-align:center;margin-top: 0.2rem;">使用说明</div>
