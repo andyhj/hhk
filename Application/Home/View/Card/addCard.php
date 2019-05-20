@@ -143,24 +143,22 @@
                                 <select id="bank_name" name="bank_name">
                                     <option value="0">---选择发卡行---</option>
                                     <option value="中国银行">中国银行</option>
+                                    <option value="交通银行">交通银行</option>
+                                    <option value="中信银行">中信银行</option>
+                                    <option value="广发银行">广发银行</option>
+                                    <option value="兴业银行">兴业银行</option>
+                                    <option value="华夏银行">华夏银行</option>
                                     <option value="招商银行">招商银行</option>
                                     <option value="平安银行">平安银行</option>
-                                    <option value="中信银行">中信银行</option>
-                                    <option value="交通银行">交通银行</option>
-                                    <option value="兴业银行">兴业银行</option>
-                                    <option value="广发银行">广发银行</option>
                                     <option value="上海银行">上海银行</option>
-                                    <option value="华夏银行">华夏银行</option>
-                                    <option value="宁波银行">宁波银行</option>
-                                    <option value="包商银行">包商银行</option>
-                                    <option value="广州银行">广州银行</option>
+                                    <option value="宁波银行">北京银行</option>
                                     <option value="中国工商银行">中国工商银行</option>
                                     <!--<option value="中国农业银行">中国农业银行</option>-->
                                     <option value="中国建设银行">中国建设银行</option>
-                                    <option value="中国民生银行">中国民生银行</option>
                                     <option value="中国光大银行">中国光大银行</option>
-                                    <option value="中国邮政储蓄银行">中国邮政储蓄银行</option>
+                                    <option value="中国民生银行">中国民生银行</option>
                                     <option value="上海浦东发展银行">上海浦东发展银行</option>
+                                    <option value="中国邮政储蓄银行">中国邮政储蓄银行</option>
                                 </select>
                             </span>
                     </li>
