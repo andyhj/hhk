@@ -49,9 +49,13 @@ class MemberController extends CommonController {
         $m_user = D("User");
         $current_page = (int)I('p',1);
         $view_datas['search_key'] = $search_key = I('search_key');
+        $type = (int)I('type');
         $where = [];
         if($search_key){
             $where['u_id'] = $search_key;
+        }
+        if($type){
+            $where['type'] = $type;
         }
         $count = $user_vip_log_m->where($where)->count();
         $per_page = 15;//每页显示条数
@@ -69,6 +73,7 @@ class MemberController extends CommonController {
         $view_datas['num'] = $count;
         $this->assign("datas", $view_datas);
         $this->assign("page", $showPage);
+        $this->assign("type", $type);
         $this->display();
     }
     public function sendvip(){

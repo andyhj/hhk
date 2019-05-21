@@ -21,6 +21,13 @@
                     </div>
                     <form id="search_form" method="get">
                         <input type="text" class="input" name="search_key" value="<?php echo $datas['search_key']; ?>" style="width: 200px;"  placeholder="根据用户ID查找"/> 
+                        类型： <select id="type" name="type">
+                                 <option value="0"  <?php if($type==0){echo 'selected = "selected"';} ?>>---全部---</option>
+                                 <option value="1" <?php if($type==1){echo 'selected = "selected"';} ?>>注册赠送</option>
+                                 <option value="2" <?php if($type==2){echo 'selected = "selected"';} ?>>系统赠送</option>
+                                 <option value="3" <?php if($type==3){echo 'selected = "selected"';} ?>>邀请好友赠送</option>
+                                 <option value="4" <?php if($type==4){echo 'selected = "selected"';} ?>>充值续费</option>
+                             </select>
                         <input type="submit" class="btn" value="搜索" />
                     </form>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
