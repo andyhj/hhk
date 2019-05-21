@@ -431,10 +431,12 @@ class PlanController extends InitController {
                 add_log("plan.log", "plan", "上级用户微信绑定数据：". var_export($user_wx_binding, true));
                 if($user_wx_binding&&!empty($user_wx_binding)){
                     $user_vip_log_m = M("user_vip_log");
-                    $user_vip_log_info = $user_vip_log_m->where(["u_id"=>$user_wx_binding["user_id"],"type"=>3])->find();
+                    $user_vip_log_info = $user_vip_log_m->where(["u_id"=>$user_wx_binding["user_id"],"type"=>3,"friend_uid"=>$u_id])->find();
                     add_log("plan.log", "plan", "赠送vip信息：". var_export($user_vip_log_info, true));
                     if(!$user_vip_log_info&&empty($user_vip_log_info)){
                         $user_vip_log_data["u_id"] = $user_wx_binding["user_id"];
+                        $user_vip_log_data["type"] = 3;
+                        $user_vip_log_data["friend_uid"] = $u_id;
                         $user_vip_log_data["add_time"] = time();
                         $user_vip_log_data["end_time"] = strtotime("+1 month");
                         add_log("plan.log", "plan", "赠送vip信息数据：". var_export($user_vip_log_data, true));
