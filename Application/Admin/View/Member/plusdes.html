@@ -38,6 +38,7 @@
                                 <td>用户名称</td>
                                 <td>VIP月数</td>
                                 <td>类型</td>
+                                <td>下级好友ID</td>
                                 <td>添加时间</td>
                                 <td>过期时间</td>
                                 <td>领取时间</td>
@@ -50,6 +51,7 @@
                                 <td><?php echo $data['u_name']; ?></td>
                                 <td><?php echo $data['vip_m']; ?></td>
                                 <td><?php if($data['type']==1){ echo '注册赠送';}elseif($data['type']==2){ echo '系统赠送';}elseif($data['type']==3){ echo '邀请好友赠送';}elseif($data['type']==4){ echo '充值续费';} ?></td>
+                                <td><?php echo $data['friend_uid']; ?></td>
                                 <td><?php echo $data['add_time']?date('Y-m-d H:i:s',$data['add_time']):''; ?></td>
                                 <td><?php echo $data['end_time']?date('Y-m-d H:i:s',$data['end_time']):''; ?></td>
                                 <td><?php echo $data['get_time']?date('Y-m-d H:i:s',$data['get_time']):''; ?></td>
