@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>推送微信消息-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='用户管理 > 推送微信消息';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">推送微信消息</div>
+                    </div>
+                    <form  method="post" enctype="multipart/form-data">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                            <tr>
+                                <td width="100">登录账号：</td>
+                                <td><input class="input" type="text" name="login_id" id="login_id" title="登录账号" maxlength="20" value=""/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">标题：</td>
+                                <td><input class="input" type="text" name="title" id="title" title="标题" maxlength="20" value=""/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">业务：</td>
+                                <td><input class="input" type="text" name="keyword1" id="keyword1" title="业务" maxlength="20" value=""/></td>
+                            </tr>
+                            <tr>
+                                <td width="100">提醒内容：</td>
+                                <td>
+                                    <textarea name="keyword3" id="keyword3" style="width:400px; height:60px" class="input"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100">处理建议：</td>
+                                <td>
+                                    <textarea name="keyword4" id="keyword4" style="width:400px; height:60px" class="input"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100"></td>
+                                <td><input type="submit" value="提交"  class="btn"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </form>
+                    <div>
+                        <div style="color: red;font-weight: bold;font-size: 16px;">模板1：</div>
+                        <a href="javascript:;" class="liz">
+                            标题：<span class="title">您有一个《会还款》计划意外终止 </span><br>
+                            业务：<span class="yw">《会还款》计划 </span><br>
+                            提醒内容：<span class="txnr">卡额度不足</span><br>
+                            处理建议：<span class="jycl">请尽快充值，然后联系客服继续执行计划</span><br>
+                        </a>
+                    </div>
+                    <div>
+                        <div style="color: red;font-weight: bold;font-size: 16px;">模板2：</div>
+                        <a href="javascript:;" class="liz">
+                            标题：<span class="title">您的《会还款》PLUS会员已经到期 </span><br>
+                            业务：<span class="yw">PLUS会员到期 </span><br>
+                            提醒内容：<span class="txnr">PLUS会员费率低至0.55%</span><br>
+                            处理建议：<span class="jycl">联系客服（hsqpay）升级</span><br>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+        <script>
+            $(".liz").click(function(){
+                $("#title").val($(this).children(".title").html());
+                $("#keyword1").val($(this).children(".yw").html());
+                $("#keyword3").val($(this).children(".txnr").html());
+                $("#keyword4").val($(this).children(".jycl").html());
+            });
+        </script>
+    </body>
+</html>

@@ -109,4 +109,48 @@ class MemberController extends CommonController {
         $this->assign("return_url", $url);
         $this->display();
     }
+    /**
+     * 推送微信消息
+     * @param type $title  标题
+     * @param type $keyword1  业务
+     * @param type $keyword2  时间
+     * @param type $keyword3  提醒内容
+     * @param type $keyword4  处理建议
+     * @return boolean|array
+     */
+    public function sendWxMsg(){
+        if(is_post()){
+            $login_id = I('login_id');
+            $title = I('title');
+            $keyword1 = I('keyword1');
+            $keyword2 = date("Y-m-d H:i:s");
+            $keyword3 = I('keyword3');
+            $keyword4 = I('keyword4');
+            if(!$login_id){
+                $this->error('登录账号不能为空');
+            }
+            $user_m = D('User');
+            $user_info = $user_m->getUserOneByWhere(['login_id'=>$login_id]);
+            if(!$user_info){
+                $this->error('登录账号不存在');
+            }
+            $r_s = $user_m->wxMessagewxYwlcMsg($user_info['id'],$title,$keyword1,$keyword2,$keyword3,$keyword4,'','',$user_info['open_id']);
+            if($r_s){
+                $admin_info = $_SESSION['my_info'];
+                $add_data['u_id'] = $user_info['id'];
+                $add_data['login_id'] = $user_info['login_id'];
+                $add_data['add_name'] = $admin_info['email'];
+                $add_data['title'] = $title;
+                $add_data['keyword1'] = $keyword1;
+                $add_data['keyword2'] = $keyword2;
+                $add_data['keyword3'] = $keyword3;
+                $add_data['keyword4'] = $keyword4;
+                M('wechat_message_log')->add($add_data);
+                $this->success('推送成功');
+            }else{
+                $this->error('推送失败');
+            }
+        }
+        $this->display('wxmsg');
+    }
 }
