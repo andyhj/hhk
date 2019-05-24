@@ -137,7 +137,7 @@ class MemberController extends CommonController {
             $r_s = $user_m->wxMessagewxYwlcMsg($user_info['id'],$title,$keyword1,$keyword2,$keyword3,$keyword4,'','',$user_info['open_id']);
             if($r_s){
                 $admin_info = $_SESSION['my_info'];
-                $add_data['u_id'] = $user_info['id'];
+                $add_data['u_id'] = $user_info['u_id'];
                 $add_data['login_id'] = $user_info['login_id'];
                 $add_data['add_name'] = $admin_info['email'];
                 $add_data['title'] = $title;
