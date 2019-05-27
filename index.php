@@ -16,7 +16,8 @@ define('JS_VS', 201805230142);  //js版本号
 define('MT', 0);  //是否维护
 define('HTTP_HOST','http://hhk.91hefu.com');
 define('CDN_HOST','');
-define('HSQ_HOST','http://hsq.ysetong.com');
+define('HSQ_HOST','http://hsq.91hefu.com');
+define('AD_HOST','http://ad.91hhq.com');
 define('ADMIN_HOST','');
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',false);

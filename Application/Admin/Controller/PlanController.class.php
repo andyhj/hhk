@@ -497,11 +497,15 @@ class PlanController extends CommonController{
         $customer_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
         $cunstomer_wx_binding_info = $customer_m->where(["user_id"=>$plan_info["u_id"],"state"=>1])->find();
         if($cunstomer_wx_binding_info&&!empty($cunstomer_wx_binding_info)){
+            $type=2;
+            if($trade_type=="消费"){
+                $type=1;
+            }
             require_once $_SERVER['DOCUMENT_ROOT'] ."/Application/Common/Concrete/wxapi/example/weixin.api.php";
             $weixin = new class_weixin_adv();
             $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
             $msg_data["template_id"] = "_nQ9Iqu1cT6z2aiHV2vvL366b3Qr4nFpfsU7GQ1cg4U";
-            $msg_data["url"] = HTTP_HOST.'/index/plan/plandes.html?id='.$plan_info["id"];
+            $msg_data["url"] = HTTP_HOST.'/index/plan/orderdes.html?id='.$plan_info["id"].'&type='.$type;;
             $bank_card_model = M("bank_card_".$plan_info["c_code"]);
             $card_info = $bank_card_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
             $msg_data["data"] = array(

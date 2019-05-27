@@ -101,7 +101,7 @@ class PlanController extends InitController {
         $this->display();
     }
     /**
-     *
+     *计划详情
      */
     public function plandes(){
         $u_id = $this->user_info["id"];
@@ -149,8 +149,19 @@ class PlanController extends InitController {
         $this->assign("plan_info",$plan_info);
         $this->assign("plan_des_list",$plan_des_arr);
         $this->assign('cancel_url', U("index/plan/cancel"));
+        $this->assign('ad_url', AD_HOST.'?uid='.$u_id);
         $this->display("des");
 
+    }
+    public function orderdes(){
+        $u_id = $this->user_info["id"];
+        $p_id = I("id");
+        $type = I("type",1);
+        $this->assign('p_id', $p_id);
+        $this->assign('type', $type);
+        $this->assign('home', HTTP_HOST);
+        $this->assign('plandes', U("index/plan/plandes",['id'=>$p_id]));
+        $this->display();
     }
     public function cancel(){
         $u_id = $this->user_info["id"];
