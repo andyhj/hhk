@@ -505,7 +505,7 @@ class PlanController extends CommonController{
             $weixin = new class_weixin_adv();
             $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
             $msg_data["template_id"] = "_nQ9Iqu1cT6z2aiHV2vvL366b3Qr4nFpfsU7GQ1cg4U";
-            $msg_data["url"] = HTTP_HOST.'/index/plan/orderdes.html?id='.$plan_info["id"].'&type='.$type;;
+            $msg_data["url"] = HTTP_HOST.'/index/plan/orderdes.html?id='.$plan_info["id"].'&type='.$type;
             $bank_card_model = M("bank_card_".$plan_info["c_code"]);
             $card_info = $bank_card_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
             $msg_data["data"] = array(
