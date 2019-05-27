@@ -149,7 +149,6 @@ class PlanController extends InitController {
         $this->assign("plan_info",$plan_info);
         $this->assign("plan_des_list",$plan_des_arr);
         $this->assign('cancel_url', U("index/plan/cancel"));
-        $this->assign('ad_url', AD_HOST.'?uid='.$u_id);
         $this->display("des");
 
     }
@@ -161,6 +160,7 @@ class PlanController extends InitController {
         $this->assign('type', $type);
         $this->assign('home', HTTP_HOST);
         $this->assign('plandes', U("index/plan/plandes",['id'=>$p_id]));
+        $this->assign('ad_url', AD_HOST.'?uid='.$u_id);
         $this->display();
     }
     public function cancel(){
