@@ -79,7 +79,7 @@
         <div class="cpjs">
             <div><img src="/src/img/plus/task.png" class="task-bg"></div>
             <div class="des">
-                <div style="text-align:center;margin-top:10%;">普通会员：0.65%+1</div>
+                <div style="text-align:center;margin-top:10%;">普通会员：0.70%+1</div>
                 <div style="text-align:center;margin-top: 0.2rem;">PLUS会员：0.55%+1</div>
             </div>
         </div>
