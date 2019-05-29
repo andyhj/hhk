@@ -89,13 +89,7 @@
                     }
                 });
             });
-            var _lock1 = false;
             $(".select").click(function(){
-                if(_lock1){
-                    alert('正在查询....');
-                    return false;
-                }
-                _lock1 = true;
                 var order_number = $(this).attr('data-order-number');
                 $.ajax({
                     url: "<?php echo $select; ?>",
