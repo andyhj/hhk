@@ -487,6 +487,11 @@ class PlanController extends CommonController{
         }
         $this->returnJson($json,$session_name);
     }
+    /**
+     * 查询合利宝余额
+     *
+     * @return void
+     */
     public function balance()
     {
         $uid = I("uid");

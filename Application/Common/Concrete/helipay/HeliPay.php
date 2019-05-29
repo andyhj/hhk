@@ -644,7 +644,7 @@ class Heli{
 
         add_log("getAccountQuery.log", "helipay", "提交参数：". var_export($arr, true));
         //$http_client = new HttpClient();
-        $pageContents = $rsa->curlPost(self::WIT_API, $arr);
+        $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
         $result_arr = json_decode($pageContents, true);
         add_log("getAccountQuery.log", "helipay", "返回参数：". var_export($result_arr, true));
         return $result_arr;
