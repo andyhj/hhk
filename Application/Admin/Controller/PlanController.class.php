@@ -208,6 +208,7 @@ class PlanController extends CommonController{
         $this->assign("search_key",$search_key);
         $this->assign("page",$page->show());
         $this->assign("bd_url",U("plan/reporder"));
+        $this->assign("select",U("plan/getWithdraw"));
         $this->display();
     }
     /**
@@ -486,6 +487,50 @@ class PlanController extends CommonController{
             $json["info"] = "类型错误";
         }
         $this->returnJson($json,$session_name);
+    }
+    /**
+     * 结算卡提现、信用卡还款查询
+     *
+     * @return void
+     */
+    public function getWithdraw(){
+        $order_number = I("order_number");
+        if(!$order_number){
+            $json["status"] = 311;
+            $json["info"] = "订单号错误";
+            $this->returnJson($json);
+        }
+        require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+        $heli_pay = new Heli();
+        $arg = array(
+            'order_id' => $order_number
+        );
+        $hlb_ye = $heli_pay->getWithdraw($arg);
+        if($hlb_ye["rt2_retCode"]=="0000"){
+            if($hlb_ye["rt7_orderStatus"]=="SUCCESS"){
+                $json["status"] = 200;
+                $json["info"] = "成功";
+                $this->returnJson($json);
+            }
+            if($hlb_ye["rt7_orderStatus"]=="DOING"){
+                $json["status"] = 312;
+                $json["info"] = "处理中（".$hlb_ye["rt3_retMsg"]."）";
+                $this->returnJson($json);
+            }
+            if($hlb_ye["rt7_orderStatus"]=="FAIL"){
+                $json["status"] = 313;
+                $json["info"] = "失败（".$hlb_ye["rt3_retMsg"]."）";
+                $this->returnJson($json);
+            }
+            if($hlb_ye["rt7_orderStatus"]=="REFUND"){
+                $json["status"] = 313;
+                $json["info"] = "退款（".$hlb_ye["rt3_retMsg"]."）";
+                $this->returnJson($json);
+            }
+        }
+        $json["status"] = 313;
+        $json["info"] = "失败";
+        $this->returnJson($json);
     }
     /**
      * 查询合利宝余额
