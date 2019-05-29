@@ -139,6 +139,7 @@ class PlanController extends CommonController{
         }
         $this->assign("plan_des_list",$plan_des_arr);
         $this->assign("bd_url",U("plan/reporder"));
+        $this->assign("select",U("plan/getWithdraw"));
         $this->display();
     }
     /**
