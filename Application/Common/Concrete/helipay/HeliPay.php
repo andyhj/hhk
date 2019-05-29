@@ -619,6 +619,52 @@ class Heli{
         }
     }
     /**
+     * 用户余额查询
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function getAccountQuery($data) {
+        $keyStr = get_rand_str(16);
+        $aes = new CryptAES();
+        $aes->set_key($keyStr);
+        $aes->require_pkcs5();
+        $arr = array(
+            'P1_bizType' => 'AccountQuery',
+            'P2_customerNumber'=>self::TENANT,
+            'P3_userId'=>$data['userId'],
+            'P4_timestamp'=>date("YmdHis")
+        );
+        $rsa = new Rsa();
+        $sign_str_trim = $this->sinParamsToString($arr);
+
+        $sign =  $rsa->genSign($sign_str_trim);
+        add_log("getAccountQuery.log", "helipay", "私钥生成的数字签名为：". $sign);
+        $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
+        $arr['sign'] = $sign;
+
+        add_log("getAccountQuery.log", "helipay", "提交参数：". var_export($arr, true));
+        //$http_client = new HttpClient();
+        $pageContents = $rsa->curlPost(self::WIT_API, $arr);
+        $result_arr = json_decode($pageContents, true);
+        add_log("getAccountQuery.log", "helipay", "返回参数：". var_export($result_arr, true));
+        return $result_arr;
+        // $verify = array(
+        //     'rt1_bizType' => $result_arr['rt1_bizType'],
+        //     'rt2_retCode' => $result_arr['rt2_retCode'],
+        //     'rt4_customerNumber' => $result_arr['rt4_customerNumber'],
+        //     'rt5_orderId' => $result_arr['rt5_orderId'],
+        //     'rt6_serialNumber' => $result_arr['rt6_serialNumber'],
+        //     'rt7_orderStatus' => $result_arr['rt7_orderStatus']
+        // );
+        // if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
+        //     add_log("getAccountQuery.log", "helipay", "返回参数验签成功");
+        //     return $result_arr;
+        // } else {
+        //     add_log("getAccountQuery.log", "helipay", "返回参数验签失败");
+        //     return false;
+        // }
+    }
+    /**
      * 支付回调验签
      */
     public function back_checked($result_arr){

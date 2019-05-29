@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>查询合利宝余额-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='计划管理 > 查询合利宝余额';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">计划列表</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <input type="text" class="input" name="uid" value="<?php echo $uid; ?>" style="width: 200px;"  placeholder="根据用户ID查找"/>
+                        <input type="submit" class="btn" value="搜索" />
+                    </form>
+                    <div>
+                        账户余额：<?php echo $accountBalance; ?> <br>
+                        冻结余额：<?php echo $accountFrozenBalance; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>

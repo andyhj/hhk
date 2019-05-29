@@ -487,6 +487,28 @@ class PlanController extends CommonController{
         }
         $this->returnJson($json,$session_name);
     }
+    public function balance()
+    {
+        $uid = I("uid");
+        $accountBalance = 0;
+        $accountFrozenBalance = 0;
+        if($uid){
+            require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+            $heli_pay = new Heli();
+            $arg = array(
+                'userId' => $uid
+            );
+            $hlb_ye = $heli_pay->getAccountQuery($arg);
+            if($hlb_ye["rt2_retCode"]=="0000"){
+                $accountBalance = $hlb_ye["rt9_accountBalance"];
+                $accountFrozenBalance = $hlb_ye["rt10_accountFrozenBalance"];
+            }
+        }
+        $this->assign("accountBalance",$accountBalance);
+        $this->assign("accountFrozenBalance",$accountFrozenBalance);
+        $this->assign("uid",$uid);
+        $this->display();
+    }
 /**
      * 公众号推送信息
      * @param type $plan_info
