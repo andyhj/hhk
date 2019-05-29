@@ -63,7 +63,6 @@
                             <td><?php echo $data['message']; ?></td>
                             <td><?php echo $data['status_name']; ?></td>
                             <td><?php if($data['order_state']==4): ?><input type="button" value="补单" data-bdid="<?php echo $data['id']; ?>" class="btn bd" /><?php endif; ?>
-                                <?php if($data['type']==2): ?><input type="button" value="查询" data-order-number="<?php echo $data['remedy_id']?$data['remedy_id']:$data['order_id']; ?>" class="btn select" /><?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -96,24 +95,6 @@
                     success: function (data) {
                         alert(data.info);
                         window.location.reload();
-                    }
-                });
-            });
-            var _lock1 = false;
-            $(".select").click(function(){
-                if(_lock1){
-                    alert('正在查询....');
-                    return false;
-                }
-                _lock1 = true;
-                var order_number = $(this).attr('data-order-number');
-                $.ajax({
-                    url: "<?php echo $select; ?>",
-                    data: {order_number:order_number},
-                    type: 'post',
-                    dataType: 'json',
-                    success: function (data) {
-                        alert(data.info);
                     }
                 });
             });
