@@ -174,12 +174,12 @@ class MemberController extends CommonController {
         $wechat_message_log_list = $m_wechat_message_log->where($where)->order("id DESC")->page($current_page . ',' . $per_page)->select();
         if ($wechat_message_log_list) {
             foreach ($wechat_message_log_list as $val) {
-                $user_wx = M("user_wechat")->where(["u_id" => $val["u_id"]])->find();
+                $user_wx = M("user")->where(["u_id" => $val["u_id"]])->find();
                 $val["nickname"] = "";
                 $val["headurl"] = "";
                 if ($user_wx) {
-                    $val["nickname"] = $user_wx["nickname"];
-                    $val["headurl"] = $user_wx["headurl"];
+                    $val["nickname"] = $user_wx["u_name"];
+                    $val["headurl"] = $user_wx["wx_tx"];
                 }
                 $view_datas['list'][] = $val;
             }
