@@ -153,4 +153,40 @@ class MemberController extends CommonController {
         }
         $this->display('wxmsg');
     }
+    /**
+     * 推送微信消息记录
+     */
+    public function wxMsgLog(){
+        $current_page = (int) I('p', 1);
+        $view_datas['search_key'] = $search_key = I('search_key');
+        $m_wechat_message_log = M("wechat_message_log");
+        $where = [];
+        if ($search_key) {
+            $where_s['u_id'] = $search_key;
+            $where_s['login_id'] = $search_key;
+            $where_s['_logic'] = 'or';
+            $where['_complex'] = $where_s;
+        }
+        $count = $m_wechat_message_log->where($where)->count();
+        $per_page = 15; //每页显示条数
+        $page = getpage($count, $per_page); // 实例化分页类 传入总记录数和每页显示的记录数
+        $showPage = $page->show(); // 分页显示输出
+        $wechat_message_log_list = $m_wechat_message_log->where($where)->order("id DESC")->page($current_page . ',' . $per_page)->select();
+        if ($wechat_message_log_list) {
+            foreach ($wechat_message_log_list as $val) {
+                $user_wx = M("user_wechat")->where(["u_id" => $val["u_id"]])->find();
+                $val["nickname"] = "";
+                $val["headurl"] = "";
+                if ($user_wx) {
+                    $val["nickname"] = $user_wx["nickname"];
+                    $val["headurl"] = $user_wx["headurl"];
+                }
+                $view_datas['list'][] = $val;
+            }
+        }
+        $view_datas['num'] = $count;
+        $this->assign("datas", $view_datas);
+        $this->assign("page", $showPage);
+        $this->display();
+    }
 }

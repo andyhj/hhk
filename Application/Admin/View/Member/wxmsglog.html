@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>推送微信消息记录-{$site.SITE_INFO.name}</title>
+        <php>
+            $addCss="";
+            $addJs="";
+            $currentNav ='用户管理 > 推送微信消息记录';
+        </php>
+        <include file="Common:intoHead" />
+    </head>
+    <body>
+        <div class="wrap">
+            <include file="Common:head" />
+            <div class="mainBody">
+                <include file="Common:left" />
+                <div id="Right">
+                    <div class="Item hr">
+                        <div class="current">推送微信消息记录</div>
+                    </div>
+                    <form id="search_form" method="get">
+                        <input type="text" class="input" name="search_key" value="<?php echo $datas['search_key']; ?>" style="width: 200px;"  placeholder="根据用户登陆账号查找"/> 
+                        <input type="submit" class="btn" value="搜索" />
+                    </form>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+                        <tbody>
+                                <tr>
+                                <td>ID</td>
+                                <td>用户ID</td>
+                            	<td>用户登陆账号</td>
+                            	<td>用户昵称</td>
+                            	<td>添加管理员</td>
+                                <td>标题</td>
+                                <td>业务</td>
+                                <td>提醒内容</td>
+                                <td>处理建议</td>
+                                <td>时间</td>
+                            </tr>
+                            <?php if(!empty($datas["list"])): ?>
+                            <?php foreach($datas["list"] as $n => $data): ?>
+                            <tr id="tr_user_<?php echo $data['id']; ?>">
+                                <td><?php echo $data['id']; ?></td>
+                                <td><?php echo str_replace($datas['search_key'], '<span style="color:red;">' . $datas['search_key'] . '</span>', $data['u_id']); ?></td>
+                                <td><?php echo str_replace($datas['search_key'], '<span style="color:red;">' . $datas['search_key'] . '</span>', $data['login_id']); ?></td>
+                                <td><?php echo $data['nickname']; ?></td>
+                                <td><?php echo $data['add_name']; ?></td>
+                                <td><?php echo $data['title']; ?></td>
+                                <td><?php echo $data['keyword1']; ?></td>
+                                <td><?php echo $data['keyword3']; ?></td>
+                                <td><?php echo $data['keyword4']; ?></td>
+                                <td><?php echo $data['keyword2']; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                    <div class="pages"><?php echo $page; ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <include file="Common:foot" />
+    </body>
+</html>
