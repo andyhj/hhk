@@ -49,6 +49,7 @@ class PlanController extends InitController {
         $customer_wx_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
         $wx = $customer_wx_m->where(["user_id"=>$this->user_info["id"]])->find();
         if(!$wx["state"]){
+            add_log("wxlogin.log", "plan", "微信登陆数据：". var_export($wx, true));
             echo '<script>alert("请先关注会收钱公众号");</script>';
             die();
         }
