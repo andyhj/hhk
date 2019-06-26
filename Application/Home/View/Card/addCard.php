@@ -234,11 +234,11 @@
                 alert("请输入还款日");
                 return false;
             }
-            if (!/^1[345678]\d{9}$/.test(data.phone)) {
-                _lock = false;
-                alert('手机号格式不正确');
-                return false;
-            }
+            // if (!/^1[345678]\d{9}$/.test(data.phone)) {
+            //     _lock = false;
+            //     alert('手机号格式不正确');
+            //     return false;
+            // }
             $.ajax({
                 url: "<?php echo $get_code_url; ?>",
                 data: data,
