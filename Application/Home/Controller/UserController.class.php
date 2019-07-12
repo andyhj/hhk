@@ -34,11 +34,11 @@ class UserController extends InitController {
         }
         $db_config = C("DB_CONFIG2");
         $customer_wx_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
-        $wx = $customer_wx_m->where(["user_id"=>$this->user_info["id"]])->find();
-//        if(!$wx["state"]){
-//            echo '<script>alert("请先关注会收钱公众号");</script>';
-//            die();
-//        }
+        $wx = $customer_wx_m->where(["user_id"=>$this->user_info["id"],"state"=>1])->find();
+        if(!$wx){
+            echo '<script>alert("请先关注会收钱公众号");</script>';
+            die();
+        }
         $this->user_wx_info = $wx;
         $this->assign('is_gr',1);
         $this->assign('userInfo', $this->user_info);
