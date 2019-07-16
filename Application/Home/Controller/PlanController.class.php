@@ -455,7 +455,7 @@ class PlanController extends InitController {
                         $s=$user_vip_log_m->add($user_vip_log_data);
                         add_log("plan.log", "plan", "赠送vip信息状态：". var_export($s, true));
                         if($s){
-                            $user_m->wxMessagewxYwlcMsg($user_wx_binding["user_id"],'恭喜您获得《会还款》一个月VIP','下级用户制定《会还款》计划成功赠送',date("Y-m-d H:i:s"),'请尽快领取','点击领取','',HTTP_HOST.'/index/user/plusdes.html',$user_wx_binding["open_id"]);
+                            $user_m->wxMessagewxYwlcMsg($user_wx_binding["user_id"],'恭喜您获得《会还款》一个月PLUS会员','下级用户制定《会还款》计划成功赠送',date("Y-m-d H:i:s"),'请尽快领取','点击领取','',HTTP_HOST.'/index/user/plusdes.html',$user_wx_binding["open_id"]);
                         }
                     }
 
