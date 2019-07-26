@@ -8,6 +8,7 @@ namespace Home\Controller;
  */
 use Common\Common\WxH5Login;
 use Common\HeliPay\Heli;
+use Common\GyfPay\gyf;
 class CardController extends InitController {
     private $user_info;
     private $c_code;
@@ -100,7 +101,7 @@ class CardController extends InitController {
         $phone = trim(I("post.phone"));           //预留手机号
         $code = trim(I("post.code"));             //验证码
         $session_name = "submitCard_".$u_id;
-//        session($session_name,null);
+        // session($session_name,null);
         if(session($session_name)){
             $json["status"] = 305;
             $json["info"] = "正在提交...";
@@ -188,6 +189,7 @@ class CardController extends InitController {
                         if($r_s){
                             $json["status"] = 200;
                             $json["info"] = "银行卡已经绑定成功";
+                            $json["url"] ='';
                             $this->returnJson($json, $session_name);
                         }else{
                             $json["status"] = 311;
@@ -200,7 +202,43 @@ class CardController extends InitController {
                     $this->returnJson($json, $session_name);
                 }
                 break;
-
+            case "gyf":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+                $cookie_code = cookie('card_'.$card_no); 
+                if($cookie_code!=$code){
+                    $json["status"] = 311;
+                    $json["info"] = "验证码不正确";
+                    $this->returnJson($json, $session_name);
+                }
+                //参数
+                $param=[
+                    'merch_id' => $card_info['merch_id'],//子商户号
+                    'name'=> $card_info["user_name"],//法人姓名
+                    'phone'=> $card_info["phone"],//法人电话
+                    'id_card'=> $card_info["id_card"],//身份证号
+                    'card_id'=> $card_info["card_no"],//交易卡号
+                    'notify_url'=> U("index/gyfCallback/bKreceive"),//异步通知地址
+                    'front_url'=> U("index/card/index",['c_code'=>$this->c_code]),//页面通知地址,绑卡结束调回支付页
+                    'order_id' => 'BK'.$u_id.time(),//请求流水号
+                ];
+                $res_j = gyf::bindCardHtml($param);
+                if(isset($res_j['status']) && $res_j['status'] == 1){
+                    if($res_j['ret_data']['data']['html']){
+                        $html =  stripslashes($res_j['ret_data']['data']['html']);
+                        $this->card_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->save(['html'=>$html]);
+                        $json["status"] = 200;
+                        $json["info"] = "下一步跳至银联页面完成绑卡";
+                        $json["url"] = U("index/card/showHtml",['c_code'=>$this->c_code,'card_id'=>$card_info["id"]]);
+                        $this->returnJson($json, $session_name);
+                    }
+                    $json["status"] = 312;
+                    $json["info"] = "绑卡失败，银联返回参数错误";
+                    $this->returnJson($json, $session_name);
+                }
+                $json["status"] = 313;
+                $json["info"] = "绑卡失败(".$res_j['msg'].")";
+                $this->returnJson($json, $session_name);
+                break;
             default:
                 $json["status"] = 311;
                 $json["info"] = "非法请求";
@@ -223,7 +261,7 @@ class CardController extends InitController {
         $repayment = (int)trim(I("post.repayment"));  //还款日
         $phone = trim(I("post.phone"));           //预留手机号
         $session_name = "submitCard_".$u_id;
-//        session($session_name,null);
+        // session($session_name,null);
         if(session($session_name)){
             $json["status"] = 305;
             $json["info"] = "正在提交...";
@@ -279,7 +317,7 @@ class CardController extends InitController {
                 $card_id = $card_info["id"];
             }            
         }
-        $order_id = "HLB".$u_id.time();
+        $order_id = strtoupper($this->c_code).$u_id.time();
         $add_card_data = array(
             "uid" => $u_id,
             "order_id" => $order_id,
@@ -336,7 +374,52 @@ class CardController extends InitController {
                     }
                 }
                 break;
-
+            case "gyf":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+                $merch_id = '';
+                $card_merch_info = $this->card_m->where(["u_id"=>$u_id,"success"=>1])->find();
+                if($card_merch_info&&$card_merch_info['merch_id']){
+                    $merch_id = $card_merch_info['merch_id'];
+                }else{
+                    if(!$customer_bankaccount_info['province']||!$customer_bankaccount_info['city']){
+                        $json["status"] = 310;
+                        $json["info"] = "进件异常(结算账户填写不完整)";
+                        $this->returnJson($json, $session_name);
+                    }
+                    $addr = $customer_bankaccount_info['province'].$customer_bankaccount_info['city'];//商户详细地址
+                    $merch_arr = $this->getmchNo($u_id,$customer_bankaccount_info["accountname"],$phone,$addr,$this->user_info["idcard"],$card_no);
+                    if($merch_arr&&$merch_arr['code']==1&&$merch_arr['merch_id']){
+                        $merch_id = $merch_arr['merch_id'];
+                    }else{
+                        $json["status"] = 311;
+                        $json["info"] = "进件异常(".$merch_arr['msg'].")";
+                        $this->returnJson($json, $session_name);
+                    }                    
+                }                
+                $add_card_data['merch_id'] = $merch_id;
+                $re = send_sms($add_card_data["phone"]);
+                if (!$re) {
+                    $json["status"] = 310;
+                    $json["info"] = "发送绑卡短信失败";
+                    $this->returnJson($json, $session_name);
+                }
+                if($card_id){
+                    $r_s = $this->card_m->where(["id"=>$card_id])->save($add_card_data);
+                }else{
+                    $r_s = $this->card_m->add($add_card_data);
+                }
+                
+                if($r_s){
+                    cookie('card_'.$card_no,1,60); 
+                    $json["status"] = 200;
+                    $json["info"] = "发送绑卡短信成功";
+                    $this->returnJson($json, $session_name);
+                }else{
+                    $json["status"] = 311;
+                    $json["info"] = "发送绑卡短信成功，添加数据失败，请联系客服";
+                    $this->returnJson($json, $session_name);
+                }
+                break;            
             default:
                 $json["status"] = 311;
                 $json["info"] = "非法请求";
@@ -400,12 +483,82 @@ class CardController extends InitController {
                     }
                 }
                 break;
-
+            case "gyf":
+                $r_s = $this->card_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0]);
+                if($r_s){
+                    $json["status"] = 200;
+                    $json["info"] = "银行卡已经解绑成功";
+                    $this->returnJson($json);
+                }else{
+                    $json["status"] = 311;
+                    $json["info"] = "解绑失败，请联系客服";
+                    $this->returnJson($json);
+                }
+                break;
             default:
                 $json["status"] = 311;
                 $json["info"] = "非法请求";
                 $this->returnJson($json);
                 break;
         }
+    }
+    /**
+     * 工易付获取商户号
+     *
+     * @param [type] $u_id      用户id
+     * @param [type] $u_name    用户真实姓名
+     * @param [type] $phone     手机号码
+     * @param [type] $addr      地址
+     * @param [type] $id_card   身份证号码
+     * @param [type] $account   卡号
+     * @return void
+     */
+    private function getmchNo($u_id,$u_name,$phone,$addr,$id_card,$account){
+        if(!$u_id||!$u_name||!$phone||!$addr||!$id_card||!$account){
+            return array('code' => 0, 'msg' => '进件异常(数据不存在)');
+        }
+        $channel_model = M("channel");
+        $channel_info = $channel_model->where(["code"=>$this->c_code])->find();
+        if(!$channel_info){
+            return array('code' => 0, 'msg' => '通道不存在');
+        }
+        $fee = $channel_info["user_fee"]; //普通用户交易费率
+        $close_rate = $channel_info["user_close_rate"];   //普通用户结算费用（每笔）
+
+        $user_m = M("user");
+        $user_des = $user_m->where(["u_id"=>$u_id])->find();
+        //判断是否plus会员
+        if($user_des && $user_des['is_vip']){
+            $fee = $channel_info["plus_user_fee"]; //plus用户交费率
+            $close_rate = $channel_info["plus_user_close_rate"];   //plus用户结算费用（每笔）
+        }
+        //收集信息
+        $param = array(          
+            'name'=> $u_name,//真实姓名
+            'phone'=> $phone,//手机号
+            'id_card'=> $id_card,//身份证号码
+            'merch_addr'=> $addr,//商户详细地址
+            'card_id'=> $account,//结算账号
+            'fee_rate'=> $fee*10000,//交易费率0.68% 传  68. 费率值乘于10000
+            'extern_fee'=> $close_rate*100,//附加手续费(结算手续费)，单位分：（1.00元，传 100）
+        );
+        require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+        $res_j = gyf::regMchInfo($param);
+        if(isset($res_j['status']) && $res_j['status'] == 1){
+            return array('code' => 1, 'merch_id' => $indata['merch_id']);
+        }
+        return array('code' => 0, 'msg' => '进件异常('.$res_j['msg'].')');
+    }
+    /**
+     * 工易付银联绑卡页面
+     *
+     * @return void
+     */
+    public function showHtml()
+    {
+        $card_id = I('card_id');
+        $u_id = $this->user_info["id"];
+        $card_info = $this->card_m->where(["id"=>$card_id,"u_id"=>$u_id])->find();
+        echo $card_info['html'];
     }
 }

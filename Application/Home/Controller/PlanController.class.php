@@ -16,6 +16,7 @@ namespace Home\Controller;
 use Common\Common\WxH5Login;
 use Common\HeliPay\Heli;
 use Common\WxApi\class_weixin_adv;
+use Common\GyfPay\gyf;
 class PlanController extends InitController {
     private $user_info;
     private $user_wx_info;
@@ -193,8 +194,12 @@ class PlanController extends InitController {
      * 通道列表
      */
     public function channel(){
+        $u_id = $this->user_info["id"];
         $channel_moblie_m = M("channel_moblie");
-        $where["state"] = 1;
+        $where = [];
+        if($u_id!=464885){
+            $where["state"] = 1;
+        } 
         $num = $channel_moblie_m->where($where)->count();
         $channel_moblie_list = $channel_moblie_m->where($where)->select();
         if($num==1&&$channel_moblie_list){
@@ -225,18 +230,18 @@ class PlanController extends InitController {
         }
         $channel_model = M("channel");
         $channel_moblie_m = M("channel_moblie");
-        $user_vip_model = M("user_vip");
         $channel_info = $channel_model->where(["id"=>$c_id])->find();
         if(!$channel_info){
             echo '<script>alert("通道不存在");</script>';
             die();
         }
-        $user_vip_info = $user_vip_model->where(["u_id"=>$u_id])->find();
         $fee = $channel_info["user_fee"]; //普通用户交易费率
         $close_rate = $channel_info["user_close_rate"];   //普通用户结算费用（每笔）
         $is_plus = 0;
+        $user_m = M("user");
+        $user_des = $user_m->where(["u_id"=>$u_id])->find();
         //判断是否plus会员
-        if($user_vip_info && strtotime($user_vip_info["end_time"])> time()){
+        if($user_des && $user_des['is_vip']){
             $is_plus = 1;
             $fee = $channel_info["plus_user_fee"]; //plus用户交费率
             $close_rate = $channel_info["plus_user_close_rate"];   //plus用户结算费用（每笔）
@@ -302,7 +307,6 @@ class PlanController extends InitController {
             $this->returnJson($json,$session_name);
         }
         $channel_model = M("channel");
-        $user_vip_model = M("user_vip");
         $plan_model = M("plan");
         $plan_des_model = M("plan_des");
         if($periods==6&&$amount<1500){
@@ -381,10 +385,11 @@ class PlanController extends InitController {
         }
         $fee = $channel_info["user_fee"]; //普通用户交易费率
         $close_rate = $channel_info["user_close_rate"];   //普通用户结算费用（每笔）
-        $user_vip_info = $user_vip_model->where(["u_id"=>$u_id])->find();
         $is_plus = 0;
+        $user_m = M("user");
+        $user_des = $user_m->where(["u_id"=>$u_id])->find();
         //判断是否plus会员
-        if($user_vip_info && strtotime($user_vip_info["end_time"])> time()){
+        if($user_des && $user_des['is_vip']){
             $is_plus = 1;
             $fee = $channel_info["plus_user_fee"]; //plus用户交费率
             $close_rate = $channel_info["plus_user_close_rate"];   //plus用户结算费用（每笔）
@@ -790,7 +795,7 @@ class PlanController extends InitController {
                             $upd_plan_des_data["message"] = "提交成功,等待回调通知";
                             $upd_plan_des_data["order_state"] = 3;
                             $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
-//                                $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
                             $json["status"] = 200;
                             $json["info"] = "提交成功,等待回调通知";
                         }elseif($hlb_dh['rt2_retCode'] == '0001'){
@@ -809,7 +814,60 @@ class PlanController extends InitController {
                         }
                     }
                     break;
-
+                case "gyf":
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+                    $param=[
+                        'merch_id' => $bank_card_hlb_info['merch_id'],//子商户号
+                        'order_id' => $remedy_id,//订单号
+                        'name'=> $bank_card_hlb_info['user_name'],//法人姓名
+                        'phone'=> $bank_card_hlb_info['phone'],//法人电话
+                        'id_card'=> $bank_card_hlb_info['id_card'],//身份证号
+                        'card_id'=> $bank_card_hlb_info['card_no'],//交易卡号
+                        'notify_url'=> U("index/gyfCallback/receive"),//异步通知地址
+                        'amount'=> $plan_des_info["amount"]*100,//交易金额
+                        'cvv'=> $bank_card_hlb_info['card_cvv'],//安全码
+                        'exp_date'=> $bank_card_hlb_info['validity_date'],//有效期
+                        'ip_addr'=>getIP(),//公网IP地址（若不填大额交易限额会被风控）（付款客户端IP）
+                    ];
+                    $gyf_dh = gyf::pay($param);//执行代扣
+                    if(isset($gyf_dh['status']) && $gyf_dh['status'] == 1){
+                        if($gyf_dh['ret_data']['data']['orderStatus']=='02'){
+                            $upd_plan_des_data["message"] = "提交成功,等待回调通知";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "提交成功,等待回调通知";
+                        }elseif($gyf_dh['ret_data']['data']['orderStatus']=='03'){
+                            $upd_plan_des_data["message"] = "补单失败,".$gyf_dh['ret_data']['data']['respDesc'];
+                            $json["info"] = $upd_plan_des_data["message"];
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, "消费补单失败", "消费");
+                        }else{                            
+                            $upd_plan_des_data["message"] = "订单处理中";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "订单处理中";
+                        }
+                    }elseif(isset($gyf_dh['status']) && $gyf_dh['status'] == 0){
+                        if($gyf_dh['ret_data']['code']=='0100'){
+                            $upd_plan_des_data["message"] = "订单处理中";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "订单处理中";
+                        }else{
+                            $upd_plan_des_data["message"] = "补单失败,".$gyf_dh['msg'];
+                            $json["info"] = $upd_plan_des_data["message"];
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, "消费补单失败", "消费");
+                        }
+                    }      
+                    
+                    break;
                 default:
                     break;
             }
@@ -859,7 +917,57 @@ class PlanController extends InitController {
                         }
                     }
                     break;
-
+                case "gyf":
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+                    $param=[
+                        'merch_id' => $bank_card_hlb_info['merch_id'],//子商户号
+                        'order_id' => $remedy_id,//订单号
+                        'name'=> $bank_card_hlb_info['user_name'],//法人姓名
+                        'phone'=> $bank_card_hlb_info['phone'],//法人电话
+                        'id_card'=> $bank_card_hlb_info['id_card'],//身份证号
+                        'card_id'=> $bank_card_hlb_info['card_no'],//结算卡号
+                        'notify_url'=> U("index/gyfCallback/close"),//异步通知地址
+                        'amount'=> $plan_des_info["amount"]*100,//交易金额
+                    ];
+                    $gyf_dh = gyf::withdraw($param);//执行代还
+                    if(isset($gyf_dh['status']) && $gyf_dh['status'] == 1){
+                        if($gyf_dh['ret_data']['data']['orderStatus']=='02'){
+                            $upd_plan_des_data["message"] = "提交成功,等待回调通知";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "提交成功,等待回调通知";
+                        }elseif($gyf_dh['ret_data']['data']['orderStatus']=='03'){
+                            $upd_plan_des_data["message"] = "补单失败,".$gyf_dh['ret_data']['data']['respDesc'];
+                            $json["info"] = $upd_plan_des_data["message"];
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, "还款补单失败", "还款");
+                        }else{                            
+                            $upd_plan_des_data["message"] = "订单处理中";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "订单处理中";
+                        }
+                    }elseif(isset($gyf_dh['status']) && $gyf_dh['status'] == 0){
+                        if($gyf_dh['ret_data']['code']=='0100'){
+                            $upd_plan_des_data["message"] = "订单处理中";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "订单处理中";
+                        }else{
+                            $upd_plan_des_data["message"] = "补单失败,".$gyf_dh['msg'];
+                            $json["info"] = $upd_plan_des_data["message"];
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, "还款补单失败", "还款");
+                        }
+                    }      
+                    
+                    break;
                 default:
                     break;
             }

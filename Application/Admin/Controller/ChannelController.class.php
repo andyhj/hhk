@@ -206,7 +206,7 @@ class ChannelController  extends CommonController{
         $data["sort"] = I("sort",$channel_modlie_info["sort"]); //显示顺序
         $error = "";
         if(is_post()){
-            if(!$data["c_id"] || !$data["title"] || !$data["quota"] || !$data["settlement"] || !$data["date"] || !$data["prompt"] || !$data["state"]){
+            if(!$data["c_id"] || !$data["title"] || !$data["quota"] || !$data["settlement"] || !$data["date"] || !$data["prompt"]){
                 $error = "参数不完整错误";
             }else{
                 $r_id = M("channel_moblie")->where(["id"=>$id])->save($data);

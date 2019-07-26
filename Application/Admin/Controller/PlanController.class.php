@@ -8,6 +8,7 @@ namespace Admin\Controller;
  */
 use Common\HeliPay\Heli;
 use Common\WxApi\class_weixin_adv;
+use Common\GyfPay\gyf;
 class PlanController extends CommonController{
     /**
      * 计划列表
@@ -429,7 +430,60 @@ class PlanController extends CommonController{
                         }
                     }
                     break;
-
+                case "gyf":
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+                    $param=[
+                        'merch_id' => $bank_card_hlb_info['merch_id'],//子商户号
+                        'order_id' => $remedy_id,//订单号
+                        'name'=> $bank_card_hlb_info['user_name'],//法人姓名
+                        'phone'=> $bank_card_hlb_info['phone'],//法人电话
+                        'id_card'=> $bank_card_hlb_info['id_card'],//身份证号
+                        'card_id'=> $bank_card_hlb_info['card_no'],//交易卡号
+                        'notify_url'=> U("index/gyfCallback/receive"),//异步通知地址
+                        'amount'=> $plan_des_info["amount"]*100,//交易金额
+                        'cvv'=> $bank_card_hlb_info['card_cvv'],//安全码
+                        'exp_date'=> $bank_card_hlb_info['validity_date'],//有效期
+                        'ip_addr'=>getIP(),//公网IP地址（若不填大额交易限额会被风控）（付款客户端IP）
+                    ];
+                    $gyf_dh = gyf::pay($param);//执行代扣
+                    if(isset($gyf_dh['status']) && $gyf_dh['status'] == 1){
+                        if($gyf_dh['ret_data']['data']['orderStatus']=='02'){
+                            $upd_plan_des_data["message"] = "提交成功,等待回调通知";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "提交成功,等待回调通知";
+                        }elseif($gyf_dh['ret_data']['data']['orderStatus']=='03'){
+                            $upd_plan_des_data["message"] = "补单失败,".$gyf_dh['ret_data']['data']['respDesc'];
+                            $json["info"] = $upd_plan_des_data["message"];
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, "消费补单失败", "消费");
+                        }else{                            
+                            $upd_plan_des_data["message"] = "订单处理中";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "订单处理中";
+                        }
+                    }elseif(isset($gyf_dh['status']) && $gyf_dh['status'] == 0){
+                        if($gyf_dh['ret_data']['code']=='0100'){
+                            $upd_plan_des_data["message"] = "订单处理中";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "订单处理中";
+                        }else{
+                            $upd_plan_des_data["message"] = "补单失败,".$gyf_dh['msg'];
+                            $json["info"] = $upd_plan_des_data["message"];
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, "消费补单失败", "消费");
+                        }
+                    }      
+                    
+                    break;
                 default:
                     break;
             }
@@ -479,7 +533,57 @@ class PlanController extends CommonController{
                         }
                     }
                     break;
-
+                case "gyf":
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+                    $param=[
+                        'merch_id' => $bank_card_hlb_info['merch_id'],//子商户号
+                        'order_id' => $remedy_id,//订单号
+                        'name'=> $bank_card_hlb_info['user_name'],//法人姓名
+                        'phone'=> $bank_card_hlb_info['phone'],//法人电话
+                        'id_card'=> $bank_card_hlb_info['id_card'],//身份证号
+                        'card_id'=> $bank_card_hlb_info['card_no'],//结算卡号
+                        'notify_url'=> U("index/gyfCallback/close"),//异步通知地址
+                        'amount'=> $plan_des_info["amount"]*100,//交易金额
+                    ];
+                    $gyf_dh = gyf::withdraw($param);//执行代还
+                    if(isset($gyf_dh['status']) && $gyf_dh['status'] == 1){
+                        if($gyf_dh['ret_data']['data']['orderStatus']=='02'){
+                            $upd_plan_des_data["message"] = "提交成功,等待回调通知";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "提交成功,等待回调通知";
+                        }elseif($gyf_dh['ret_data']['data']['orderStatus']=='03'){
+                            $upd_plan_des_data["message"] = "补单失败,".$gyf_dh['ret_data']['data']['respDesc'];
+                            $json["info"] = $upd_plan_des_data["message"];
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, "还款补单失败", "还款");
+                        }else{                            
+                            $upd_plan_des_data["message"] = "订单处理中";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "订单处理中";
+                        }
+                    }elseif(isset($gyf_dh['status']) && $gyf_dh['status'] == 0){
+                        if($gyf_dh['ret_data']['code']=='0100'){
+                            $upd_plan_des_data["message"] = "订单处理中";
+                            $upd_plan_des_data["order_state"] = 3;
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            $json["status"] = 200;
+                            $json["info"] = "订单处理中";
+                        }else{
+                            $upd_plan_des_data["message"] = "补单失败,".$gyf_dh['msg'];
+                            $json["info"] = $upd_plan_des_data["message"];
+                            $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                            $this->sendWxErrorMessage($plan_info, "还款补单失败", "还款");
+                        }
+                    }      
+                    
+                    break;
                 default:
                     break;
             }
@@ -501,33 +605,85 @@ class PlanController extends CommonController{
             $json["info"] = "订单号错误";
             $this->returnJson($json);
         }
-        require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
-        $heli_pay = new Heli();
-        $arg = array(
-            'order_id' => $order_number
-        );
-        $hlb_ye = $heli_pay->getWithdraw($arg);
-        if($hlb_ye["rt2_retCode"]=="0000"){
-            if($hlb_ye["rt7_orderStatus"]=="SUCCESS"){
-                $json["status"] = 200;
-                $json["info"] = "成功";
-                $this->returnJson($json);
-            }
-            if($hlb_ye["rt7_orderStatus"]=="DOING"){
-                $json["status"] = 312;
-                $json["info"] = "处理中（".$hlb_ye["rt3_retMsg"]."）";
-                $this->returnJson($json);
-            }
-            if($hlb_ye["rt7_orderStatus"]=="FAIL"){
-                $json["status"] = 313;
-                $json["info"] = "失败（".$hlb_ye["rt3_retMsg"]."）";
-                $this->returnJson($json);
-            }
-            if($hlb_ye["rt7_orderStatus"]=="REFUND"){
-                $json["status"] = 313;
-                $json["info"] = "退款（".$hlb_ye["rt3_retMsg"]."）";
-                $this->returnJson($json);
-            }
+        $plan_model = M("plan");
+        $plan_des_model = M("plan_des");
+        $plan_des_info = $plan_des_model->where("order_id='{$order_number}' OR remedy_id='{$order_number}'")->find();
+        if(!$plan_des_info&&empty($plan_des_info)){
+            $json["status"] = 311;
+            $json["info"] = "订单不存在";
+            $this->returnJson($json);
+        }
+        $plan_info = $plan_model->where(["id"=>$plan_des_info["p_id"]])->find();
+        if(!$plan_info&&empty($plan_info)){
+            $json["status"] = 311;
+            $json["info"] = "计划不存在";
+            $this->returnJson($json);
+        }
+        switch ($plan_info["c_code"]) {
+            case "hlb":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+                $heli_pay = new Heli();
+                $arg = array(
+                    'order_id' => $order_number
+                );
+                $hlb_ye = $heli_pay->getWithdraw($arg);
+                if($hlb_ye["rt2_retCode"]=="0000"){
+                    if($hlb_ye["rt7_orderStatus"]=="SUCCESS"){
+                        $json["status"] = 200;
+                        $json["info"] = "成功";
+                        $this->returnJson($json);
+                    }
+                    if($hlb_ye["rt7_orderStatus"]=="DOING"){
+                        $json["status"] = 312;
+                        $json["info"] = "处理中（".$hlb_ye["rt3_retMsg"]."）";
+                        $this->returnJson($json);
+                    }
+                    if($hlb_ye["rt7_orderStatus"]=="FAIL"){
+                        $json["status"] = 313;
+                        $json["info"] = "失败（".$hlb_ye["rt3_retMsg"]."）";
+                        $this->returnJson($json);
+                    }
+                    if($hlb_ye["rt7_orderStatus"]=="REFUND"){
+                        $json["status"] = 313;
+                        $json["info"] = "退款（".$hlb_ye["rt3_retMsg"]."）";
+                        $this->returnJson($json);
+                    }
+                }
+                break;
+            case "gyf":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+                $bank_card_model = M("bank_card_".$plan_info["c_code"]);
+                $bank_card_hlb_info = $bank_card_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
+                $param=[
+                    'merch_id' => $bank_card_hlb_info['merch_id'],//子商户号
+                    'order_id' => $order_number,//订单号
+                ];
+                $affirmPay = gyf::queryOrder($param);//执行代还
+                if($affirmPay&&!empty($affirmPay)){
+                    if(isset($affirmPay['status']) && $affirmPay['status'] == 1){
+                        if($affirmPay['ret_data']['data']['orderStatus']=='02'){
+                            $json["status"] = 200;
+                            $json["info"] = "成功";
+                            $this->returnJson($json);
+                        }elseif($affirmPay['ret_data']['data']['orderStatus']=='03'){
+                            $json["status"] = 313;
+                            $json["info"] = "失败（".$affirmPay['ret_data']['data']['respDesc']."）";
+                            $this->returnJson($json);
+                        }else{
+                            $json["status"] = 312;
+                            $json["info"] = "处理中";
+                            $this->returnJson($json);
+                        }
+                    }else{
+                        $json["status"] = 313;
+                        $json["info"] = "失败（".$affirmPay['msg']."）";
+                        $this->returnJson($json);
+                    }
+                }   
+                
+                break;    
+            default:
+                break;
         }
         $json["status"] = 313;
         $json["info"] = "失败";

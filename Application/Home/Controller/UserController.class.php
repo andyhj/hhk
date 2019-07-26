@@ -151,6 +151,9 @@ class UserController extends InitController {
                 }
                 $user_vip_log_m->where(["u_id"=>$info["id"],"id"=>$id])->save(["status"=>1,"get_time"=> time()]);
                 $user_vip_info = $user_vip_model->where(["u_id"=>$info["id"]])->find();
+                $user_m = M("user");
+                $user_des = $user_m->where(["u_id"=>$info["id"]])->find();
+                
                 //判断是否plus会员
                 if($user_vip_info){
                     if(strtotime($user_vip_info["end_time"])> time()){
@@ -160,6 +163,16 @@ class UserController extends InitController {
                     }
                     $r_s = $user_vip_model->where(["u_id"=>$info["id"]])->save(["end_time"=>date("Y-m-d H:i:s",$end_time)]);
                     if($r_s){
+                        if($user_des&&!$user_des['is_vip']){
+                            $r_s = $user_m->where(["u_id"=>$info["id"]])->save(['is_vip'=>1]);
+                            if($r_s){
+                                $channel_model = M("channel");
+                                $channel_info = $channel_model->where(["code"=>'gyf'])->find();
+                                if($channel_info){
+                                    $this->updateRate($info["id"],$channel_info['plus_user_fee'],$channel_info['plus_user_fee']);//更新工易付费率
+                                }
+                            }
+                        }
                         $json["status"] = 200;
                         $json["info"] = "领取成功";
                         $this->returnJson($json,$session_name);
@@ -171,6 +184,16 @@ class UserController extends InitController {
                     $user_vip_data["end_time"] = date("Y-m-d H:i:s",$end_time);
                     $r_s = $user_vip_model->add($user_vip_data);
                     if($r_s){
+                        if($user_des&&!$user_des['is_vip']){
+                            $r_s = $user_m->where(["u_id"=>$info["id"]])->save(['is_vip'=>1]);
+                            if($r_s){
+                                $channel_model = M("channel");
+                                $channel_info = $channel_model->where(["code"=>'gyf'])->find();
+                                if($channel_info){
+                                    $this->updateRate($info["id"],$channel_info['plus_user_fee'],$channel_info['plus_user_fee']);//更新工易付费率
+                                }
+                            }
+                        }
                         $json["status"] = 200;
                         $json["info"] = "领取成功";
                         $this->returnJson($json,$session_name);
@@ -189,8 +212,12 @@ class UserController extends InitController {
      * 通道列表
      */
     public function channel(){
+        $u_id = $this->user_info["id"];
         $channel_moblie_m = M("channel_moblie");
-        $where["state"] = 1;
+        $where = [];
+        if($u_id!=464885){
+            $where["state"] = 1;
+        }        
         $num = $channel_moblie_m->where($where)->count();
         $channel_moblie_list = $channel_moblie_m->where($where)->select();
         if($num==1&&$channel_moblie_list){

@@ -202,9 +202,13 @@
                         每天执行扣款次数：
                             <span  style="float:right;">
                                 <select id="nums" name="nums" >
+                                <?php if($c_code=='gyf'){?>
+                                    <option value="2">每天扣款两次</option>
+                                <?php }else{?>
                                     <option value="0">---系统默认---</option>
                                     <option value="1">每天扣款一次</option>
                                     <option value="2">每天扣款两次</option>
+                                <?php }?>
                                 </select>
                             </span>
                     </li>
@@ -348,6 +352,20 @@
                     alert("选择24期，还款总额不能小于6000");
                     return false;
                 }
+                <?php if($c_code=='gyf'){?>
+                    if(periods==6&&amount>5000){
+                        alert("此通道选择6期，还款总额不能大于5000");
+                        return false;
+                    }
+                    if(periods==12&&amount>10000){
+                        alert("此通道选择12期，还款总额不能大于10000");
+                        return false;
+                    }
+                    if(periods==24&&amount>20000){
+                        alert("此通道选择24期，还款总额不能大于20000");
+                        return false;
+                    }
+                <?php }?>
                 if(p_amount !=='' && p_amount_count !==''){
                     var ye = (parseFloat(p_amount)+(parseFloat(amount)/100/2)+parseFloat(p_amount_count)).toFixed(2); //卡余额
                     msg = '确定卡里余额大于'+ye+'？';

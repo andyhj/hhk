@@ -569,7 +569,53 @@ function curlSend($url, $post_data = "") {
     curl_close($ch);
     return $result;
 }
+/**
+ * 发送验证码
+ *
+ * @param [type] $phone
+ * @return void
+ */
+function send_sms($phone,$length=6)
+{
+    $config = C("SMS_CONFIG");
+    $productid = $config['productid'];
+    $letters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    $code = get_rand_str($length, $letters);
+    $tkey = date('YmdHis');//当前时间
+    $content = "【会还款】您好,您的验证码是{$code}。";
+    $post_data = array(
+        'username' => $config['username'],
+        'tkey' => $tkey,
+        'password' => md5(md5($config['password']) . $tkey),//加密后密码
+        'mobile' => $phone,
+        'content' => $content,
+        'productid' => $productid,
+        'xh' => ''
+    );
+    $result = send_sms_post($config['url'], $post_data);
+    //如果返回的结果是1,xxxxxxxx代表发送短信成功
+    $rs = preg_match("/1,\d+/i", $result);
+    return $rs ? $code : 0;
+}
+function send_sms_post($url, $post_data)
+{
 
+    // $post_data   = iconv("UTF-8", "UTF-8", $post_data);
+    $postdata = http_build_query($post_data);
+
+    $options = array(
+        'http' => array(
+            'method' => 'POST',//or GET
+            'header' => 'Content-type:application/x-www-form-urlencoded',
+            'content' => $postdata,
+            'timeout' => 15 * 60 // 超时时间（单位:s）
+        )
+    );
+    $context = stream_context_create($options);
+
+    $result = file_get_contents($url, false, $context);
+    return $result;
+}
 /**
  * 调用接口获取 $ACCESS_TOKEN
  * 微信缓存 7200 秒，这里使用thinkphp的缓存方法
@@ -781,63 +827,6 @@ function getpage($count, $pagesize = 10) {
     return $p;
 }
 
-/**
- * 日志类型
- * @param type $type
- * @return boolean|string
- */
-function logtypeName($type){
-    if(!$type){
-       return false; 
-    }
-    $logtype_arr=array(
-        "1"=>"赢",
-        "2"=>"输",
-        "3"=>"台费",
-        "4"=>"比赛报名费",
-        "5"=>"比赛排名奖励",
-        "6"=>"商城购买金币",
-        "7"=>"邮件领取奖励",
-        "8"=>"炸金花押注",
-        "9"=>"使用魔法表情",
-        "10"=>"德州押注",
-        "11"=>"德州携带金额进入",
-        "12"=>"德州携带金额退出",
-        "13"=>"德州打赏荷官",
-        "14"=>"象棋下注",
-        "15"=>"象棋返还",
-        "16"=>"麻将杠赢",
-        "17"=>"麻将杠输",
-        "18"=>"麻将胡赢",
-        "19"=>"麻将胡输",
-        "20"=>"麻将花猪赢",
-        "21"=>"麻将花猪输",
-        "22"=>"麻将听牌赢",
-        "23"=>"麻将听牌输",
-        "24"=>"麻将刮风下雨返还",
-        "25"=>"麻将刮风下雨退还",
-        "70"=>"机器人补充金额",
-        "71"=>"机器人回收金额",
-        "88"=>"商城充值",
-        "89"=>"代理升级扣除",
-        "90"=>"佣金兑换",
-        "91"=>"系统赠送",
-        "92"=>"元宵答题赠送",
-        "93"=>"财务借出金币",
-        "94"=>"钻石换开心豆",
-        "95"=>"钻石换时光豆",
-        "96"=>"充值活动",
-        "97"=>"扣除钻石",
-        "98"=>"官方赛事扣除开心豆",
-        "99"=>"官方赛事扣除钻石",
-        "100"=>"官方赛事送开心豆",
-        "101"=>"官方赛事送时光豆",
-        "102"=>"官方赛事送钻石",
-        "103"=>"官方赛事返还开心豆",
-        "104"=>"官方赛事返还钻石",
-    );
-    return $logtype_arr[$type];
-}
 /**
   +----------------------------------------------------------
  * 功能：检测一个字符串是否是邮件地址格式

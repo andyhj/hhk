@@ -1,0 +1,35 @@
+会还款2.0更新内容
+
+1，添加h_bank_card_gyf数据库表
+DROP TABLE IF EXISTS `h_bank_card_gyf`;
+CREATE TABLE `h_bank_card_gyf` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `hash` varchar(10) NOT NULL DEFAULT '' COMMENT '用户id加密',
+  `user_name` varchar(10) NOT NULL DEFAULT '' COMMENT '持卡人姓名',
+  `id_card` varchar(18) NOT NULL DEFAULT '' COMMENT '身份证',
+  `bank_name` varchar(50) NOT NULL DEFAULT '' COMMENT '银行名称',
+  `card_no` varchar(20) NOT NULL DEFAULT '' COMMENT '银行卡号',
+  `card_cvv` char(3) NOT NULL DEFAULT '' COMMENT '安全码',
+  `validity_date` char(4) NOT NULL DEFAULT '' COMMENT '有效期',
+  `phone` varchar(11) NOT NULL DEFAULT '' COMMENT '银行手机号码',
+  `bill` tinyint(2) NOT NULL DEFAULT '0' COMMENT '账单日',
+  `repayment` tinyint(2) NOT NULL DEFAULT '0' COMMENT '还款日',
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否绑卡成功',
+  `merch_id` varchar(25) NOT NULL DEFAULT '' COMMENT '商户号',
+  `html` text COMMENT '绑卡返回的html',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户工易付绑定银行卡';
+
+2，Application/Common/Conf 目录 config.php 46行添加短信设置配置文件
+
+3，Application/Common/Common 目录 function.php 578行添加发送验证码send_sms function
+
+4，Application/Common/Concrete 目录添加工易付类
+
+5，Application/Home/Controller 目录添加GyfCallbackController.class.php工易付回调类
+
+6，修改用户表
+ALTER TABLE `h_user`
+ADD COLUMN `is_vip`  tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否vip' AFTER `lasttime`;

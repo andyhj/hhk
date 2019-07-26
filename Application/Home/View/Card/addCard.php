@@ -315,8 +315,12 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data.status == 200) {
-                        alert("添加成功");
-                        location='<?php echo $card_url;?>';
+                        alert(data.info);
+                        if(data.url != ''){
+                            location=data.url;
+                        }else{
+                            location='<?php echo $card_url;?>';
+                        }                        
                     } else {
                         _lock1 = false;
                         alert(data.info);
