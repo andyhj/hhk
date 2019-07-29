@@ -201,7 +201,7 @@ class PlanController extends InitController {
             $where["state"] = 1;
         } 
         $num = $channel_moblie_m->where($where)->count();
-        $channel_moblie_list = $channel_moblie_m->where($where)->select();
+        $channel_moblie_list = $channel_moblie_m->where($where)->order("sort ASC")->select();
         if($num==1&&$channel_moblie_list){
             $url = U("index/plan/planadd",["c_id"=>$channel_moblie_list[0]["c_id"]]);
             header('Location: ' . $url);
