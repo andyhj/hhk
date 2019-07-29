@@ -36,7 +36,11 @@ class CardController extends InitController {
                 die();
             }
         }
-        $this->c_code = I("c_code");  //通道编码
+        $code = I("get.c_code");  //通道编码
+        if(!$code){
+            $code = I("post.c_code");  //通道编码
+        }
+        $this->c_code = $code;  //通道编码
         if(!$this->c_code){
             $this->error("参数错误");die();
         }
