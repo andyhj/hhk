@@ -545,7 +545,7 @@ class CardController extends InitController {
         require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
         $res_j = gyf::regMchInfo($param);
         if(isset($res_j['status']) && $res_j['status'] == 1){
-            return array('code' => 1, 'merch_id' => $res_j['ret_data']['data']['merch_id']);
+            return array('code' => 1, 'merch_id' => $res_j['ret_data']['data']['subMerchId']);
         }else{
             return array('code' => 0, 'msg' => '进件异常('.$res_j['msg'].')');
         }
