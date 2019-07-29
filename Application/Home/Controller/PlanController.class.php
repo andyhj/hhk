@@ -782,7 +782,7 @@ class PlanController extends InitController {
                         'orderAmount'=>$plan_des_info["amount"],
                         'terminalType'=>'IMEI',
                         'terminalId'=>'122121212121',
-                        'queryUrl'=>U("index/callback/hlbPay"),
+                        'queryUrl'=>HTTP_HOST."/index/callback/hlbPay",
                         'Code'=>'',
                     );
                     $hlb_dh = $heli_pay->bindingCardPay($arg);//执行代扣
@@ -823,7 +823,7 @@ class PlanController extends InitController {
                         'phone'=> $bank_card_hlb_info['phone'],//法人电话
                         'id_card'=> $bank_card_hlb_info['id_card'],//身份证号
                         'card_id'=> $bank_card_hlb_info['card_no'],//交易卡号
-                        'notify_url'=> U("index/gyfCallback/receive"),//异步通知地址
+                        'notify_url'=> HTTP_HOST."/index/gyfCallback/receive",//异步通知地址
                         'amount'=> $plan_des_info["amount"]*100,//交易金额
                         'cvv'=> $bank_card_hlb_info['card_cvv'],//安全码
                         'exp_date'=> $bank_card_hlb_info['validity_date'],//有效期
@@ -926,7 +926,7 @@ class PlanController extends InitController {
                         'phone'=> $bank_card_hlb_info['phone'],//法人电话
                         'id_card'=> $bank_card_hlb_info['id_card'],//身份证号
                         'card_id'=> $bank_card_hlb_info['card_no'],//结算卡号
-                        'notify_url'=> U("index/gyfCallback/close"),//异步通知地址
+                        'notify_url'=> HTTP_HOST."/index/gyfCallback/close",//异步通知地址
                         'amount'=> $plan_des_info["amount"]*100,//交易金额
                     ];
                     $gyf_dh = gyf::withdraw($param);//执行代还
