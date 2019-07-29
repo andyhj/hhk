@@ -205,7 +205,7 @@ class CardController extends InitController {
             case "gyf":
                 require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
                 $cookie_code = cookie('card_'.$card_no); 
-                if($cookie_code!=$code){
+                if($cookie_code!=MD5($code)){
                     $json["status"] = 311;
                     $json["info"] = "验证码不正确";
                     $this->returnJson($json, $session_name);
@@ -410,7 +410,7 @@ class CardController extends InitController {
                 }
                 
                 if($r_s){
-                    cookie('card_'.$card_no,1,60); 
+                    cookie('card_'.$card_no,MD5($re),60); 
                     $json["status"] = 200;
                     $json["info"] = "发送绑卡短信成功";
                     $this->returnJson($json, $session_name);
