@@ -218,7 +218,7 @@ class CardController extends InitController {
                     'id_card'=> $card_info["id_card"],//身份证号
                     'card_id'=> $card_info["card_no"],//交易卡号
                     'notify_url'=> HTTP_HOST."/index/gyfCallback/bKreceive.html",//异步通知地址
-                    'front_url'=> HTTP_HOST."/index/card/index/c_code/".$this->c_code.".html", //页面通知地址,绑卡结束调回支付页
+                    'front_url'=> HTTP_HOST."/index/card/index.html?c_code=".$this->c_code, //页面通知地址,绑卡结束调回支付页
                     'order_id' => 'BK'.$u_id.time(),//请求流水号
                 ];
                 $res_j = gyf::bindCardHtml($param);
