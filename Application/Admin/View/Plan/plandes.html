@@ -38,6 +38,7 @@
                             <td>订单号</td>
                             <td>类型</td>
                             <td>金额</td>
+                            <td>交易费率</td>
                             <td>执行时间</td>
                             <td>实际执行时间</td>
                             <td>补单订单号</td>
@@ -56,6 +57,7 @@
                             <td><?php echo $data['order_id']; ?></td>
                             <td><?php echo $data['type_name']; ?></td>
                             <td><?php echo $data['amount']; ?></td>
+                            <td><?php echo ($data['fee']*100).'%+'.$data['close_rate'];?> </td>
                             <td><?php echo date("Y-m-d H:i:s",$data['s_time']); ?></td>
                             <td><?php echo $data['d_time']?date("Y-m-d H:i:s",$data['d_time']):""; ?></td>
                             <td><?php echo $data['remedy_id']; ?></td>

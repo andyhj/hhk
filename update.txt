@@ -33,3 +33,8 @@ CREATE TABLE `h_bank_card_gyf` (
 6，修改用户表
 ALTER TABLE `h_user`
 ADD COLUMN `is_vip`  tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否vip' AFTER `lasttime`;
+
+7,修改h_plan_des表
+ALTER TABLE `h_plan_des`
+ADD COLUMN `fee`  decimal(20,4) NOT NULL DEFAULT 0.0000 COMMENT '交易费率' AFTER `days`,
+ADD COLUMN `close_rate`  decimal(20,2) NOT NULL DEFAULT 0.00 COMMENT '结算费率(每笔)' AFTER `fee`;
