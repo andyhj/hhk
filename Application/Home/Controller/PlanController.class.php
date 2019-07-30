@@ -527,6 +527,8 @@ class PlanController extends InitController {
                     "s_time" => strtotime($k_time),
                     "type" => 1,
                     "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
                 );
 
                 $begintime = $date." 13:00:00";
@@ -543,6 +545,8 @@ class PlanController extends InitController {
                     "s_time" => strtotime($h_time),
                     "type" => 2,
                     "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
                 );
                 $a ++;
                 $date = date("Y-m-d",strtotime("+1 day",strtotime($date)));
@@ -572,6 +576,8 @@ class PlanController extends InitController {
                     "s_time" => strtotime($k1_time),
                     "type" => 1,
                     "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
                 );
 
                 $begintime = $date." 11:00:00";
@@ -588,6 +594,8 @@ class PlanController extends InitController {
                     "s_time" => strtotime($h1_time),
                     "type" => 2,
                     "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
                 );
 
                 $begintime = $date." 14:00:00";
@@ -605,6 +613,8 @@ class PlanController extends InitController {
                     "s_time" => strtotime($k2_time),
                     "type" => 1,
                     "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
                 );
 
                 $begintime = $date." 17:00:00";
@@ -621,6 +631,8 @@ class PlanController extends InitController {
                     "s_time" => strtotime($h2_time),
                     "type" => 2,
                     "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
                 );
                 $a ++;
                 $date = date("Y-m-d",strtotime("+1 day",strtotime($date)));
