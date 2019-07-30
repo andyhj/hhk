@@ -10,6 +10,7 @@ namespace Common\Model;
 
 use Think\Model;
 use Common\WxApi\class_weixin_adv;
+use Common\GyfPay\gyf;
 class UserModel extends Model{
     /**
      * 根据用户id查找用户
@@ -91,6 +92,76 @@ class UserModel extends Model{
             if($return_status["errcode"]===0){
                 return true;
             }
+        }
+        return false;
+    }
+
+    public function getFee($uid,$code)
+    {
+        $this->isVip($uid);
+        $user_m = M("user");
+        $user_info = $user_m->where(["u_id"=>$uid])->find();
+        $arr  = [];
+        if($user_info){
+            $channel_model = M("channel");
+            $channel_info = $channel_model->where(["code"=>$code])->find();
+            $arr['fee'] = $channel_info['user_fee'];
+            $arr['close_rate'] = $channel_info['user_close_rate'];
+            if($user_info['is_vip']){
+                $arr['fee'] = $channel_info['plus_user_fee'];
+                $arr['close_rate'] = $channel_info['plus_user_close_rate'];
+            }
+        }
+        return $arr;
+    }
+
+    /**
+     * 是否vip
+     *
+     * @param [type] $uid
+     * @return boolean
+     */
+    public function isVip($u_id)
+    {
+        if(!$u_id){
+            return false;
+        }
+        $user_m = M("user");
+        $user_info = $user_m->where(["u_id"=>$u_id])->find();
+        if($user_info&&$user_info['is_vip']){
+            $user_vip_model = M("user_vip");
+            $user_vip_info = $user_vip_model->where(["u_id"=>$u_id])->find();
+            //判断是否plus会员
+            if($user_vip_info && strtotime($user_vip_info["end_time"])<= time()){
+                $r_s = $user_m->where(["u_id"=>$u_id])->save(['is_vip'=>0]);
+                if($r_s){
+                    $channel_model = M("channel");
+                    $channel_info = $channel_model->where(["code"=>'gyf'])->find();
+                    if($channel_info){
+                        return $this->updateRate($u_id,$channel_info['user_fee'],$channel_info['user_close_rate']);//更新工易付费率
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    /*更新工易付费率*/
+    public function updateRate($uid,$feeRate,$fee){
+        $bank_card_gyf_model = M("bank_card_gyf");
+        $bank_card_gyf_info = $bank_card_gyf_model->where(["u_id"=>$uid,"success"=>1])->find();
+        if(!$bank_card_gyf_info){
+            return false;
+        }        
+         //收集信息
+        $param = array(          
+            'merch_id'  => $bank_card_gyf_info['merch_id'], //子商户号
+            'fee_rate'   => $feeRate*10000,//交易费率0.68% 传  68. 费率值乘于10000
+            'extern_fee' => $fee*100,//附加手续费(结算手续费)，单位分：（1.00元，传 100）
+        );
+        require_once APP_ROOT. "Application/Common/Concrete/gyfpay/gyfpay.php";
+        $res_j = gyf::updateRate($param);
+        if(isset($res_j['status']) && $res_j['status'] == 1){
+            return true;
         }
         return false;
     }

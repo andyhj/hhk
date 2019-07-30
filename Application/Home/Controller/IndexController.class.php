@@ -31,7 +31,7 @@ class IndexController extends InitController {
 //                die();
 //            }
         }
-        $this->isVip();//每次进入检查会员是否到期
+        D("User")->isVip($user_info["id"]);//每次进入检查会员是否到期
         $this->assign('userInfo', $user_info);
         $this->assign('wx_share_url', $this->http . $_SERVER['HTTP_HOST'] . '/' . $user_info["id"] . '-0-0-0-0.html');
     }

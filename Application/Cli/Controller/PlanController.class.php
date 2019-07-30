@@ -85,7 +85,7 @@ class PlanController extends InitController {
                             $upd_plan_des_data["message"] = "提交成功,等待回调通知";
                             $upd_plan_des_data["order_state"] = 3;
                             $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
-//                                $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
                             $status = true;
                         }elseif($hlb_dh['rt2_retCode'] == '0001'){
                             $upd_plan_des_data["message"] = $hlb_dh['rt3_retMsg'];
