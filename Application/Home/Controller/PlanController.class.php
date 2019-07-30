@@ -523,7 +523,7 @@ class PlanController extends InitController {
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => $p_amount[$i+1],
+                    "amount" => round(($p_amount[$i+1]+$close_rate)/($close_rate-$fee),2),
                     "s_time" => strtotime($k_time),
                     "type" => 1,
                     "days" => $date,
@@ -532,7 +532,6 @@ class PlanController extends InitController {
                 $begintime = $date." 13:00:00";
                 $endtime = $date." 16:30:00";
                 $h_time = randomDate($begintime,$endtime); //随机生成执行时间
-                $p_fee = round($p_amount[$i+1]*$fee+$close_rate,2); //每期手续费
                 $a ++;
                 //代还
                 $plan_des_arr [] = array(
@@ -540,7 +539,7 @@ class PlanController extends InitController {
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => round($p_amount[$i+1]-$p_fee, 2),
+                    "amount" => $p_amount[$i+1],
                     "s_time" => strtotime($h_time),
                     "type" => 2,
                     "days" => $date,
@@ -569,7 +568,7 @@ class PlanController extends InitController {
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => $p_amount[$j],
+                    "amount" => round(($p_amount[$j]+$close_rate)/($close_rate-$fee),2),
                     "s_time" => strtotime($k1_time),
                     "type" => 1,
                     "days" => $date,
@@ -578,7 +577,6 @@ class PlanController extends InitController {
                 $begintime = $date." 11:00:00";
                 $endtime = $date." 13:00:00";
                 $h1_time = randomDate($begintime,$endtime); //随机生成执行时间
-                $p_fee = round($p_amount[$j]*$fee+$close_rate,2); //每期手续费
                 $a ++;
                 //代还
                 $plan_des_arr [] = array(
@@ -586,7 +584,7 @@ class PlanController extends InitController {
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => round($p_amount[$j]-$p_fee, 2),
+                    "amount" => $p_amount[$j],
                     "s_time" => strtotime($h1_time),
                     "type" => 2,
                     "days" => $date,
@@ -596,13 +594,14 @@ class PlanController extends InitController {
                 $endtime = $date." 16:00:00";
                 $k2_time = randomDate($begintime,$endtime); //随机生成执行时间
                 $a ++;
+                $p_fee = round($p_amount[$j+1]*$fee+$close_rate,2); //每期手续费
                 //代扣
                 $plan_des_arr [] = array(
                     "num" => $a,
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => $p_amount[$j+1],
+                    "amount" => round(($p_amount[$j+1]+$close_rate)/($close_rate-$fee),2),
                     "s_time" => strtotime($k2_time),
                     "type" => 1,
                     "days" => $date,
@@ -611,7 +610,6 @@ class PlanController extends InitController {
                 $begintime = $date." 17:00:00";
                 $endtime = $date." 19:00:00";
                 $h2_time = randomDate($begintime,$endtime); //随机生成执行时间
-                $p_fee = round($p_amount[$j+1]*$fee+$close_rate,2); //每期手续费
                 $a ++;
                 //代还
                 $plan_des_arr [] = array(
@@ -619,7 +617,7 @@ class PlanController extends InitController {
                     "u_id" => $uid,
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
-                    "amount" => round($p_amount[$j+1]-$p_fee, 2),
+                    "amount" => $p_amount[$j+1],
                     "s_time" => strtotime($h2_time),
                     "type" => 2,
                     "days" => $date,
