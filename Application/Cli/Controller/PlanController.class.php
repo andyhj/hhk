@@ -101,6 +101,10 @@ class PlanController extends InitController {
                     }
                     break;
                 case "gyf":
+
+                    $user_m = D("User");
+                    $user_m->updPlanFee($plan_info,$plan_des_info);  //判断会员是否到期，更新未执行的计划
+
                     require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
                     $param=[
                         'merch_id' => $bank_card_hlb_info['merch_id'],//子商户号

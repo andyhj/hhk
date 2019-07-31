@@ -95,7 +95,13 @@ class UserModel extends Model{
         }
         return false;
     }
-
+    /**
+     * 查询费率
+     *
+     * @param [type] $uid
+     * @param [type] $code
+     * @return void
+     */
     public function getFee($uid,$code)
     {
         $this->isVip($uid);
@@ -113,6 +119,38 @@ class UserModel extends Model{
             }
         }
         return $arr;
+    }
+    /**
+     * 根据新费率更新计划
+     *
+     * @param [type] $plan
+     * @param [type] $plan_des
+     * @return void
+     */
+    public function updPlanFee($plan,$plan_des)
+    {
+        $plan_des_m = M("plan_des");
+        $fee_arr = $this->getFee($plan['u_id'],$plan['c_code']);  //获取费率
+        if($fee_arr && !empty($fee_arr) && $fee_arr['fee']>0 && $fee_arr['close_rate']>0){ 
+            //判断跟现在费率是否一样
+            if($fee_arr['fee']!=$plan_des['fee'] || $fee_arr['close_rate']!=$plan_des['close_rate']){ 
+                //查询之后未执行的计划
+                $plan_des_list = $plan_des_m->where("p_id=".$plan['id']." AND id>=".$plan_des['id']." AND type=1")->select();
+                if($plan_des_list){
+                    foreach ($plan_des_list as $key => $value) {
+                        //计算出还款金额
+                        $y_amount = round($value['amount']-($value['amount']*$value['fee']+$value['close_rate']),2);
+                        //根据还款金额计算出现在费率的扣款金额
+                        $x_amount = round(($y_amount+$fee_arr['close_rate'])/($fee_arr['close_rate']-$fee_arr['fee']),2);
+                        $r_s = $plan_des_m->where(['id'=>$value['id']])->save(['amount'=>$x_amount,'fee'=>$fee_arr['fee'],'close_rate'=>$fee_arr['close_rate']]);
+                        if(!$r_s){
+                            add_log("updPlanFee.log", "common", "更新失败ID：" . $value['id']);		
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
