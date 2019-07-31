@@ -20,10 +20,12 @@ class StatisticsController extends CommonController{
             $date = $t_date;
             $where  = ' pd.s_time>='.strtotime($t_date).' AND pd.s_time<'.strtotime($e_date);
         }
-        $sql = "SELECT pd.days,SUM(pd.amount) AS amount,SUM((pd.amount * p.fee)+p.close_rate) sxf ,SUM((pd.amount * 0.005)+1) cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id." GROUP BY pd.days";
+        $channel_info = M("channel")->where(["id"=>$channel_id])->find();
+
+        $sql = "SELECT pd.days,SUM(pd.amount) AS amount,SUM((pd.amount * pd.fee)+pd.close_rate) sxf ,SUM((pd.amount * ".$channel_info['fee'].")+".$channel_info['close_rate'].") cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id." GROUP BY pd.days";
         $plan_des_list = $plan_des_model->query($sql);
 
-        $order_r_amount_sql = "SELECT pd.days,SUM(pd.amount) AS amount,SUM((pd.amount * p.fee)+p.close_rate) sxf ,SUM((pd.amount * 0.005)+1) cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id;  //总额
+        $order_r_amount_sql = "SELECT pd.days,SUM(pd.amount) AS amount,SUM((pd.amount * pd.fee)+pd.close_rate) sxf ,SUM((pd.amount * ".$channel_info['fee'].")+".$channel_info['close_rate'].") cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id;  //总额
         $count_amount = $plan_des_model->query($order_r_amount_sql);
         
         $this->assign("channel_list", M("channel")->order("id desc")->select());
@@ -49,7 +51,8 @@ class StatisticsController extends CommonController{
             $date = $t_date;
             $where  = ' pd.s_time>='.strtotime($t_date).' AND pd.s_time<'.strtotime($e_date);
         }
-        $sql = "SELECT pd.order_id, pd.s_time, pd.amount AS amount, p.fee, p.close_rate, (pd.amount * p.fee) + p.close_rate AS sxf, (pd.amount * 0.005) + 1 AS cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id;
+        $channel_info = M("channel")->where(["id"=>$channel_id])->find();
+        $sql = "SELECT pd.order_id, pd.s_time, pd.amount AS amount, pd.fee, pd.close_rate, (pd.amount * pd.fee) + pd.close_rate AS sxf, (pd.amount * ".$channel_info['fee'].") + ".$channel_info['close_rate']." AS cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id;
         $plan_des_list = $plan_des_model->query($sql);
         // print_r($plan_des_list);die();
         // 创建csv下载
