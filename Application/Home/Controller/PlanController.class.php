@@ -782,6 +782,7 @@ class PlanController extends InitController {
         if($plan_des_info["type"]==1){
             $user_m = D("User");
             $user_m->updPlanFee($plan_info,$plan_des_info);  //判断会员是否到期，更新未执行的计划
+            $plan_des_info = $plan_des_model->where(["id"=>$plan_des_info["id"]])->find();
             //执行代扣
             switch ($plan_info["c_code"]) {
                 case "hlb":
