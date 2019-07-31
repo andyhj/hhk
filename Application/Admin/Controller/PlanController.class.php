@@ -141,6 +141,7 @@ class PlanController extends CommonController{
         $this->assign("plan_des_list",$plan_des_arr);
         $this->assign("bd_url",U("plan/reporder"));
         $this->assign("select",U("plan/getWithdraw"));
+        $this->assign("yselect",U("plan/getBalance"));
         $this->display();
     }
     /**
@@ -413,7 +414,7 @@ class PlanController extends CommonController{
                             $upd_plan_des_data["message"] = "提交成功,等待回调通知";
                             $upd_plan_des_data["order_state"] = 3;
                             $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
-//                                $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
+                            // $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>1]);
                             $json["status"] = 200;
                             $json["info"] = "提交成功,等待回调通知";
                         }elseif($hlb_dh['rt2_retCode'] == '0001'){
@@ -718,6 +719,84 @@ class PlanController extends CommonController{
         $this->assign("accountFrozenBalance",$accountFrozenBalance);
         $this->assign("uid",$uid);
         $this->display();
+    }
+    /**
+     * 余额查询
+     *
+     * @return void
+     */
+    public function getBalance(){
+        $order_number = I("order_number");
+        if(!$order_number){
+            $json["status"] = 311;
+            $json["info"] = "订单号错误";
+            $this->returnJson($json);
+        }
+        $plan_model = M("plan");
+        $plan_des_model = M("plan_des");
+        $plan_des_info = $plan_des_model->where("order_id='{$order_number}' OR remedy_id='{$order_number}'")->find();
+        if(!$plan_des_info&&empty($plan_des_info)){
+            $json["status"] = 311;
+            $json["info"] = "订单不存在";
+            $this->returnJson($json);
+        }
+        $plan_info = $plan_model->where(["id"=>$plan_des_info["p_id"]])->find();
+        if(!$plan_info&&empty($plan_info)){
+            $json["status"] = 311;
+            $json["info"] = "计划不存在";
+            $this->returnJson($json);
+        }
+        $uid = $plan_info["u_id"];
+        switch ($plan_info["c_code"]) {
+            case "hlb":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+                $heli_pay = new Heli();
+                $arg = array(
+                    'userId' => $uid
+                );
+                $hlb_ye = $heli_pay->getAccountQuery($arg);
+                if($hlb_ye["rt2_retCode"]=="0000"){
+                    $data['accountBalance'] = $hlb_ye["rt9_accountBalance"];
+                    $data['accountFrozenBalance'] = $hlb_ye["rt10_accountFrozenBalance"];
+                    $json["status"] = 200;
+                    $json["info"] = "成功";
+                    $json["data"] = $data;
+                    $this->returnJson($json);
+                }else{
+                    $json["status"] = 313;
+                    $json["info"] = "失败（".$hlb_ye['rt3_retMsg']."）";
+                    $this->returnJson($json);
+                }
+                break;
+            case "gyf":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
+                $bank_card_model = M("bank_card_".$plan_info["c_code"]);
+                $bank_card_hlb_info = $bank_card_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
+                $param=[
+                    'merch_id' => $bank_card_hlb_info['merch_id'],//子商户号
+                ];
+                $affirmPay = gyf::getBalance($param);
+                if($affirmPay&&!empty($affirmPay)){
+                    if(isset($affirmPay['status']) && $affirmPay['status'] == 1){
+                        $data['accountBalance'] = $affirmPay['ret_data']['data']["availBalance"];
+                        $data['accountFrozenBalance'] = $affirmPay['ret_data']['data']["frozenBalace"];
+                        $json["status"] = 200;
+                        $json["info"] = "成功";
+                        $json["data"] = $data;
+                        $this->returnJson($json);
+                    }else{
+                        $json["status"] = 313;
+                        $json["info"] = "失败（".$affirmPay['msg']."）";
+                        $this->returnJson($json);
+                    }
+                }                   
+                break;    
+            default:
+                break;
+        }
+        $json["status"] = 313;
+        $json["info"] = "失败";
+        $this->returnJson($json);
     }
 /**
      * 公众号推送信息

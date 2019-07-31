@@ -56,7 +56,9 @@
                             <td><?php echo $data['message']; ?></td>
                             <td><?php echo $data['status_name']; ?></td>
                             <td><?php if($data['order_state']==4): ?><input type="button" value="补单" data-bdid="<?php echo $data['id']; ?>" class="btn bd" /><?php endif; ?>
-                                <?php if($data['type']==2&&$data['order_state']!=2): ?><input type="button" value="查询" data-order-number="<?php echo $data['remedy_id']?$data['remedy_id']:$data['order_id']; ?>" class="btn select" /><?php endif; ?>
+                                <?php if($data['type']==2&&$data['order_state']!=2): ?><input type="button" value="查询" data-order-number="<?php echo $data['remedy_id']?$data['remedy_id']:$data['order_id']; ?>" class="btn select" />
+                                <input type="button" value="余额查询" data-order-number="<?php echo $data['remedy_id']?$data['remedy_id']:$data['order_id']; ?>" class="btn yselect" />
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -100,6 +102,24 @@
                     dataType: 'json',
                     success: function (data) {
                         alert(data.info);
+                    }
+                });
+            });
+            $(".yselect").click(function(){
+                var order_number = $(this).attr('data-order-number');
+                $.ajax({
+                    url: "<?php echo $yselect; ?>",
+                    data: {order_number:order_number},
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        if(data.status==200){
+                            var msg = "可用余额："+data.data.accountBalance+"；冻结余额："+data.data.accountFrozenBalance;
+                            alert(msg);
+                        }else{
+                            alert(data.info);
+                        }
+                        
                     }
                 });
             });
