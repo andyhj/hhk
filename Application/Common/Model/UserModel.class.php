@@ -147,6 +147,7 @@ class UserModel extends Model{
                             add_log("updPlanFee.log", "common", "更新失败ID：" . $value['id']);		
                         }
                     }
+                    $plan_des_m->where("p_id=".$plan['id']." AND id>=".$plan_des['id']." AND type=2")->save(['fee'=>$fee_arr['fee'],'close_rate'=>$fee_arr['close_rate']]);
                 }
             }
         }

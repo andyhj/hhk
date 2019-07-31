@@ -780,6 +780,8 @@ class PlanController extends InitController {
         $upd_plan_des_data["remedy_id"] = $remedy_id;
         $upd_plan_des_data["remedy_time"] = time();
         if($plan_des_info["type"]==1){
+            $user_m = D("User");
+            $user_m->updPlanFee($plan_info,$plan_des_info);  //判断会员是否到期，更新未执行的计划
             //执行代扣
             switch ($plan_info["c_code"]) {
                 case "hlb":
