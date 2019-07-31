@@ -22,7 +22,7 @@ class MemberController extends CommonController {
             foreach ($user_list as $value) {
                 $user_vip_info = $user_vip_model->where(["u_id"=>$value['u_id']])->find();
                 $is_plus = '否';
-                $vip_end_time = '';
+                $vip_end_time = $user_vip_info["end_time"]?$user_vip_info["end_time"]:'';
                 //判断是否plus会员
                 if($user_vip_info && strtotime($user_vip_info["end_time"])> time()){
                     $is_plus = '是';
