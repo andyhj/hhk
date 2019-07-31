@@ -80,6 +80,7 @@ class gyf
             'cardType'=>'02',//01 借记卡 02 贷记卡
             'cvv'=> $data['cvv'],//安全码
             'expDate'=> $data['exp_date'],//有效期
+            'deviceId'=> $data['device_id'],//设备ID
             'ipAddress'=> $data['ip_addr'],//公网IP地址（若不填大额交易限额会被风控）（付款客户端IP）
         ];
 

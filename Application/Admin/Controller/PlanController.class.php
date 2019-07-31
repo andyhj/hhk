@@ -443,6 +443,7 @@ class PlanController extends CommonController{
                         'amount'=> $plan_des_info["amount"]*100,//交易金额
                         'cvv'=> $bank_card_hlb_info['card_cvv'],//安全码
                         'exp_date'=> $bank_card_hlb_info['validity_date'],//有效期
+                        'device_id'=> create_guid(),//设备id
                         'ip_addr'=>getIP(),//公网IP地址（若不填大额交易限额会被风控）（付款客户端IP）
                     ];
                     $gyf_dh = gyf::pay($param);//执行代扣
