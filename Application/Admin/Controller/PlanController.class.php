@@ -778,8 +778,8 @@ class PlanController extends CommonController{
                 $affirmPay = gyf::getBalance($param);
                 if($affirmPay&&!empty($affirmPay)){
                     if(isset($affirmPay['status']) && $affirmPay['status'] == 1){
-                        $data['accountBalance'] = $affirmPay['ret_data']['data']["availBalance"]*100;
-                        $data['accountFrozenBalance'] = $affirmPay['ret_data']['data']["frozenBalace"]*100;
+                        $data['accountBalance'] = $affirmPay['ret_data']['data']["availBalance"]/100;
+                        $data['accountFrozenBalance'] = $affirmPay['ret_data']['data']["frozenBalace"]/100;
                         $json["status"] = 200;
                         $json["info"] = "成功";
                         $json["data"] = $data;
