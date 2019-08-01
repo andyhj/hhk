@@ -187,7 +187,7 @@ class UserModel extends Model{
     /*更新工易付费率*/
     public function updateRate($uid,$feeRate,$fee){
         $bank_card_gyf_model = M("bank_card_gyf");
-        $bank_card_gyf_info = $bank_card_gyf_model->where(["u_id"=>$uid,"success"=>1])->find();
+        $bank_card_gyf_info = $bank_card_gyf_model->where(["uid"=>$uid,"success"=>1])->find();
         if(!$bank_card_gyf_info){
             return false;
         }        
