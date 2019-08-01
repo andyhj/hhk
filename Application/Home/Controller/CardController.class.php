@@ -564,7 +564,7 @@ class CardController extends InitController {
     {
         $card_id = I('card_id');
         $u_id = $this->user_info["id"];
-        $card_info = $this->card_m->where(["id"=>$card_id,"u_id"=>$u_id])->find();
+        $card_info = $this->card_m->where(["id"=>$card_id,"uid"=>$u_id])->find();
         echo $card_info['html'];
     }
 }
