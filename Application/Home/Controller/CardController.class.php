@@ -150,7 +150,7 @@ class CardController extends InitController {
             $json["info"] = "请完善个人资料";
             $this->returnJson($json, $session_name);
         }
-        $card_info = $this->card_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->find();
+        $card_info = $this->card_m->where(["card_no"=>$card_no,"uid"=>$u_id])->find();
         if(!$card_info){
             $json["status"] = 309;
             $json["info"] = "请先获取短信验证码";
@@ -229,7 +229,7 @@ class CardController extends InitController {
                 if(isset($res_j['status']) && $res_j['status'] == 1){
                     if($res_j['ret_data']['data']['html']){
                         $html =  stripslashes($res_j['ret_data']['data']['html']);
-                        $this->card_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->save(['html'=>$html]);
+                        $this->card_m->where(["card_no"=>$card_no,"uid"=>$u_id])->save(['html'=>$html]);
                         $json["status"] = 200;
                         $json["info"] = "下一步跳至银联页面完成绑卡";
                         $json["url"] = U("index/card/showHtml",['c_code'=>$this->c_code,'card_id'=>$card_info["id"]]);
@@ -310,7 +310,7 @@ class CardController extends InitController {
             $json["info"] = "请完善个人资料";
             $this->returnJson($json, $session_name);
         }
-        $card_info = $this->card_m->where(["card_no"=>$card_no,"u_id"=>$u_id])->find();
+        $card_info = $this->card_m->where(["card_no"=>$card_no,"uid"=>$u_id])->find();
         $card_id = 0;
         if($card_info){
             if($card_info["success"]){
