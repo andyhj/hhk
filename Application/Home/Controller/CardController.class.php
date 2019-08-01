@@ -381,7 +381,7 @@ class CardController extends InitController {
             case "gyf":
                 require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/gyfpay/gyfpay.php";
                 $merch_id = '';
-                $card_merch_info = $this->card_m->where(["u_id"=>$u_id,"success"=>1])->find();
+                $card_merch_info = $this->card_m->where(["uid"=>$u_id,"success"=>1])->find();
                 if($card_merch_info&&$card_merch_info['merch_id']){
                     $merch_id = $card_merch_info['merch_id'];
                 }else{
