@@ -444,7 +444,7 @@ class CardController extends InitController {
             $this->returnJson($json);
         }
         $bank_card_info = $this->card_m->where(["uid"=>$u_id,"id"=>$id,"success"=>1])->find();
-        if(!$bank_card_info||!$bank_card_info["bind_id"]){
+        if(!$bank_card_info){
             $json["status"] = 306;
             $json["info"] = "信用卡不存在";
             $this->returnJson($json);
@@ -457,6 +457,11 @@ class CardController extends InitController {
         }
         switch ($this->c_code) {
             case "hlb":
+                if(!$bank_card_info["bind_id"]){
+                    $json["status"] = 306;
+                    $json["info"] = "信用卡不存在";
+                    $this->returnJson($json);
+                }
                 require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
                 $helipay = new Heli();
                 $card_data = array(
