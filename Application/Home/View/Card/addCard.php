@@ -159,6 +159,19 @@
                                     <option value="中国民生银行">中国民生银行</option>
                                     <?php if($code=='gyf'){?>
                                         <option value="中国农业银行">中国农业银行</option>
+								        <option value="宁波银行">宁波银行</option>
+                                        <option value="广州银行">广州银行</option>
+                                        <option value="苏州银行">苏州银行</option>
+                                        <option value="渤海银行">渤海银行</option>
+                                        <option value="包商银行">包商银行</option>
+                                        <option value="浙商银行">浙商银行</option>
+                                        <option value="江苏银行">江苏银行</option>
+                                        <option value="晋商银行">晋商银行</option>
+                                        <option value="江西银行">江西银行</option>
+                                        <option value="温州银行">温州银行</option>
+                                        <option value="哈尔滨银行">哈尔滨银行</option>
+                                        <option value="南洋商业银行">南洋商业银行</option>
+                                        <option value="农村商业银行">农村商业银行</option>
                                     <?php }?>
                                     <option value="上海浦东发展银行">上海浦东发展银行</option>
                                     <option value="中国邮政储蓄银行">中国邮政储蓄银行</option>
