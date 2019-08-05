@@ -112,7 +112,7 @@
     <script>
         $("#cpjs").click(function(){
             //$(".cpjs-des").show(500);
-            window.location='https://mp.weixin.qq.com/s/iNcfIgWGXrnawJ3EeSdpmg';
+            window.location='https://mp.weixin.qq.com/s/HQdzwi5Utoy-e0sOKXcpTg';
         });
     </script>
 </html>
