@@ -96,9 +96,9 @@
         <div style="width:100%;overflow:hidden;height: 100vh">
             <img src="/src/img/home/bg.jpg" style="width: 100%;display:block;">
         </div>
-        <div style="position:absolute;top:2%;left:80%; " id="cpjs">
+        <!-- <div style="position:absolute;top:2%;left:80%; " id="cpjs">
             <img src="/src/img/home/cpjs.png" style="width:1rem;">
-        </div>
+        </div> -->
         <div class="add" onclick="javascript:window.location.href='<?php echo $channel;?>'">
             <div><img src="/src/img/home/addjh.png"></div>
         </div>

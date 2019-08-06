@@ -109,6 +109,17 @@
                     </div>
                     </a>
                 </div>
+                <div class="vipsan clear-border">
+                    <a href="https://mp.weixin.qq.com/s/HQdzwi5Utoy-e0sOKXcpTg">
+                    <div class="col-xs-6 text-left">
+                        <span class="iccs"><img src="/src/img/user/cpjs.png" alt=""></span>
+                        <span class="lzz">产品介绍</span>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <span class="icc"><img src="/src/img/user/jt.png" alt=""></span>
+                    </div>
+                    </a>
+                </div>
 <!--                <div class="vipsan clear-border">
                     <a href="">
                     <div class="col-xs-6 text-left">
