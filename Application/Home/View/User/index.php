@@ -47,11 +47,11 @@
     <body class="huibg">
         <div class="vipcenter">
             <div class="vipheader">
-                <a href="userinfo.html">
+                <!-- <a href="plus.html"> -->
                     <div class="touxiang"><if condition="$rows['tx']" ><img src="{$rows['tx']}"></if></div>
                     <div class="name">{$rows.name} <if condition="$rows['is_plus']" ><img src="/src/img/user/plus.png"style="width:0.8rem;"></if></div>
                     <if condition="$rows['is_plus']" ><div class="gztt">会员到限：{$rows.dq_date}</div></if>
-                </a>
+                <!-- </a> -->
             </div>
             <div class="des">
                 <div class="vipsan">
