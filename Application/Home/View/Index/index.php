@@ -51,7 +51,7 @@
                 height: 1.35rem;
                 text-align: center;
                 position: fixed;
-                bottom: 8%;
+                bottom: 12%;
             }
             .add img{
                 width: 3.5rem;
