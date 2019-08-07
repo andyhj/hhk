@@ -30,6 +30,7 @@
                                 <option value="5" <?php if($status==5){echo 'selected = "selected"';} ?>>计划中断</option>
                             </select>
                         通道：<select id="channel_id" name="channel_id">
+                                <option value="0"  <?php if($channel_id==0){echo 'selected = "selected"';} ?>>---全部---</option>
                                 <?php foreach($channel_list as $n => $cl): ?>
                                 <option value="<?php echo $cl['id']; ?>"  <?php if($channel_id==$cl['id']){echo 'selected = "selected"';} ?>><?php echo $cl['name']; ?></option>
                                 <?php endforeach; ?>
