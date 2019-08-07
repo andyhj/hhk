@@ -16,6 +16,7 @@ class PlanController extends CommonController{
     public function index(){
         $current_page = (int)I('p',1);
         $search_key = I('search_key',"");
+        $channel_id = I('channel_id', 0);
         $status = I('status', 0);
         $per_page = 15;//每页显示条数
         $plan_m = M("plan");
@@ -38,6 +39,9 @@ class PlanController extends CommonController{
         }
         if ($status) {
             $where['status'] = $status;
+        }
+        if ($channel_id) {
+            $where['c_id'] = $channel_id;
         }
         $count = $plan_m->where($where)->count();
         $page = getpage($count, $per_page);
@@ -96,6 +100,7 @@ class PlanController extends CommonController{
         $this->assign("status", $status);
         $this->assign("page",$page->show());
         $this->assign("plan_list",$plan_arr);
+        $this->assign("channel_list", M("channel")->order("id desc")->select());
         $this->assign("search_key",$search_key);
         $this->display();
     }

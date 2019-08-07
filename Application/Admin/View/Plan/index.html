@@ -29,6 +29,11 @@
                                 <option value="4" <?php if($status==4){echo 'selected = "selected"';} ?>>待执行</option>
                                 <option value="5" <?php if($status==5){echo 'selected = "selected"';} ?>>计划中断</option>
                             </select>
+                        通道：<select id="channel_id" name="channel_id">
+                                <?php foreach($channel_list as $n => $cl): ?>
+                                <option value="<?php echo $cl['id']; ?>"  <?php if($channel_id==$cl['id']){echo 'selected = "selected"';} ?>><?php echo $cl['name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         <input type="submit" class="btn" value="搜索" />
                     </form>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
