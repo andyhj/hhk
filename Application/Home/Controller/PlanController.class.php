@@ -202,11 +202,11 @@ class PlanController extends InitController {
         } 
         $num = $channel_moblie_m->where($where)->count();
         $channel_moblie_list = $channel_moblie_m->where($where)->order("sort ASC")->select();
-        if($num==1&&$channel_moblie_list){
-            $url = U("index/plan/planadd",["c_id"=>$channel_moblie_list[0]["c_id"]]);
-            header('Location: ' . $url);
-            die();
-        }
+        // if($num==1&&$channel_moblie_list){
+        //     $url = U("index/plan/planadd",["c_id"=>$channel_moblie_list[0]["c_id"]]);
+        //     header('Location: ' . $url);
+        //     die();
+        // }
         $channels_arr = [];
         if($channel_moblie_list){
             foreach ($channel_moblie_list as $value) {
