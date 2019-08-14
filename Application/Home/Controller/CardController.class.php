@@ -1,5 +1,4 @@
 <?php
-error_reporting(0);
 namespace Home\Controller;
 
 /**
@@ -16,6 +15,7 @@ class CardController extends InitController {
     private $card_m;
     public function __construct() {
         header("Content-type: text/html; charset=utf-8"); 
+        error_reporting(0);
         parent::__construct();
         $recommend = delTrim(I("rec", session("rec"))); //推荐人
         $this->user_info = $this->getUserInfo();
