@@ -253,6 +253,62 @@ class Heli{
         add_log("bindingCardPay.log", "helipay", "返回参数：". var_export($result_arr, true));
         return $result_arr;
     }
+
+    /**
+     * 用户迁移查询接口
+     */
+    public function quickPayUser($data) {
+        $keyStr = get_rand_str(16);
+        $aes = new CryptAES();
+        $aes->set_key($keyStr);
+        $aes->require_pkcs5();
+        $arr=array(
+            'P1_bizType'=>'QuickPayUserMigrateQuery',    //银行卡支付接口
+            'P2_customerNumber'=> self::TENANT,      //商户号由合利宝分配
+            'P3_orderId'=>$data['orderId'],     //订单号
+            'P4_timestamp'=>date("YmdHis"),     //时间 yyyyMMddHHmmss
+            'P5_payerName'=>$data['payerName'],       //姓名
+            'P6_idCardType'=>"IDCARD",  //身份证：IDCARD
+            'P7_idCardNo'=>$aes->encrypt($data['idCardNo']),      //身份证号码
+            'P8_cardNo'=>$aes->encrypt($data['cardNo']),    //银行卡号
+            'P9_year'=>$aes->encrypt($data['year']),     //信用卡时必填：信用卡有效期年
+            'P10_month'=>$aes->encrypt($data['month']),     //信用卡时必填：信用卡有效期月
+            'P11_cvv2'=>$aes->encrypt($data['cvv2']),     //信用卡时必填：安全码
+            'P12_phone'=>$aes->encrypt($data['phone']), //手机号
+        );
+        $sign_str_trim = $this->sinParamsToString($arr);
+
+        $rsa = new Rsa();
+        $sign =  $rsa->genSign($sign_str_trim);
+        add_log("quickPayUser.log", "helipay", "私钥生成的数字签名为：". $sign);
+        $encryptionKey = $rsa->rsaEnc($keyStr);
+        add_log("quickPayUser.log", "helipay", "私钥生成的加密密钥为：". $encryptionKey);
+        $arr['userAccount'] = $data['phone']; //用户注册账号
+        $arr['encryptionKey'] = $encryptionKey; //加密密钥
+        $arr['signatureType'] = 'MD5WITHRSA'; //签名方式
+        $arr['sign'] = $sign;
+
+        add_log("quickPayUser.log", "helipay", "提交参数：". var_export($arr, true));
+        //$http_client = new HttpClient();
+        $pageContents = $rsa->curlPost(self::OFFICIALURL, $arr);
+        $result_arr = json_decode($pageContents, true);
+        add_log("quickPayUser.log", "helipay", "返回参数：". var_export($result_arr, true));
+        $verify = array(
+            'rt1_bizType' => $result_arr['rt1_bizType'],
+            'rt2_retCode' => $result_arr['rt2_retCode'],
+            'rt3_retMsg' => $result_arr['rt3_retMsg'],
+            'rt4_customerNumber' => $result_arr['rt4_customerNumber'],
+            'rt5_orderId' => $result_arr['rt5_orderId'],
+            'rt6_bindStatus' => $result_arr['rt6_bindStatus']
+        );
+        if ($rsa->verSign($this->SinParamsToString($verify),$result_arr['sign'])) {
+            add_log("bindingCard.log", "helipay", "返回参数验签成功");
+            return $result_arr;
+        } else {
+            add_log("bindingCard.log", "helipay", "返回参数验签失败");
+            return false;
+        }
+    }
     
     /**
      * 鉴权绑卡
