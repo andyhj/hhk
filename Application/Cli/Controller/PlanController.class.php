@@ -66,6 +66,33 @@ class PlanController extends InitController {
                 case "hlb":
                     require_once APP_ROOT . "Application/Common/Concrete/helipay/HeliPay.php";
                     $heli_pay = new Heli();
+
+                    //查询是否要重新绑卡
+                    $card_data = array(
+                        "orderId" => $bank_card_hlb_info["order_id"],
+                        "payerName" => $bank_card_hlb_info["user_name"],
+                        "idCardNo" => $bank_card_hlb_info["id_card"],
+                        "cardNo" => $bank_card_hlb_info["card_no"],
+                        "year" => substr($bank_card_hlb_info["validity_date"], 2, 4),
+                        "month" => substr($bank_card_hlb_info["validity_date"], 0, 2),
+                        "cvv2" => $bank_card_hlb_info["card_cvv"],
+                        "phone" => $bank_card_hlb_info["phone"]
+                    );
+                    $quick = $heli_pay->quickPayUser($card_data);
+                    if ($quick['rt2_retCode'] == '0000') {
+                        if($quick['rt6_bindStatus'] == 'FAIL'){
+                            $bank_card_model->where(["id"=>$plan_info["bc_id"]])->save(['success'=>0]);
+
+                            $upd_plan_des_data["message"] = '请重新绑卡';
+                            $upd_plan_des_data["order_state"] = 4;
+                            $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
+                            $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>5]);
+                            $url = HTTP_HOST.'/index/card/addcard/c_code/hlb/bc_id/'.$plan_info["bc_id"].'.html';
+                            $this->sendWxErrorMessage($plan_info, '请重新绑卡', "消费",$url);
+                            break;
+                        }
+                    }
+
                     $arg = array(
                         'bindId'=>$bank_card_hlb_info['bind_id'],
                         'userId'=>$plan_des_info['u_id'],
@@ -165,6 +192,33 @@ class PlanController extends InitController {
                 case "hlb":
                     require_once APP_ROOT . "Application/Common/Concrete/helipay/HeliPay.php";
                     $heli_pay = new Heli();
+                    
+                    //查询是否要重新绑卡
+                    $card_data = array(
+                        "orderId" => $bank_card_hlb_info["order_id"],
+                        "payerName" => $bank_card_hlb_info["user_name"],
+                        "idCardNo" => $bank_card_hlb_info["id_card"],
+                        "cardNo" => $bank_card_hlb_info["card_no"],
+                        "year" => substr($bank_card_hlb_info["validity_date"], 2, 4),
+                        "month" => substr($bank_card_hlb_info["validity_date"], 0, 2),
+                        "cvv2" => $bank_card_hlb_info["card_cvv"],
+                        "phone" => $bank_card_hlb_info["phone"]
+                    );
+                    $quick = $heli_pay->quickPayUser($card_data);
+                    if ($quick['rt2_retCode'] == '0000') {
+                        if($quick['rt6_bindStatus'] == 'FAIL'){
+                            $bank_card_model->where(["id"=>$plan_info["bc_id"]])->save(['success'=>0]);
+
+                            $upd_plan_des_data["message"] = '请重新绑卡';
+                            $upd_plan_des_data["order_state"] = 4;
+                            $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
+                            $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>5]);
+                            $url = HTTP_HOST.'/index/card/addcard/c_code/hlb/bc_id/'.$plan_info["bc_id"].'.html';
+                            $this->sendWxErrorMessage($plan_info, '请重新绑卡', "还款",$url);
+                            break;
+                        }
+                    }
+
                     $arg = array(
                         'userId' => $plan_des_info['u_id'],
                         'bindId' => $bank_card_hlb_info['bind_id'],
@@ -316,7 +370,7 @@ class PlanController extends InitController {
      * @param type $plan_info
      * @param type $plan_des_info
      */
-    private function sendWxErrorMessage($plan_info,$title,$des){
+    private function sendWxErrorMessage($plan_info,$title,$des,$url=''){
         $db_config = C("DB_CONFIG2");
         $customer_m = M("cunstomer_wx_binding",$db_config["DB_PREFIX"],$db_config);
         $cunstomer_wx_binding_info = $customer_m->where(["user_id"=>$plan_info["u_id"],"state"=>1])->find();
@@ -326,6 +380,10 @@ class PlanController extends InitController {
             $msg_data["touser"] = $cunstomer_wx_binding_info["open_id"];
             $msg_data["template_id"] = "0rAKRWnyzyiW9ICydVIJj4W4NZAFR_PGNoM4XsUr92A";
             $msg_data["url"] = HTTP_HOST.'/index/plan/plandes.html?id='.$plan_info["id"];
+            if($url){
+                $msg_data["url"] = $url;
+            }
+            
             $msg_data["data"] = array(
                 "first"=>array(
                     "value"=> "《会还款》计划失败提醒，请关注",

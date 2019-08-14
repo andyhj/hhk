@@ -76,6 +76,7 @@ class CardController extends InitController {
         $u_id = $this->user_info["id"];
         $bank_id = $this->user_info["bankid"];
         $url = HSQ_HOST.'/mobile/info/index.html';
+        $bc_id = I("bc_id");
         if(!$bank_id){
             $this->error("请完善个人资料", $url);die();
         }
@@ -84,10 +85,15 @@ class CardController extends InitController {
         if(!$customer_bankaccount_info){            
             $this->error("请完善个人资料", $url);die();
         }
+        $card_info = [];
+        if($bc_id){
+            $card_info = $this->card_m->where(["id"=>$bc_id,"uid"=>$u_id])->find();
+        }
         $this->assign('account_name', $customer_bankaccount_info["accountname"]);
         $this->assign('get_code_url', U("index/card/sendCode"));
         $this->assign('add_card_url', U("index/card/submitCard"));
         $this->assign('code', $this->c_code);
+        $this->assign('card_info', $card_info);
         $this->assign('card_url', U("index/card/index",["c_code"=>$this->c_code]));
         $this->display();
     }

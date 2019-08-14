@@ -127,75 +127,75 @@
                     </li>
                     <li>
                         卡号：
-                        <span  style="float:right;"><input type="text" value="" id="card_no" name="card_no" placeholder="银行卡卡号" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" id="card_no" name="card_no" value="<?php echo $card_info['card_no'];?>" placeholder="银行卡卡号" style="text-align: right;"></span>
                     </li>
                     <li>
                         CVN2：
-                        <span  style="float:right;"><input type="text" value="" id="card_cvv" name="card_cvv" placeholder="信用卡背后3位CVN2" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" id="card_cvv" name="card_cvv" value="<?php echo $card_info['card_cvv'];?>" placeholder="信用卡背后3位CVN2" style="text-align: right;"></span>
                     </li>
                     <li>
                         有效期：
-                        <span  style="float:right;"><input type="text" value="" id="validity_date" name="validity_date" placeholder="示例:09/15 输入0915 " style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" id="validity_date" name="validity_date" value="<?php echo $card_info['validity_date'];?>" placeholder="示例:09/15 输入0915 " style="text-align: right;"></span>
                     </li>
                     <li>
                         发卡银行：
                             <span  style="float:right;">
                                 <select id="bank_name" name="bank_name">
                                     <option value="0">---选择发卡行---</option>
-                                    <option value="中国银行">中国银行</option>
-                                    <option value="交通银行">交通银行</option>
-                                    <option value="中信银行">中信银行</option>
-                                    <option value="广发银行">广发银行</option>
-                                    <option value="华夏银行">华夏银行</option>
-                                    <option value="招商银行">招商银行</option>
-                                    <option value="平安银行">平安银行</option>
+                                    <option value="中国银行" <?php if($card_info['bank_name']=='中国银行'){echo 'selected = "selected"';} ?>>中国银行</option>
+                                    <option value="交通银行" <?php if($card_info['bank_name']=='交通银行'){echo 'selected = "selected"';} ?>>交通银行</option>
+                                    <option value="中信银行" <?php if($card_info['bank_name']=='中信银行'){echo 'selected = "selected"';} ?>>中信银行</option>
+                                    <option value="广发银行" <?php if($card_info['bank_name']=='广发银行'){echo 'selected = "selected"';} ?>>广发银行</option>
+                                    <option value="华夏银行" <?php if($card_info['bank_name']=='华夏银行'){echo 'selected = "selected"';} ?>>华夏银行</option>
+                                    <option value="招商银行" <?php if($card_info['bank_name']=='招商银行'){echo 'selected = "selected"';} ?>>招商银行</option>
+                                    <option value="平安银行" <?php if($card_info['bank_name']=='平安银行'){echo 'selected = "selected"';} ?>>平安银行</option>
                                     <?php if($code=='gyf'){?>
-                                        <option value="兴业银行">兴业银行</option>
-                                        <option value="上海银行">上海银行</option>
-                                        <option value="北京银行">北京银行</option>
-								        <option value="宁波银行">宁波银行</option>
-                                        <option value="广州银行">广州银行</option>
-                                        <option value="苏州银行">苏州银行</option>
-                                        <option value="渤海银行">渤海银行</option>
-                                        <option value="包商银行">包商银行</option>
-                                        <option value="浙商银行">浙商银行</option>
-                                        <option value="江苏银行">江苏银行</option>
-                                        <option value="晋商银行">晋商银行</option>
-                                        <option value="江西银行">江西银行</option>
-                                        <option value="温州银行">温州银行</option>
-                                        <option value="哈尔滨银行">哈尔滨银行</option>
-                                        <option value="南洋商业银行">南洋商业银行</option>
-                                        <option value="农村商业银行">农村商业银行</option>
-                                        <option value="中国农业银行">中国农业银行</option>
+                                        <option value="兴业银行" <?php if($card_info['bank_name']=='兴业银行'){echo 'selected = "selected"';} ?>>兴业银行</option>
+                                        <option value="上海银行" <?php if($card_info['bank_name']=='上海银行'){echo 'selected = "selected"';} ?>>上海银行</option>
+                                        <option value="北京银行" <?php if($card_info['bank_name']=='北京银行'){echo 'selected = "selected"';} ?>>北京银行</option>
+								        <option value="宁波银行" <?php if($card_info['bank_name']=='宁波银行'){echo 'selected = "selected"';} ?>>宁波银行</option>
+                                        <option value="广州银行" <?php if($card_info['bank_name']=='广州银行'){echo 'selected = "selected"';} ?>>广州银行</option>
+                                        <option value="苏州银行" <?php if($card_info['bank_name']=='苏州银行'){echo 'selected = "selected"';} ?>>苏州银行</option>
+                                        <option value="渤海银行" <?php if($card_info['bank_name']=='渤海银行'){echo 'selected = "selected"';} ?>>渤海银行</option>
+                                        <option value="包商银行" <?php if($card_info['bank_name']=='包商银行'){echo 'selected = "selected"';} ?>>包商银行</option>
+                                        <option value="浙商银行" <?php if($card_info['bank_name']=='浙商银行'){echo 'selected = "selected"';} ?>>浙商银行</option>
+                                        <option value="晋商银行" <?php if($card_info['bank_name']=='晋商银行'){echo 'selected = "selected"';} ?>>江苏银行</option>
+                                        <option value="晋商银行" <?php if($card_info['bank_name']=='晋商银行'){echo 'selected = "selected"';} ?>>晋商银行</option>
+                                        <option value="江西银行" <?php if($card_info['bank_name']=='江西银行'){echo 'selected = "selected"';} ?>>江西银行</option>
+                                        <option value="温州银行" <?php if($card_info['bank_name']=='温州银行'){echo 'selected = "selected"';} ?>>温州银行</option>
+                                        <option value="哈尔滨银行" <?php if($card_info['bank_name']=='哈尔滨银行'){echo 'selected = "selected"';} ?>>哈尔滨银行</option>
+                                        <option value="南洋商业银行" <?php if($card_info['bank_name']=='南洋商业银行'){echo 'selected = "selected"';} ?>>南洋商业银行</option>
+                                        <option value="农村商业银行" <?php if($card_info['bank_name']=='农村商业银行'){echo 'selected = "selected"';} ?>>农村商业银行</option>
+                                        <option value="中国农业银行" <?php if($card_info['bank_name']=='中国农业银行'){echo 'selected = "selected"';} ?>>中国农业银行</option>
                                     <?php }?>
-                                    <option value="中国工商银行">中国工商银行</option>
-                                    <option value="中国建设银行">中国建设银行</option>
-                                    <option value="中国光大银行">中国光大银行</option>
-                                    <option value="中国民生银行">中国民生银行</option>
-                                    <option value="上海浦东发展银行">上海浦东发展银行</option>
-                                    <option value="中国邮政储蓄银行">中国邮政储蓄银行</option>
+                                    <option value="中国工商银行" <?php if($card_info['bank_name']=='中国工商银行'){echo 'selected = "selected"';} ?>>中国工商银行</option>
+                                    <option value="中国建设银行" <?php if($card_info['bank_name']=='中国建设银行'){echo 'selected = "selected"';} ?>>中国建设银行</option>
+                                    <option value="中国光大银行" <?php if($card_info['bank_name']=='中国光大银行'){echo 'selected = "selected"';} ?>>中国光大银行</option>
+                                    <option value="中国民生银行" <?php if($card_info['bank_name']=='中国民生银行'){echo 'selected = "selected"';} ?>>中国民生银行</option>
+                                    <option value="上海浦东发展银行" <?php if($card_info['bank_name']=='上海浦东发展银行'){echo 'selected = "selected"';} ?>>上海浦东发展银行</option>
+                                    <option value="中国邮政储蓄银行" <?php if($card_info['bank_name']=='中国邮政储蓄银行'){echo 'selected = "selected"';} ?>>中国邮政储蓄银行</option>
                                 </select>
                             </span>
                     </li>
                     <li>
                         账单日：
-                        <span  style="float:right;"><input type="text" value="" id="bill" name="bill" placeholder="输入账单日" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" id="bill" name="bill" value="<?php echo $card_info['bill'];?>" placeholder="输入账单日" style="text-align: right;"></span>
                     </li>
                     <li>
                         还款日：
-                        <span  style="float:right;"><input type="text" value="" id="repayment" name="repayment" placeholder="输入还款日" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" id="repayment" name="repayment" value="<?php echo $card_info['repayment'];?>" placeholder="输入还款日" style="text-align: right;"></span>
                     </li>
                     <li>
                         手机号码：
-                        <span  style="float:right;"><input type="text" value="" id="phone" name="phone" placeholder="银行预留手机号" style="text-align: right;"></span>
+                        <span  style="float:right;"><input type="text" id="phone" name="phone" value="<?php echo $card_info['phone'];?>" placeholder="银行预留手机号" style="text-align: right;"></span>
                     </li>
                     <li style="border-bottom:0px;">
-                        验证码：<span  style="float:right;"><input type="text" value="" id="code" name="code" placeholder="请输入验证码" style="text-align: right; width: 2rem; height: 0.7rem;" maxlength="6"><input type="button" value="发送验证码" class="sjplus"></span>
+                        验证码：<span  style="float:right;"><input type="text" id="code" name="code" placeholder="请输入验证码" style="text-align: right; width: 2rem; height: 0.7rem;" maxlength="6"><input type="button" value="发送验证码" class="sjplus"></span>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="channel_submit"><div id="save">确定添加</div></div>
+        <div class="channel_submit"><div id="save"><?php if(!empty($card_info)){?>重新绑卡<?php }else{ ?>确定添加<?php }?></div></div>
         <?php include T('Common/footer'); ?>
     </body>
     <script>
