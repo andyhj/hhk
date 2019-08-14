@@ -69,23 +69,23 @@ class IndexController extends InitController {
         $this->display();
     }
 
-    public function hlb(){
-        require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
-        $helipay = new Heli();
-        $card_no = '6229180029220896';
-        $u_id = '464885';
-        $card_info = M('bank_card_hlb')->where(["card_no"=>$card_no,"uid"=>$u_id])->find();
-        $card_data = array(
-            "orderId" => $card_info["order_id"],
-            "payerName" => $card_info["user_name"],
-            "idCardNo" => $card_info["id_card"],
-            "cardNo" => $card_info["card_no"],
-            "year" => substr($card_info["validity_date"], 2, 4),
-            "month" => substr($card_info["validity_date"], 0, 2),
-            "cvv2" => $card_info["card_cvv"],
-            "phone" => $card_info["phone"]
-        );
-        $re = $helipay->quickPayUser($card_data);
-        print_r($re);
-    }
+    // public function hlb(){
+    //     require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/helipay/HeliPay.php";
+    //     $helipay = new Heli();
+    //     $card_no = '6229180029220896';
+    //     $u_id = '464885';
+    //     $card_info = M('bank_card_hlb')->where(["card_no"=>$card_no,"uid"=>$u_id])->find();
+    //     $card_data = array(
+    //         "orderId" => $card_info["order_id"],
+    //         "payerName" => $card_info["user_name"],
+    //         "idCardNo" => $card_info["id_card"],
+    //         "cardNo" => $card_info["card_no"],
+    //         "year" => substr($card_info["validity_date"], 2, 4),
+    //         "month" => substr($card_info["validity_date"], 0, 2),
+    //         "cvv2" => $card_info["card_cvv"],
+    //         "phone" => $card_info["phone"]
+    //     );
+    //     $re = $helipay->quickPayUser($card_data);
+    //     print_r($re);
+    // }
 }
