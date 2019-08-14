@@ -146,13 +146,13 @@
                                     <option value="交通银行">交通银行</option>
                                     <option value="中信银行">中信银行</option>
                                     <option value="广发银行">广发银行</option>
-                                    <option value="兴业银行">兴业银行</option>
                                     <option value="华夏银行">华夏银行</option>
                                     <option value="招商银行">招商银行</option>
                                     <option value="平安银行">平安银行</option>
-                                    <option value="上海银行">上海银行</option>
-                                    <option value="北京银行">北京银行</option>
                                     <?php if($code=='gyf'){?>
+                                        <option value="兴业银行">兴业银行</option>
+                                        <option value="上海银行">上海银行</option>
+                                        <option value="北京银行">北京银行</option>
 								        <option value="宁波银行">宁波银行</option>
                                         <option value="广州银行">广州银行</option>
                                         <option value="苏州银行">苏州银行</option>
