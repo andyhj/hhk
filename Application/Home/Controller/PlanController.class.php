@@ -319,6 +319,11 @@ class PlanController extends InitController {
             $json["info"] = "选择12期，还款总额不能小于3000";
             $this->returnJson($json,$session_name);
         }
+        if($periods==18&&$amount<4500){
+            $json["status"] = 306;
+            $json["info"] = "选择18期，还款总额不能小于4500";
+            $this->returnJson($json,$session_name);
+        }
         if($periods==24&&$amount<6000){
             $json["status"] = 306;
             $json["info"] = "选择24期，还款总额不能小于6000";

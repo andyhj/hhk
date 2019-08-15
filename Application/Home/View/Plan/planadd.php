@@ -194,6 +194,7 @@
                                     <option value="0">---选择期数---</option>
                                     <option value="6"> 6 期</option>
                                     <option value="12"> 12期</option>
+                                    <option value="18"> 18期</option>
                                     <option value="24"> 24期</option>
                                 </select>
                             </span>
@@ -348,6 +349,10 @@
                     alert("选择12期，还款总额不能小于3000");
                     return false;
                 }
+                if(periods==18&&amount<4500){
+                    alert("选择18期，还款总额不能小于4500");
+                    return false;
+                }
                 if(periods==24&&amount<6000){
                     alert("选择24期，还款总额不能小于6000");
                     return false;
@@ -359,6 +364,10 @@
                     }
                     if(periods==12&&amount>10000){
                         alert("此通道选择12期，还款总额不能大于10000");
+                        return false;
+                    }
+                    if(periods==18&&amount>15000){
+                        alert("此通道选择18期，还款总额不能大于15000");
                         return false;
                     }
                     if(periods==24&&amount>20000){
