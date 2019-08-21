@@ -169,7 +169,7 @@ class UserController extends InitController {
                                 $channel_model = M("channel");
                                 $channel_info = $channel_model->where(["code"=>'gyf'])->find();
                                 if($channel_info){
-                                    D("User")->updateRate($info["id"],$channel_info['plus_user_fee'],$channel_info['plus_user_fee']);//更新工易付费率
+                                    D("User")->updateRate($info["id"],$channel_info['plus_user_fee'],$channel_info['plus_user_close_rate']);//更新工易付费率
                                 }
                             }
                         }
@@ -190,7 +190,7 @@ class UserController extends InitController {
                                 $channel_model = M("channel");
                                 $channel_info = $channel_model->where(["code"=>'gyf'])->find();
                                 if($channel_info){
-                                    D("User")->updateRate($info["id"],$channel_info['plus_user_fee'],$channel_info['plus_user_fee']);//更新工易付费率
+                                    D("User")->updateRate($info["id"],$channel_info['plus_user_fee'],$channel_info['plus_user_close_rate']);//更新工易付费率
                                 }
                             }
                         }
