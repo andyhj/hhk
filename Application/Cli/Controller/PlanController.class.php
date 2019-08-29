@@ -55,6 +55,20 @@ class PlanController extends InitController {
             add_log("execute_plan.log", "cli", "计划".$plan_info["id"]."银行卡信息不存在");
             return false;
         }
+        if($plan_des_info["num"]>1){
+            $plan_des_n_info = $plan_des_model->where(["p_id"=>$plan_info["id"],"num"=>($plan_des_info["num"]-1)])->order("s_time ASC")->find();
+            if($plan_des_n_info&&$plan_des_n_info['order_state']!=1){
+                $upd_plan_des_n_data["message"] = '计划中断';
+                $upd_plan_des_n_data["order_state"] = 4;
+                $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_n_data);
+                $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>5]);
+                $msg = '消费';
+                if($plan_des_info["type"]==2){
+                    $msg = '还款';
+                }
+                $this->sendWxErrorMessage($plan_info, "计划中断，请联系客服",$msg);
+            }
+        }
         $status = false;
         if($plan_des_info["type"]==1){
             $user_m = D("User");
