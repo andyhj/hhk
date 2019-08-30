@@ -112,11 +112,10 @@ class PlanController extends InitController {
         if(!$p_id){
             $this->error("参数错误",$url);die();
         }
-        $plan_des_list = M("plan_des")->where(["u_id"=>$u_id,"p_id"=>$p_id])->select();
+        $plan_des_list = M("plan_des")->where(["u_id"=>$u_id,"p_id"=>$p_id])->order('id ASC')->select();
         if(!$plan_des_list||empty($plan_des_list)){
             $this->error("计划不存在",$url);die();
         }
-
         $plan_des_arr = [];
         if($plan_des_list&&!empty($plan_des_list)){
             foreach ($plan_des_list as $val) {
