@@ -67,6 +67,7 @@ class PlanController extends InitController {
                     $msg = '还款';
                 }
                 $this->sendWxErrorMessage($plan_info, "计划中断，请联系客服",$msg);
+                return false;
             }
         }
         $status = false;
