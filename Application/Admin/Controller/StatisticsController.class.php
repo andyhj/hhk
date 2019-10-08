@@ -52,7 +52,7 @@ class StatisticsController extends CommonController{
             $where  = ' pd.s_time>='.strtotime($t_date).' AND pd.s_time<'.strtotime($e_date);
         }
         $channel_info = M("channel")->where(["id"=>$channel_id])->find();
-        $sql = "SELECT pd.order_id, pd.s_time, pd.amount AS amount, pd.fee, pd.close_rate, (pd.amount * pd.fee) + pd.close_rate AS sxf, (pd.amount * ".$channel_info['fee'].") + ".$channel_info['close_rate']." AS cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id;
+        $sql = "SELECT pd.order_id, pd.s_time, pd.amount AS amount, pd.fee, pd.close_rate, (pd.amount * pd.fee) + pd.close_rate AS sxf, (pd.amount * ".$channel_info['fee'].") + ".$channel_info['close_rate']." AS cb  FROM __PREFIX__plan_des pd RIGHT JOIN __PREFIX__plan p ON pd.p_id=p.id WHERE $where AND pd.order_state=1 AND pd.type=1 AND p.c_id=".$channel_id." order by pd.s_time desc";
         $plan_des_list = $plan_des_model->query($sql);
         // print_r($plan_des_list);die();
         // 创建csv下载
