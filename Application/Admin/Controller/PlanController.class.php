@@ -98,6 +98,7 @@ class PlanController extends CommonController{
             }
         }
         $this->assign("status", $status);
+        $this->assign("channel_id", $channel_id);
         $this->assign("page",$page->show());
         $this->assign("plan_list",$plan_arr);
         $this->assign("channel_list", M("channel")->order("id desc")->select());
