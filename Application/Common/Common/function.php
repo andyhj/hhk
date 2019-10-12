@@ -955,7 +955,7 @@ function hideStr($string, $bengin = 0, $len = 4, $type = 0, $glue = "@") {
  * @return void
  */
 function roundResolve($total,$num){
-    $area = $total/100; //各份数间允许的最大差值
+    $area = 50; //各份数间允许的最大差值
     
     $average = round($total/$num*100);
     $sum = 0;
@@ -977,11 +977,11 @@ function roundResolve($total,$num){
         //产生各份的份额
         $random = mt_rand( $min, $max );
         $sum += $random;
-        $result[$i] = round(($average + $random)/100,2);
+        $result[$i] = round(($average + $random)/100,2)*100/100;
     }
     
     //最后一份的份额由前面的结果决定，以保证各份的总和为指定值
-    $result[$num] = round(($average - $sum)/100,2);
+    $result[$num] = round(($average - $sum)/100,2)*100/100;
     
     $result_sum = array_sum( $result );
     $balance = $total-$result_sum;
@@ -989,11 +989,11 @@ function roundResolve($total,$num){
     $result_min = min($result);
     if($balance>0){
         $subscript = array_search($result_min,$result);
-        $result[$subscript]=$result[$subscript]+$balance;
+        $result[$subscript]=round(($result[$subscript]+$balance),2)*100/100;
     }
     if($balance<0){
         $subscript = array_search($result_max,$result);
-        $result[$subscript]=$result[$subscript]+$balance;
+        $result[$subscript]=round(($result[$subscript]-$balance),2)*100/100;
     }
     return $result;
 }

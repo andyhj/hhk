@@ -196,15 +196,20 @@
                                     <option value="12"> 12期</option>
                                     <option value="18"> 18期</option>
                                     <option value="24"> 24期</option>
+                                    <option value="32"> 32期</option>
+                                    <option value="40"> 40期</option>
+                                    <option value="48"> 48期</option>
+                                    <option value="56"> 56期</option>
                                 </select>
                             </span>
                     </li>
-                    <li>
+                     <!-- <li>
                         每天执行扣款次数：
                             <span  style="float:right;">
                                 <select id="nums" name="nums" >
                                 <?php if($c_code=='gyf'){?>
                                     <option value="2">每天扣款两次</option>
+                                    <option value="4">每天扣款四次</option>
                                 <?php }else{?>
                                     <option value="0">---系统默认---</option>
                                     <option value="1">每天扣款一次</option>
@@ -212,7 +217,7 @@
                                 <?php }?>
                                 </select>
                             </span>
-                    </li>
+                    </li>-->
                     <!-- <li>
                         每期还款金额：
                         <span  style="float:right;" id="p_amount"></span>
@@ -338,6 +343,7 @@
             $("#save").click(function(){
                 var amount = $("#amount").val();
                 var periods = $("#periods").val();
+                var nums = $("#nums").val();
                 var p_amount_count = $("#p_amount_count").html();
                 var msg = '确定卡里余额大于每期扣款金额加手续费总额？';
                 var p_amount=(amount/periods).toFixed(2);//扣款额度
@@ -366,12 +372,28 @@
                         alert("此通道选择12期，还款总额不能大于10000");
                         return false;
                     }
-                    if(periods==18&&amount>15000){
-                        alert("此通道选择18期，还款总额不能大于15000");
+                    if(periods==18&&amount>16000){
+                        alert("此通道选择18期，还款总额不能大于16000");
                         return false;
                     }
-                    if(periods==24&&amount>20000){
-                        alert("此通道选择24期，还款总额不能大于20000");
+                    if(periods==24&&amount>22000){
+                        alert("此通道选择24期，还款总额不能大于22000");
+                        return false;
+                    }
+                    if(periods==32&&amount>30000){
+                        alert("此通道选择32期，还款总额不能大于30000");
+                        return false;
+                    }
+                    if(periods==40&&amount>38000){
+                        alert("此通道选择40期，还款总额不能大于38000");
+                        return false;
+                    }
+                    if(periods==48&&amount>46000){
+                        alert("此通道选择48期，还款总额不能大于46000");
+                        return false;
+                    }
+                    if(periods==56&&amount>54000){
+                        alert("此通道选择56期，还款总额不能大于54000");
                         return false;
                     }
                 <?php }?>
@@ -391,7 +413,6 @@
                 var b_id = $("#bc_id").val();
                 var amount = $("#amount").val();
                 var periods = $("#periods").val();
-                var nums = $("#nums").val();
                 if(b_id<1){
                     _lock = false;
                     alert("请选择银行卡");

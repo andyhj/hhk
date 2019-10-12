@@ -39,7 +39,7 @@ class PlanController extends InitController {
                 echo '<script>alert("登陆失败");</script>';
                 die();
             }
-//            $url = HSQ_HOST. '/mobile/perfect_info/registered';
+        //    $url = HSQ_HOST. '/mobile/perfect_info/registered';
             $url = HSQ_HOST. '/mobile/binding/new_binding';
             if ($return_status === 113) {
                 header('Location: ' . $url);
@@ -375,16 +375,21 @@ class PlanController extends InitController {
             $json["info"] = "请在还款日前制定计划";
             $this->returnJson($json,$session_name);
         }
+        $nums=2;
         $reserved_days = 3; //预留天数
-        $p_d = $periods/2+$reserved_days;
+        $p_d = $periods/$nums+$reserved_days;
         $date_1 = date("Y-m-d");
         $date_2 = $repayment;
         $d1 = strtotime($date_1);
         $d2 = strtotime($date_2);
         $days = round(($d2-$d1)/3600/24); //计算距离还款日天数
         if($days<=$p_d){
+            $nums=4;
+            $p_d = $periods/$nums+$reserved_days;
+        }
+        if($days<=$p_d){
             $json["status"] = 308;
-            $json["info"] = "选择{$periods}期距离还款日必须大于{$p_d}天";
+            $json["info"] = "选择{$periods}期，距离还款日必须大于{$p_d}天";
             $this->returnJson($json,$session_name);
         }
         $fee = $channel_info["user_fee"]; //普通用户交易费率
@@ -562,7 +567,7 @@ class PlanController extends InitController {
                 $date = date("Y-m-d",strtotime("+1 day"));
             }
             $a = 1;
-            for($i=0;$i<($periods/2);$i++){
+            for($i=0;$i<($periods/$num);$i++){
                 $begintime = $date." 08:10:00";
                 if(strtotime($begintime)<time()){
                     $begintime = date("Y-m-d H:i:s");
@@ -632,6 +637,166 @@ class PlanController extends InitController {
                     "p_id" => $p_id,
                     "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
                     "amount" => $p_amount[$j+1],
+                    "s_time" => strtotime($h2_time),
+                    "type" => 2,
+                    "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
+                );
+                $a ++;
+                $date = date("Y-m-d",strtotime("+1 day",strtotime($date)));
+            }
+        }
+        //每天执行两次
+        if($num==4){
+            if($type==2){
+                $date = date("Y-m-d",strtotime("+1 day"));
+            }
+            $a = 1;
+            for($i=0;$i<($periods/$num);$i++){
+                $begintime = $date." 07:10:00";
+                if(strtotime($begintime)<time()){
+                    $begintime = date("Y-m-d H:i:s");
+                }
+                $endtime = $date." 08:00:00";
+                $k1_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $j = $i*$num+1;
+                //代扣
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => round(($p_amount[$j]+$close_rate)/($close_rate-$fee),2),
+                    "s_time" => strtotime($k1_time),
+                    "type" => 1,
+                    "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
+                );
+
+                $begintime = $date." 08:30:00";
+                $endtime = $date." 09:30:00";
+                $h1_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                //代还
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => $p_amount[$j],
+                    "s_time" => strtotime($h1_time),
+                    "type" => 2,
+                    "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
+                );
+
+                $begintime = $date." 10:00:00";
+                $endtime = $date." 11:00:00";
+                $k2_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                $p_fee = round($p_amount[$j+1]*$fee+$close_rate,2); //每期手续费
+                //代扣
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => round(($p_amount[$j+1]+$close_rate)/($close_rate-$fee),2),
+                    "s_time" => strtotime($k2_time),
+                    "type" => 1,
+                    "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
+                );
+
+                $begintime = $date." 11:30:00";
+                $endtime = $date." 12:30:00";
+                $h2_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                //代还
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => $p_amount[$j+1],
+                    "s_time" => strtotime($h2_time),
+                    "type" => 2,
+                    "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
+                );
+
+                $begintime = $date." 13:00:00";
+                $endtime = $date." 14:00:00";
+                $k2_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                $p_fee = round($p_amount[$j+1]*$fee+$close_rate,2); //每期手续费
+                //代扣
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => round(($p_amount[$j+2]+$close_rate)/($close_rate-$fee),2),
+                    "s_time" => strtotime($k2_time),
+                    "type" => 1,
+                    "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
+                );
+
+                $begintime = $date." 14:30:00";
+                $endtime = $date." 15:30:00";
+                $h2_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                //代还
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => $p_amount[$j+2],
+                    "s_time" => strtotime($h2_time),
+                    "type" => 2,
+                    "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
+                );
+
+                $begintime = $date." 16:00:00";
+                $endtime = $date." 17:00:00";
+                $k2_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                $p_fee = round($p_amount[$j+1]*$fee+$close_rate,2); //每期手续费
+                //代扣
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "K".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => round(($p_amount[$j+3]+$close_rate)/($close_rate-$fee),2),
+                    "s_time" => strtotime($k2_time),
+                    "type" => 1,
+                    "days" => $date,
+                    "fee" => $fee,
+                    "close_rate" => $close_rate,
+                );
+
+                $begintime = $date." 17:30:00";
+                $endtime = $date." 19:00:00";
+                $h2_time = randomDate($begintime,$endtime); //随机生成执行时间
+                $a ++;
+                //代还
+                $plan_des_arr [] = array(
+                    "num" => $a,
+                    "u_id" => $uid,
+                    "p_id" => $p_id,
+                    "order_id" => "H".get_rand_str(6,$letters).$uid. time(),
+                    "amount" => $p_amount[$j+3],
                     "s_time" => strtotime($h2_time),
                     "type" => 2,
                     "days" => $date,
