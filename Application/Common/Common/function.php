@@ -976,6 +976,39 @@ function getSign($Obj,$key) {
     return $result_;
 }
 /**
+ * 作用：格式化参数，签名过程需要使用
+ */
+function formatBizQueryParaMap($paraMap, $urlencode) {
+    $buff = "";
+    if (!is_array($paraMap)) {
+        $paraMap = (array) $paraMap;
+    }
+    ksort($paraMap);
+    foreach ($paraMap as $k => $v) {
+        if ($urlencode) {
+            $v = urlencode($v);
+        }
+        // $buff .= strtolower($k) . "=" . $v . "&";
+        $buff .= $k . "=" . $v . "&";
+    }
+    $reqPar = '';
+    if (strlen($buff) > 0) {
+        $reqPar = substr($buff, 0, strlen($buff) - 1);
+    }
+    return $reqPar;
+}
+
+/**
+ * 检查签名是否正确
+ * @param  array $data 待检查的数据
+ * @return boolean
+ */
+function checkSign($data,$key) {
+    $sign = $data['sign'];
+    unset($data['sign']);
+    return $sign == getSign($data,$key);
+}
+/**
  * Undocumented function
  *把一个数随机分成n份
  * @param [type] $total  总数
