@@ -16,7 +16,7 @@ namespace Cli\Controller;
 use Common\HeliPay\Heli;
 use Common\WxApi\class_weixin_adv;
 use Common\GyfPay\gyf;
-use Common\ybfPay\ybfPay;
+use Common\ybfPay\YbfPay;
 class PlanController extends InitController {
     /**
      * 定时执行计划
@@ -199,7 +199,7 @@ class PlanController extends InitController {
                     
                     break;
                 case "ybf":
-                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/ybfpay.php";
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/YbfPay.php";
                     $param=[
                         'order_number' => $plan_des_info["order_id"], //订单号
                         'amount' => $plan_des_info["amount"], //交易金额,0.00必须保留两位
@@ -216,7 +216,7 @@ class PlanController extends InitController {
                         'notify_url' => HTTP_HOST."/index/ybfCallback/receive", //订单处理结果通知地址 
                         'close_notify_url' => HTTP_HOST."/index/ybfCallback/close",   //代付异步通知地址
                     ];
-                    $ybf_dh = ybfPay::ysfPayment($param);//执行代扣
+                    $ybf_dh = YbfPay::ysfPayment($param);//执行代扣
                     if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
                         $upd_plan_des_data["message"] = "提交成功,等待回调通知";
                         $upd_plan_des_data["order_state"] = 3;
@@ -357,13 +357,13 @@ class PlanController extends InitController {
                     
                     break;
                 case "ybf":
-                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/ybfpay.php";
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/YbfPay.php";
                     $plan_des_xf_info = $plan_des_model->where(["p_id"=>$plan_des_info["p_id"],"num"=>$plan_des_info["num"]-1])->find();
                     $param=[
                         'order_number' => $$plan_des_xf_info['order_id'], //支付订单号
                         'df_order_number' => $plan_des_info["order_id"], //代付订单号
                     ];
-                    $ybf_dh = ybfPay::ysfWitbindcard($param);//执行代还
+                    $ybf_dh = YbfPay::ysfWitbindcard($param);//执行代还
                     if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
                         $upd_plan_des_data["message"] = "提交成功,等待回调通知";
                         $upd_plan_des_data["order_state"] = 3;

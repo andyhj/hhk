@@ -1,13 +1,13 @@
 <?php
 
-namespace Common\ybfPay;
+namespace Common\YbfPay;
 
 /**
  * 2019-10-14
  *
  * @author Andy
  */
-class ybfPay {
+class YbfPay {
 
     protected $result = false;                                      //返回参数@array
     private $key = 'f68f04b060218f0fcadb1384dc7c9b02';              //秘钥
@@ -45,7 +45,7 @@ class ybfPay {
             'close_notify_url' => $data['close_notify_url'],   //代付异步通知地址
         );
         //获取签名
-        $param['sign'] = $this->getSign($param,$this->key);
+        $param['sign'] = $this->getSign($param);
         add_log("ysfPayment.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhpay/payment";
         $res = $this->httpRequest($url, $param);
@@ -66,7 +66,7 @@ class ybfPay {
             'df_order_number' => $data['df_order_number'], //代付订单号
         );
         //获取签名
-        $param['sign'] = $this->getSign($param,$this->key);
+        $param['sign'] = $this->getSign($param);
         add_log("ysfWitbindcard.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhpay/withdraw";
         $res = $this->httpRequest($url, $param);
@@ -86,7 +86,7 @@ class ybfPay {
             'order_number' => $data['order_number'], //订单号
         );
         //获取签名
-        $param['sign'] = $this->getSign($param,$this->key);
+        $param['sign'] = $this->getSign($param);
         add_log("ysfQuery.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhpay/query";
         $res = $this->httpRequest($url, $param);
@@ -107,7 +107,7 @@ class ybfPay {
             'account' => $data['account'], //卡号
         );
         //获取签名
-        $param['sign'] = $this->getSign($param,$this->key);
+        $param['sign'] = $this->getSign($param);
         add_log("ysfQueryCard.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhpay/queryCard";
         $res = $this->httpRequest($url, $param);
@@ -161,10 +161,7 @@ class ybfPay {
      * @param  array $Obj 待签名的数据
      * @return string
      */
-    function getSign($Obj,$ke='') {
-        if($ke==''){
-            $ke=$this->key;
-        }
+    function getSign($Obj) {
         if (!is_array($Obj)) {
             $Obj = (array) $Obj;
         }
@@ -176,7 +173,7 @@ class ybfPay {
         $String = $this->formatBizQueryParaMap($Parameters, false);
         //echo '【string1】'.$String.'</br>';
         // 签名步骤二：在string后加入KEY
-        $String = $String . "&key=" . $ke;
+        $String = $String . "&key=" . $this->key;
         //echo "【string2】".$String."</br>";die;
         // 签名步骤三：MD5加密
 
