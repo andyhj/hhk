@@ -946,6 +946,34 @@ function hideStr($string, $bengin = 0, $len = 4, $type = 0, $glue = "@") {
             break;
     }
     return $string;
+}/**
+ * 生成签名
+ * @param  array $Obj 待签名的数据
+ * @return string
+ */
+function getSign($Obj,$key) {
+    if (!is_array($Obj)||!$key) {
+        $Obj = (array) $Obj;
+    }
+    foreach ($Obj as $k => $v) {
+        $Parameters [$k] = $v;
+    }
+    // 签名步骤一：按字典序排序参数
+    ksort($Parameters);
+    $String = formatBizQueryParaMap($Parameters, false);
+    //echo '【string1】'.$String.'</br>';
+    // 签名步骤二：在string后加入KEY
+    $String = $String . "&key=" . $key;
+    //echo "【string2】".$String."</br>";die;
+    // 签名步骤三：MD5加密
+
+    $String = md5($String);
+    //echo "【string3】 ".$String."</br>";
+    // 签名步骤四：所有字符转为大写
+    $result_ = strtoupper($String);
+    //echo "【result】 ".$result_."</br>";
+
+    return $result_;
 }
 /**
  * Undocumented function
