@@ -45,7 +45,7 @@ class YbfPay {
             'close_notify_url' => $data['close_notify_url'],   //代付异步通知地址
         );
         //获取签名
-        $param['sign'] = $this->getSign($param);
+        $param['sign'] = getSign($param,$this->key);
         add_log("ysfPayment.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhpay/payment";
         $res = $this->httpRequest($url, $param);
@@ -66,7 +66,7 @@ class YbfPay {
             'df_order_number' => $data['df_order_number'], //代付订单号
         );
         //获取签名
-        $param['sign'] = $this->getSign($param);
+        $param['sign'] = getSign($param,$this->key);
         add_log("ysfWitbindcard.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhpay/withdraw";
         $res = $this->httpRequest($url, $param);
@@ -86,7 +86,7 @@ class YbfPay {
             'order_number' => $data['order_number'], //订单号
         );
         //获取签名
-        $param['sign'] = $this->getSign($param);
+        $param['sign'] = getSign($param,$this->key);
         add_log("ysfQuery.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhpay/query";
         $res = $this->httpRequest($url, $param);
@@ -107,7 +107,7 @@ class YbfPay {
             'account' => $data['account'], //卡号
         );
         //获取签名
-        $param['sign'] = $this->getSign($param);
+        $param['sign'] = getSign($param,$this->key);
         add_log("ysfQueryCard.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhpay/queryCard";
         $res = $this->httpRequest($url, $param);
