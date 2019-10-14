@@ -123,7 +123,7 @@ class YbfPay {
      * @return string HTTP response
      *         false 失败
      */
-    function httpRequest($url, $post_data = null) {
+    public function httpRequest($url, $post_data = null) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -161,7 +161,7 @@ class YbfPay {
      * @param  array $Obj 待签名的数据
      * @return string
      */
-    function getSign($Obj) {
+    public function getSign($Obj) {
         if (!is_array($Obj)) {
             $Obj = (array) $Obj;
         }
@@ -190,7 +190,7 @@ class YbfPay {
     /**
      * 作用：格式化参数，签名过程需要使用
      */
-    function formatBizQueryParaMap($paraMap, $urlencode) {
+    public function formatBizQueryParaMap($paraMap, $urlencode) {
         $buff = "";
         if (!is_array($paraMap)) {
             $paraMap = (array) $paraMap;
@@ -215,23 +215,12 @@ class YbfPay {
      * @param  array $data 待检查的数据
      * @return boolean
      */
-    function checkSign($data) {
+    public function checkSign($data) {
         $sign = $data['sign'];
         unset($data['sign']);
         return $sign == $this->getSign($data);
     }
 
-    /**
-     * 检查银行是否存在
-     * @param  string $bankName 待检查的数据
-     * @return String  返回银行编码或空字符串
-     */
-    function checkBank($bankName) {
-        if (in_array($bankName, $this->bank)) {
-            return $this->bank_code[$bankName];
-        }
-        return '';
-    }
 
     /* json2arr */
 
