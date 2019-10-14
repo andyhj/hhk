@@ -265,11 +265,11 @@ class PlanController extends CommonController{
         }
         session($session_name,1);
         $h = (int)date("H");
-        if($h>20||$h<8){
-            $json["status"] = 305;
-            $json["info"] = "请在8-20点时间段补单";
-            $this->returnJson($json,$session_name);
-        }
+        // if($h>20||$h<8){
+        //     $json["status"] = 305;
+        //     $json["info"] = "请在8-20点时间段补单";
+        //     $this->returnJson($json,$session_name);
+        // }
         if(!$pd_id){
             $json["status"] = 305;
             $json["info"] = "参数错误";
@@ -340,7 +340,7 @@ class PlanController extends CommonController{
         $d1 = strtotime($t_time);
         $d2 = strtotime($date_2);
         $days = round(($d2-$d1)/3600/24); //计算距离还款日天数
-        $d_periods = ceil($residue_periods/4); //每天最多执行（代扣+代还）4次，计算出要几天
+        $d_periods = ceil($residue_periods/8); //每天最多执行（代扣+代还）4次，计算出要几天
         if($days<$d_periods){
             $json["status"] = 313;
             $json["info"] = "距离还款日较近，请重新制定计划";
