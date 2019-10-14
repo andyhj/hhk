@@ -261,6 +261,7 @@ class CardController extends InitController {
                 $this->card_m->where(["card_no"=>$card_no,"uid"=>$u_id])->save(['success'=>1]);
                 $json["status"] = 200;
                 $json["info"] = "绑卡成功";
+                $json["url"] = U("index/card/index",['c_code'=>$this->c_code]);
                 $this->returnJson($json, $session_name);
                 break;
             default:
@@ -556,6 +557,18 @@ class CardController extends InitController {
                     $this->returnJson($json);
                 }
                 break;
+            case "ybf":
+                    $r_s = $this->card_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0]);
+                    if($r_s){
+                        $json["status"] = 200;
+                        $json["info"] = "银行卡已经解绑成功";
+                        $this->returnJson($json);
+                    }else{
+                        $json["status"] = 311;
+                        $json["info"] = "解绑失败，请联系客服";
+                        $this->returnJson($json);
+                    }
+                    break;
             default:
                 $json["status"] = 311;
                 $json["info"] = "非法请求";
