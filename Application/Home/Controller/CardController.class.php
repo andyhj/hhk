@@ -251,6 +251,18 @@ class CardController extends InitController {
                 $json["info"] = "绑卡失败(".$res_j['msg'].")";
                 $this->returnJson($json, $session_name);
                 break;
+            case "ybf":
+                $cookie_code = cookie('card_'.$card_no); 
+                if($cookie_code!=MD5($code)){
+                    $json["status"] = 311;
+                    $json["info"] = "验证码不正确";
+                    $this->returnJson($json, $session_name);
+                }
+                $this->card_m->where(["card_no"=>$card_no,"uid"=>$u_id])->save(['success'=>1]);
+                $json["status"] = 200;
+                $json["info"] = "绑卡成功";
+                $this->returnJson($json, $session_name);
+                break;
             default:
                 $json["status"] = 311;
                 $json["info"] = "非法请求";
@@ -409,6 +421,38 @@ class CardController extends InitController {
                     }                    
                 }                
                 $add_card_data['merch_id'] = $merch_id;
+                $re = send_sms($add_card_data["phone"]);
+                if (!$re) {
+                    $json["status"] = 310;
+                    $json["info"] = "发送绑卡短信失败";
+                    $this->returnJson($json, $session_name);
+                }
+                if($card_id){
+                    $r_s = $this->card_m->where(["id"=>$card_id])->save($add_card_data);
+                }else{
+                    $r_s = $this->card_m->add($add_card_data);
+                }
+                
+                if($r_s){
+                    cookie('card_'.$card_no,MD5($re),60); 
+                    $json["status"] = 200;
+                    $json["info"] = "发送绑卡短信成功";
+                    $this->returnJson($json, $session_name);
+                }else{
+                    $json["status"] = 311;
+                    $json["info"] = "发送绑卡短信成功，添加数据失败，请联系客服";
+                    $this->returnJson($json, $session_name);
+                }
+                break;  
+            case "ybf":
+                $bank_m = M('bank_code');
+                $bank_info = $bank_m->where(['bank_name'=>$add_card_data['bank_name']])->find();
+                if(!$bank_info){
+                    $json["status"] = 311;
+                    $json["info"] = "不支持此银行";
+                    $this->returnJson($json, $session_name);
+                }
+                $add_card_data["bank_code"] = $bank_info['code'];
                 $re = send_sms($add_card_data["phone"]);
                 if (!$re) {
                     $json["status"] = 310;

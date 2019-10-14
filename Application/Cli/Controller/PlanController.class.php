@@ -16,6 +16,7 @@ namespace Cli\Controller;
 use Common\HeliPay\Heli;
 use Common\WxApi\class_weixin_adv;
 use Common\GyfPay\gyf;
+use Common\ybfPay\ybfPay;
 class PlanController extends InitController {
     /**
      * 定时执行计划
@@ -197,6 +198,38 @@ class PlanController extends InitController {
                     }      
                     
                     break;
+                case "ybf":
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/ybfpay.php";
+                    $param=[
+                        'order_number' => $plan_des_info["order_id"], //订单号
+                        'amount' => $plan_des_info["amount"], //交易金额,0.00必须保留两位
+                        'fee' => $plan_des_info['fee'], //用户费率,0.005 就是千5
+                        'rate' => $plan_des_info['close_rate'], //提现手续费（每笔）
+                        'account_name' => $bank_card_hlb_info['user_name'], //持卡人姓名
+                        'id_card' => $bank_card_hlb_info['id_card'], //身份证号码
+                        'tran_account' => $bank_card_hlb_info['card_no'], //信用卡号  
+                        'card_cvv' => $bank_card_hlb_info['card_cvv'], //信用卡cvn
+                        'validity_date' => $bank_card_hlb_info['validity_date'], //信用卡号有限期：：格式0125
+                        'phone' => $bank_card_hlb_info['phone'], //手机号    
+                        'bank_code' => $bank_card_hlb_info['bank_code'], //银行编码
+                        'city' => '深圳市', //落地城市，如：深圳市
+                        'notify_url' => HTTP_HOST."/index/ybfCallback/receive", //订单处理结果通知地址 
+                        'close_notify_url' => HTTP_HOST."/index/ybfCallback/close",   //代付异步通知地址
+                    ];
+                    $ybf_dh = ybfPay::ysfPayment($param);//执行代扣
+                    if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
+                        $upd_plan_des_data["message"] = "提交成功,等待回调通知";
+                        $upd_plan_des_data["order_state"] = 3;
+                        $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
+                        $status = true;
+                    }else{
+                        $upd_plan_des_data["message"] = "消费失败,".$ybf_dh['msg'];
+                        $upd_plan_des_data["order_state"] = 4;
+                        $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
+                        $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>5]);
+                        $this->sendWxErrorMessage($plan_info, "消费失败", "消费");
+                    }
+                    break;
                 default:
                     break;
             }
@@ -321,6 +354,29 @@ class PlanController extends InitController {
                             $this->sendWxErrorMessage($plan_info, "还款失败", "还款");
                         }
                     }      
+                    
+                    break;
+                case "ybf":
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/ybfpay.php";
+                    $plan_des_xf_info = $plan_des_model->where(["p_id"=>$plan_des_info["p_id"],"num"=>$plan_des_info["num"]-1])->find();
+                    $param=[
+                        'order_number' => $$plan_des_xf_info['order_id'], //支付订单号
+                        'df_order_number' => $plan_des_info["order_id"], //代付订单号
+                    ];
+                    $ybf_dh = ybfPay::ysfWitbindcard($param);//执行代还
+                    if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
+                        $upd_plan_des_data["message"] = "提交成功,等待回调通知";
+                        $upd_plan_des_data["order_state"] = 3;
+                        $upd_plan_des_data["d_time"] = time();
+                        $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
+                        $status = true;
+                    }else{
+                        $upd_plan_des_data["message"] = "还款失败,".$ybf_dh['msg'];
+                        $upd_plan_des_data["order_state"] = 4;
+                        $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
+                        $plan_model->where(["id"=>$plan_des_info["p_id"]])->save(["status"=>5]);
+                        $this->sendWxErrorMessage($plan_info, "还款失败", "还款");
+                    }   
                     
                     break;
                 default:

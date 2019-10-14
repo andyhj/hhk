@@ -159,13 +159,23 @@
                                         <option value="渤海银行" <?php if($card_info['bank_name']=='渤海银行'){echo 'selected = "selected"';} ?>>渤海银行</option>
                                         <option value="包商银行" <?php if($card_info['bank_name']=='包商银行'){echo 'selected = "selected"';} ?>>包商银行</option>
                                         <option value="浙商银行" <?php if($card_info['bank_name']=='浙商银行'){echo 'selected = "selected"';} ?>>浙商银行</option>
-                                        <option value="晋商银行" <?php if($card_info['bank_name']=='晋商银行'){echo 'selected = "selected"';} ?>>江苏银行</option>
+                                        <option value="江苏银行" <?php if($card_info['bank_name']=='江苏银行'){echo 'selected = "selected"';} ?>>江苏银行</option>
                                         <option value="晋商银行" <?php if($card_info['bank_name']=='晋商银行'){echo 'selected = "selected"';} ?>>晋商银行</option>
                                         <option value="江西银行" <?php if($card_info['bank_name']=='江西银行'){echo 'selected = "selected"';} ?>>江西银行</option>
                                         <option value="温州银行" <?php if($card_info['bank_name']=='温州银行'){echo 'selected = "selected"';} ?>>温州银行</option>
                                         <option value="哈尔滨银行" <?php if($card_info['bank_name']=='哈尔滨银行'){echo 'selected = "selected"';} ?>>哈尔滨银行</option>
                                         <option value="南洋商业银行" <?php if($card_info['bank_name']=='南洋商业银行'){echo 'selected = "selected"';} ?>>南洋商业银行</option>
                                         <option value="农村商业银行" <?php if($card_info['bank_name']=='农村商业银行'){echo 'selected = "selected"';} ?>>农村商业银行</option>
+                                        <option value="中国农业银行" <?php if($card_info['bank_name']=='中国农业银行'){echo 'selected = "selected"';} ?>>中国农业银行</option>
+                                    <?php }?>
+                                    <?php if($code=='ybf'){?>
+                                        <option value="兴业银行" <?php if($card_info['bank_name']=='兴业银行'){echo 'selected = "selected"';} ?>>兴业银行</option>
+                                        <option value="上海银行" <?php if($card_info['bank_name']=='上海银行'){echo 'selected = "selected"';} ?>>上海银行</option>
+                                        <option value="北京银行" <?php if($card_info['bank_name']=='北京银行'){echo 'selected = "selected"';} ?>>北京银行</option>
+                                        <option value="广州银行" <?php if($card_info['bank_name']=='广州银行'){echo 'selected = "selected"';} ?>>广州银行</option>
+                                        <option value="苏州银行" <?php if($card_info['bank_name']=='苏州银行'){echo 'selected = "selected"';} ?>>苏州银行</option>
+                                        <option value="渤海银行" <?php if($card_info['bank_name']=='渤海银行'){echo 'selected = "selected"';} ?>>渤海银行</option>
+                                        <option value="广州农村商业银行" <?php if($card_info['bank_name']=='广州农村商业银行'){echo 'selected = "selected"';} ?>>广州农村商业银行</option>
                                         <option value="中国农业银行" <?php if($card_info['bank_name']=='中国农业银行'){echo 'selected = "selected"';} ?>>中国农业银行</option>
                                     <?php }?>
                                     <option value="中国工商银行" <?php if($card_info['bank_name']=='中国工商银行'){echo 'selected = "selected"';} ?>>中国工商银行</option>

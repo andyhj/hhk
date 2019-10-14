@@ -363,40 +363,38 @@
                     alert("选择24期，还款总额不能小于6000");
                     return false;
                 }
-                <?php if($c_code=='gyf'){?>
-                    if(periods==6&&amount>5000){
-                        alert("此通道选择6期，还款总额不能大于5000");
-                        return false;
-                    }
-                    if(periods==12&&amount>10000){
-                        alert("此通道选择12期，还款总额不能大于10000");
-                        return false;
-                    }
-                    if(periods==18&&amount>16000){
-                        alert("此通道选择18期，还款总额不能大于16000");
-                        return false;
-                    }
-                    if(periods==24&&amount>22000){
-                        alert("此通道选择24期，还款总额不能大于22000");
-                        return false;
-                    }
-                    if(periods==32&&amount>30000){
-                        alert("此通道选择32期，还款总额不能大于30000");
-                        return false;
-                    }
-                    if(periods==40&&amount>38000){
-                        alert("此通道选择40期，还款总额不能大于38000");
-                        return false;
-                    }
-                    if(periods==48&&amount>46000){
-                        alert("此通道选择48期，还款总额不能大于46000");
-                        return false;
-                    }
-                    if(periods==56&&amount>54000){
-                        alert("此通道选择56期，还款总额不能大于54000");
-                        return false;
-                    }
-                <?php }?>
+                if(periods==6&&amount>5000){
+                    alert("此通道选择6期，还款总额不能大于5000");
+                    return false;
+                }
+                if(periods==12&&amount>10000){
+                    alert("此通道选择12期，还款总额不能大于10000");
+                    return false;
+                }
+                if(periods==18&&amount>16000){
+                    alert("此通道选择18期，还款总额不能大于16000");
+                    return false;
+                }
+                if(periods==24&&amount>22000){
+                    alert("此通道选择24期，还款总额不能大于22000");
+                    return false;
+                }
+                if(periods==32&&amount>30000){
+                    alert("此通道选择32期，还款总额不能大于30000");
+                    return false;
+                }
+                if(periods==40&&amount>38000){
+                    alert("此通道选择40期，还款总额不能大于38000");
+                    return false;
+                }
+                if(periods==48&&amount>46000){
+                    alert("此通道选择48期，还款总额不能大于46000");
+                    return false;
+                }
+                if(periods==56&&amount>54000){
+                    alert("此通道选择56期，还款总额不能大于54000");
+                    return false;
+                }
                 if(p_amount !=='' && p_amount_count !==''){
                     var ye = (parseFloat(p_amount)+(parseFloat(amount)/100/2)+parseFloat(p_amount_count)).toFixed(2); //卡余额
                     msg = '确定卡里余额大于'+ye+'？';

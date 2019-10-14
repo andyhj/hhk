@@ -9,6 +9,7 @@ namespace Admin\Controller;
 use Common\HeliPay\Heli;
 use Common\WxApi\class_weixin_adv;
 use Common\GyfPay\gyf;
+use Common\ybfPay\ybfPay;
 class PlanController extends CommonController{
     /**
      * 计划列表
@@ -520,6 +521,38 @@ class PlanController extends CommonController{
                     }      
                     
                     break;
+                case "ybf":
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/ybfpay.php";
+                    $param=[
+                        'order_number' => $remedy_id, //订单号
+                        'amount' => $plan_des_info["amount"], //交易金额,0.00必须保留两位
+                        'fee' => $plan_des_info['fee'], //用户费率,0.005 就是千5
+                        'rate' => $plan_des_info['close_rate'], //提现手续费（每笔）
+                        'account_name' => $bank_card_hlb_info['user_name'], //持卡人姓名
+                        'id_card' => $bank_card_hlb_info['id_card'], //身份证号码
+                        'tran_account' => $bank_card_hlb_info['card_no'], //信用卡号  
+                        'card_cvv' => $bank_card_hlb_info['card_cvv'], //信用卡cvn
+                        'validity_date' => $bank_card_hlb_info['validity_date'], //信用卡号有限期：：格式0125
+                        'phone' => $bank_card_hlb_info['phone'], //手机号    
+                        'bank_code' => $bank_card_hlb_info['bank_code'], //银行编码
+                        'city' => '深圳市', //落地城市，如：深圳市
+                        'notify_url' => HTTP_HOST."/index/ybfCallback/receive", //订单处理结果通知地址 
+                        'close_notify_url' => HTTP_HOST."/index/ybfCallback/close",   //代付异步通知地址
+                    ];
+                    $ybf_dh = ybfPay::ysfPayment($param);//执行代扣
+                    if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
+                        $upd_plan_des_data["message"] = "提交成功,等待回调通知";
+                        $upd_plan_des_data["order_state"] = 3;
+                        $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                        $json["status"] = 200;
+                        $json["info"] = "提交成功,等待回调通知";
+                    }else{
+                        $upd_plan_des_data["message"] = "补单失败,".$ybf_dh['msg'];
+                        $json["info"] = $upd_plan_des_data["message"];
+                        $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                        $this->sendWxErrorMessage($plan_info, "消费补单失败", "消费");
+                    }
+                    break;
                 default:
                     break;
             }
@@ -645,6 +678,28 @@ class PlanController extends CommonController{
                     }      
                     
                     break;
+                case "ybf":
+                    require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/ybfpay.php";
+                    $plan_des_xf_info = $plan_des_model->where(["p_id"=>$plan_des_info["p_id"],"num"=>$plan_des_info["num"]-1])->find();
+                    $param=[
+                        'order_number' => $$plan_des_xf_info['order_id'], //支付订单号
+                        'df_order_number' => $plan_des_info["order_id"], //代付订单号
+                    ];
+                    $ybf_dh = ybfPay::ysfWitbindcard($param);//执行代还
+                    if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
+                        $upd_plan_des_data["message"] = "提交成功,等待回调通知";
+                        $upd_plan_des_data["order_state"] = 3;
+                        $plan_des_model->where(["id"=>$plan_des_info["id"]])->save($upd_plan_des_data);
+                        $json["status"] = 200;
+                        $json["info"] = "提交成功,等待回调通知";
+                    }else{
+                        $upd_plan_des_data["message"] = "补单失败,".$ybf_dh['msg'];
+                        $json["info"] = $upd_plan_des_data["message"];
+                        $plan_des_model->where(["id"=>$pd_id])->save($upd_plan_des_data);
+                        $this->sendWxErrorMessage($plan_info, "还款补单失败", "还款");
+                    }   
+                    
+                    break;
                 default:
                     break;
             }
@@ -743,6 +798,24 @@ class PlanController extends CommonController{
                 }   
                 
                 break;    
+            case "ybf":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/ybfpay.php";
+                $bank_card_model = M("bank_card_".$plan_info["c_code"]);
+                $bank_card_hlb_info = $bank_card_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
+                $param=[
+                    'order_number' => $order_number, //订单号
+                ];
+                $affirmPay = ybfPay::ysfQuery($param);//执行代还
+                if(isset($affirmPay['status']) && $affirmPay['status'] == 40000 ){
+                    $json["status"] = 200;
+                    $json["info"] = "成功";
+                    $this->returnJson($json);
+                }else{
+                    $json["status"] = 313;
+                    $json["info"] = "失败（".$affirmPay['msg']."）";
+                    $this->returnJson($json);
+                }
+                break; 
             default:
                 break;
         }
@@ -848,6 +921,26 @@ class PlanController extends CommonController{
                     }
                 }                   
                 break;    
+            case "ybf":
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/ybfpay.php";
+                $bank_card_model = M("bank_card_".$plan_info["c_code"]);
+                $bank_card_hlb_info = $bank_card_model->where(["id"=>$plan_info["bc_id"]])->find(); //查询银行卡信息
+                $param=[
+                    'account' => $bank_card_hlb_info['card_no'], //卡号
+                ];
+                $affirmPay = ybfPay::ysfQueryCard($param);//执行代还
+                if(isset($affirmPay['status']) && $affirmPay['status'] == 40000 ){
+                    $data['accountBalance'] = $affirmPay['data']["balance"];
+                    $json["status"] = 200;
+                    $json["info"] = "成功";
+                    $json["data"] = $data;
+                    $this->returnJson($json);
+                }else{
+                    $json["status"] = 313;
+                    $json["info"] = "失败（".$affirmPay['msg']."）";
+                    $this->returnJson($json);
+                }
+                break; 
             default:
                 break;
         }
