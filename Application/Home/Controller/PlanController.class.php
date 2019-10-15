@@ -488,6 +488,7 @@ class PlanController extends InitController {
                 $json["info"] = "生成计划成功";
                 $this->returnJson($json,$session_name);
             }
+            add_log("plan.log", "plan", "计划详情：". var_export($plan_des_arr, true));
             M()->rollback();
             $json["status"] = 400;
             $json["info"] = "插入计划详情失败";
