@@ -7,7 +7,7 @@ namespace Common\YbfPay;
  *
  * @author Andy
  */
-class YbfPay {
+class Ybf {
 
     protected $result = false;                                      //返回参数@array
     private $key = 'f68f04b060218f0fcadb1384dc7c9b02';              //秘钥
