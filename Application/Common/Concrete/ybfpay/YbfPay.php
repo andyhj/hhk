@@ -47,7 +47,7 @@ class Ybf {
         //获取签名
         $param['sign'] = getSign($param,$this->key);
         add_log("ysfPayment.log", "ybfpay", "提交参数：" . var_export($param, true));
-        $url = "http://pay.hsqpay.com/api/dhpay/payment";
+        $url = "http://pay.hsqpay.com/api/dhPay/payment";
         $res = $this->httpRequest($url, $param);
         add_log("ysfPayment.log", "ybfpay", "返回数据：" . var_export($res, true));
 
@@ -68,7 +68,7 @@ class Ybf {
         //获取签名
         $param['sign'] = getSign($param,$this->key);
         add_log("ysfWitbindcard.log", "ybfpay", "提交参数：" . var_export($param, true));
-        $url = "http://pay.hsqpay.com/api/dhpay/withdraw";
+        $url = "http://pay.hsqpay.com/api/dhPay/withdraw";
         $res = $this->httpRequest($url, $param);
         add_log("ysfWitbindcard.log", "ybfpay", "返回数据：" . var_export($res, true));
 
@@ -88,7 +88,7 @@ class Ybf {
         //获取签名
         $param['sign'] = getSign($param,$this->key);
         add_log("ysfQuery.log", "ybfpay", "提交参数：" . var_export($param, true));
-        $url = "http://pay.hsqpay.com/api/dhpay/query";
+        $url = "http://pay.hsqpay.com/api/dhPay/query";
         $res = $this->httpRequest($url, $param);
         add_log("ysfQuery.log", "ybfpay", "返回数据：" . var_export($res, true));
 
@@ -109,7 +109,7 @@ class Ybf {
         //获取签名
         $param['sign'] = getSign($param,$this->key);
         add_log("ysfQueryCard.log", "ybfpay", "提交参数：" . var_export($param, true));
-        $url = "http://pay.hsqpay.com/api/dhpay/queryCard";
+        $url = "http://pay.hsqpay.com/api/dhPay/queryCard";
         $res = $this->httpRequest($url, $param);
         add_log("ysfQueryCard.log", "ybfpay", "返回数据：" . var_export($res, true));
 
