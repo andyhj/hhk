@@ -682,8 +682,12 @@ class PlanController extends CommonController{
                 case "ybf":
                     require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/YbfPay.php";
                     $plan_des_xf_info = $plan_des_model->where(["p_id"=>$plan_des_info["p_id"],"num"=>$plan_des_info["num"]-1])->find();
+                    $order_number = $plan_des_xf_info['order_id'];
+                    if($plan_des_xf_info['remedy_id']){
+                        $order_number = $plan_des_xf_info['remedy_id'];
+                    }
                     $param=[
-                        'order_number' => $$plan_des_xf_info['order_id'], //支付订单号
+                        'order_number' => $order_number, //支付订单号
                         'df_order_number' => $plan_des_info["order_id"], //代付订单号
                     ];
                     $ybf = new Ybf();
