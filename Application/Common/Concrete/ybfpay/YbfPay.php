@@ -28,7 +28,7 @@ class Ybf {
     function ysfPayment($data = false) {
         $param = array(
             'tenant_id' => $this->merchant_id,
-            'channel' => 4, //默认4
+            'channel' => 6, //默认6
             'order_number' => $data['order_number'], //订单号
             'amount' => $data['amount'], //交易金额,0.00必须保留两位
             'fee' => $data['fee'], //用户费率,0.005 就是千5
@@ -103,7 +103,7 @@ class Ybf {
     function ysfQueryCard($data = false) {
         $param = array(
             'tenant_id' => $this->merchant_id,
-            'channel' => 4, //默认4
+            'channel' => 6, //默认6
             'account' => $data['account'], //卡号
         );
         //获取签名
