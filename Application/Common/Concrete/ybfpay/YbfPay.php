@@ -45,7 +45,7 @@ class Ybf {
             'close_notify_url' => $data['close_notify_url'],   //代付异步通知地址
         );
         //获取签名
-        $param['sign'] = getSign($param,$this->key);
+        $param['sign'] = $this->getSign($param);
         add_log("ysfPayment.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhPay/payment";
         $res = $this->httpRequest($url, $param);
@@ -66,7 +66,7 @@ class Ybf {
             'df_order_number' => $data['df_order_number'], //代付订单号
         );
         //获取签名
-        $param['sign'] = getSign($param,$this->key);
+        $param['sign'] = $this->getSign($param);
         add_log("ysfWitbindcard.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhPay/withdraw";
         $res = $this->httpRequest($url, $param);
@@ -86,7 +86,7 @@ class Ybf {
             'order_number' => $data['order_number'], //订单号
         );
         //获取签名
-        $param['sign'] = getSign($param,$this->key);
+        $param['sign'] = $this->getSign($param);
         add_log("ysfQuery.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhPay/query";
         $res = $this->httpRequest($url, $param);
@@ -107,7 +107,7 @@ class Ybf {
             'account' => $data['account'], //卡号
         );
         //获取签名
-        $param['sign'] = getSign($param,$this->key);
+        $param['sign'] = $this->getSign($param);
         add_log("ysfQueryCard.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhPay/queryCard";
         $res = $this->httpRequest($url, $param);
@@ -123,7 +123,7 @@ class Ybf {
      * @return string HTTP response
      *         false 失败
      */
-    public function httpRequest($url, $post_data = null) {
+    function httpRequest($url, $post_data = null) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -161,7 +161,7 @@ class Ybf {
      * @param  array $Obj 待签名的数据
      * @return string
      */
-    public function getSign($Obj) {
+    function getSign($Obj) {
         if (!is_array($Obj)) {
             $Obj = (array) $Obj;
         }
@@ -190,7 +190,7 @@ class Ybf {
     /**
      * 作用：格式化参数，签名过程需要使用
      */
-    public function formatBizQueryParaMap($paraMap, $urlencode) {
+    function formatBizQueryParaMap($paraMap, $urlencode) {
         $buff = "";
         if (!is_array($paraMap)) {
             $paraMap = (array) $paraMap;
@@ -215,7 +215,7 @@ class Ybf {
      * @param  array $data 待检查的数据
      * @return boolean
      */
-    public function checkSign($data) {
+    function checkSign($data) {
         $sign = $data['sign'];
         unset($data['sign']);
         return $sign == $this->getSign($data);
