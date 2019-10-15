@@ -192,7 +192,7 @@
                             <span  style="float:right;">
                                 <select id="periods" name="periods" >
                                     <option value="0">---选择期数---</option>
-                                    <option value="6"> 6 期</option>
+                                    <option value="8"> 8 期</option>
                                     <option value="12"> 12期</option>
                                     <option value="18"> 18期</option>
                                     <option value="24"> 24期</option>
@@ -347,8 +347,8 @@
                 var p_amount_count = $("#p_amount_count").html();
                 var msg = '确定卡里余额大于每期扣款金额加手续费总额？';
                 var p_amount=(amount/periods).toFixed(2);//扣款额度
-                if(periods==6&&amount<1500){
-                    alert("选择6期，还款总额不能小于1500");
+                if(periods==8&&amount<1500){
+                    alert("选择8期，还款总额不能小于1500");
                     return false;
                 }
                 if(periods==12&&amount<3000){
@@ -363,8 +363,8 @@
                     alert("选择24期，还款总额不能小于6000");
                     return false;
                 }
-                if(periods==6&&amount>5000){
-                    alert("此通道选择6期，还款总额不能大于5000");
+                if(periods==8&&amount>6000){
+                    alert("此通道选择8期，还款总额不能大于6000");
                     return false;
                 }
                 if(periods==12&&amount>10000){

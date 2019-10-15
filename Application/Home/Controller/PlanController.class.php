@@ -308,9 +308,9 @@ class PlanController extends InitController {
         $channel_model = M("channel");
         $plan_model = M("plan");
         $plan_des_model = M("plan_des");
-        if($periods==6&&$amount<1500){
+        if($periods==8&&$amount<1500){
             $json["status"] = 306;
-            $json["info"] = "选择6期，还款总额不能小于1500";
+            $json["info"] = "选择8期，还款总额不能小于1500";
             $this->returnJson($json,$session_name);
         }
         if($periods==12&&$amount<3000){
