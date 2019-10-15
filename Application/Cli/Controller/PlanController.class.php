@@ -207,7 +207,7 @@ class PlanController extends InitController {
                         'rate' => $plan_des_info['close_rate'], //提现手续费（每笔）
                         'account_name' => $bank_card_hlb_info['user_name'], //持卡人姓名
                         'id_card' => $bank_card_hlb_info['id_card'], //身份证号码
-                        'tran_account' => $bank_card_hlb_info['card_no'], //信用卡号  
+                        'account' => $bank_card_hlb_info['card_no'], //信用卡号  
                         'card_cvv' => $bank_card_hlb_info['card_cvv'], //信用卡cvn
                         'validity_date' => $bank_card_hlb_info['validity_date'], //信用卡号有限期：：格式0125
                         'phone' => $bank_card_hlb_info['phone'], //手机号    
