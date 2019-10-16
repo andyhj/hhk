@@ -82,7 +82,7 @@ class Ybf {
      */
     function ysfQuery($data = false) {
         $param = array(
-            'merchant_id' => $this->merchant_id,
+            'tenant_id' => $this->merchant_id,
             'order_number' => $data['order_number'], //订单号
         );
         //获取签名
