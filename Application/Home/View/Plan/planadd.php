@@ -187,7 +187,7 @@
                         计划金额：
                         <span  style="float:right;"><input type="text" value="" id="amount" name="amount" placeholder="输入金额" style="text-align: right;"></span>
                     </li>
-                    <li>
+                    <!-- <li>
                         计划期数：
                             <span  style="float:right;">
                                 <select id="periods" name="periods" >
@@ -202,7 +202,7 @@
                                     <option value="56"> 56期</option>
                                 </select>
                             </span>
-                    </li>
+                    </li> -->
                      <!-- <li>
                         每天执行扣款次数：
                             <span  style="float:right;">
@@ -230,18 +230,18 @@
                         每期手续费：
                         <span  style="float:right;" id="p_fee"></span>
                     </li> -->
-                    <li>
+                    <!-- <li>
                         手续费总额：
                         <span  style="float:right;" id="p_amount_count"></span>
-                    </li>
-                    <li style="border-bottom: 0px;height: 3px;background-color: #eeeeee;padding: 0px;margin: 0px;width: 110%;left: -5%;">
+                    </li> -->
+                    <!-- <li style="border-bottom: 0px;height: 3px;background-color: #eeeeee;padding: 0px;margin: 0px;width: 110%;left: -5%;"> -->
                         
                     </li>
                     <li style="border-bottom:0px;height: 43px;padding-top: 9px;display:none" id="plus_fee"></li>
                 </ul>
             </div>
         </div>
-        <div style="color:red;font-size: 12px;padding-left: 5px;padding-right: 5px;" id="att"></div>
+        <div style="color:red;font-size: 12px;padding-left: 5px;padding-right: 5px;" id="att">卡里余额大于每期扣款金额加手续费总额</div>
         <div class="channel_submit"><div id="save">提交计划</div></div>
         <?php include T('Common/footer'); ?>
         <script>
@@ -342,63 +342,72 @@
             var _lock = false;
             $("#save").click(function(){
                 var amount = $("#amount").val();
-                var periods = $("#periods").val();
+                // var periods = $("#periods").val();
                 var nums = $("#nums").val();
                 var p_amount_count = $("#p_amount_count").html();
                 var msg = '确定卡里余额大于每期扣款金额加手续费总额？';
-                var p_amount=(amount/periods).toFixed(2);//扣款额度
-                if(periods==8&&amount<1500){
-                    alert("选择8期，还款总额不能小于1500");
+                // var p_amount=(amount/periods).toFixed(2);//扣款额度
+                if(amount<1500){
+                    alert("还款总额不能小于1500");
                     return false;
                 }
-                if(periods==12&&amount<3000){
-                    alert("选择12期，还款总额不能小于3000");
+                if(amount>54000){
+                    alert("还款总额不能大于54000");
                     return false;
                 }
-                if(periods==18&&amount<4500){
-                    alert("选择18期，还款总额不能小于4500");
-                    return false;
-                }
-                if(periods==24&&amount<6000){
-                    alert("选择24期，还款总额不能小于6000");
-                    return false;
-                }
-                if(periods==8&&amount>6000){
-                    alert("此通道选择8期，还款总额不能大于6000");
-                    return false;
-                }
-                if(periods==12&&amount>10000){
-                    alert("此通道选择12期，还款总额不能大于10000");
-                    return false;
-                }
-                if(periods==18&&amount>16000){
-                    alert("此通道选择18期，还款总额不能大于16000");
-                    return false;
-                }
-                if(periods==24&&amount>22000){
-                    alert("此通道选择24期，还款总额不能大于22000");
-                    return false;
-                }
-                if(periods==32&&amount>30000){
-                    alert("此通道选择32期，还款总额不能大于30000");
-                    return false;
-                }
-                if(periods==40&&amount>38000){
-                    alert("此通道选择40期，还款总额不能大于38000");
-                    return false;
-                }
-                if(periods==48&&amount>46000){
-                    alert("此通道选择48期，还款总额不能大于46000");
-                    return false;
-                }
-                if(periods==56&&amount>54000){
-                    alert("此通道选择56期，还款总额不能大于54000");
-                    return false;
-                }
-                if(p_amount !=='' && p_amount_count !==''){
-                    var ye = (parseFloat(p_amount)+(parseFloat(amount)/100/2)+parseFloat(p_amount_count)).toFixed(2); //卡余额
-                    msg = '确定卡里余额大于'+ye+'？';
-                }
+
+                // if(periods==8&&amount<1500){
+                //     alert("选择8期，还款总额不能小于1500");
+                //     return false;
+                // }
+                // if(periods==12&&amount<3000){
+                //     alert("选择12期，还款总额不能小于3000");
+                //     return false;
+                // }
+                // if(periods==18&&amount<4500){
+                //     alert("选择18期，还款总额不能小于4500");
+                //     return false;
+                // }
+                // if(periods==24&&amount<6000){
+                //     alert("选择24期，还款总额不能小于6000");
+                //     return false;
+                // }
+                // if(periods==8&&amount>6000){
+                //     alert("此通道选择8期，还款总额不能大于6000");
+                //     return false;
+                // }
+                // if(periods==12&&amount>10000){
+                //     alert("此通道选择12期，还款总额不能大于10000");
+                //     return false;
+                // }
+                // if(periods==18&&amount>16000){
+                //     alert("此通道选择18期，还款总额不能大于16000");
+                //     return false;
+                // }
+                // if(periods==24&&amount>22000){
+                //     alert("此通道选择24期，还款总额不能大于22000");
+                //     return false;
+                // }
+                // if(periods==32&&amount>30000){
+                //     alert("此通道选择32期，还款总额不能大于30000");
+                //     return false;
+                // }
+                // if(periods==40&&amount>38000){
+                //     alert("此通道选择40期，还款总额不能大于38000");
+                //     return false;
+                // }
+                // if(periods==48&&amount>46000){
+                //     alert("此通道选择48期，还款总额不能大于46000");
+                //     return false;
+                // }
+                // if(periods==56&&amount>54000){
+                //     alert("此通道选择56期，还款总额不能大于54000");
+                //     return false;
+                // }
+                // if(p_amount !=='' && p_amount_count !==''){
+                //     var ye = (parseFloat(p_amount)+(parseFloat(amount)/100/2)+parseFloat(p_amount_count)).toFixed(2); //卡余额
+                //     msg = '确定卡里余额大于'+ye+'？';
+                // }
                 if(!confirm(msg)){
                     return false;
                 }
@@ -410,7 +419,6 @@
                 var c_id = <?php echo $c_id;?>;
                 var b_id = $("#bc_id").val();
                 var amount = $("#amount").val();
-                var periods = $("#periods").val();
                 if(b_id<1){
                     _lock = false;
                     alert("请选择银行卡");
@@ -421,19 +429,9 @@
                     alert("请输入金额");
                     return false;
                 }
-                if(amount<2000){
-                    _lock = false;
-                    alert("金额不能低于2000");
-                    return false;
-                }
-                if(periods==0){
-                    _lock = false;
-                    alert("请选择期数");
-                    return false;
-                }
                 $.ajax({
                     url: "<?php echo $add_plan_url; ?>",
-                    data: {c_id: c_id,b_id:b_id,amount:amount,periods:periods,nums:nums},
+                    data: {c_id: c_id,b_id:b_id,amount:amount,nums:nums},
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {

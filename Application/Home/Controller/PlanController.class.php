@@ -291,7 +291,7 @@ class PlanController extends InitController {
         $b_id = I("b_id"); //银行卡id
         $u_id = $this->user_info["id"];
         $amount = I("amount"); //金额
-        $periods = I("periods"); //期数(6,12,24)
+        // $periods = I("periods"); //期数(6,12,24)
         $nums = (int)I("nums",0);//每天执行次数
         $session_name = "plan_submit_".$u_id;
         if(session($session_name)){
@@ -300,7 +300,7 @@ class PlanController extends InitController {
             $this->returnJson($json);
         }
         session($session_name,1);
-        if(!$c_id||!$b_id||!$u_id||!$amount||!$periods||$b_id<1){
+        if(!$c_id||!$b_id||!$u_id||!$amount||$b_id<1){
             $json["status"] = 305;
             $json["info"] = "参数错误";
             $this->returnJson($json,$session_name);
@@ -308,25 +308,32 @@ class PlanController extends InitController {
         $channel_model = M("channel");
         $plan_model = M("plan");
         $plan_des_model = M("plan_des");
-        if($periods==8&&$amount<1500){
+        if($amount<1500||$amount>54000){
             $json["status"] = 306;
-            $json["info"] = "选择8期，还款总额不能小于1500";
+            $json["info"] = "还款总额在1500~54000之间";
             $this->returnJson($json,$session_name);
         }
-        if($periods==12&&$amount<3000){
-            $json["status"] = 306;
-            $json["info"] = "选择12期，还款总额不能小于3000";
-            $this->returnJson($json,$session_name);
+        $periods = 8;
+        if($amount>6000&&$amount<=10000){
+            $periods = 12;
         }
-        if($periods==18&&$amount<4500){
-            $json["status"] = 306;
-            $json["info"] = "选择18期，还款总额不能小于4500";
-            $this->returnJson($json,$session_name);
+        if($amount>10000&&$amount<=16000){
+            $periods = 18;
         }
-        if($periods==24&&$amount<6000){
-            $json["status"] = 306;
-            $json["info"] = "选择24期，还款总额不能小于6000";
-            $this->returnJson($json,$session_name);
+        if($amount>16000&&$amount<=22000){
+            $periods = 24;
+        }
+        if($amount>22000&&$amount<=30000){
+            $periods = 32;
+        }
+        if($amount>30000&&$amount<=38000){
+            $periods = 40;
+        }
+        if($amount>38000&&$amount<=46000){
+            $periods = 48;
+        }
+        if($amount>46000&&$amount<=54000){
+            $periods = 56;
         }
         $p_amount =roundResolve($amount,$periods); //每期扣款额度
         // $p_amount = round($amount/$periods, 2); //每期扣款额度
