@@ -124,7 +124,7 @@
                                     <td>
                                         <span style="font-size: 0.36rem;color: #595757;font-weight:bold;"><?php echo $v['bank_name']?></span>
                                     </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
+                                    <td rowspan="2"  style="text-align: right;font-size: 0.3rem;">
                                         共<span style="font-size: 0.6rem;color: #fc8b5a"><?php echo $v['periods']?></span>期
                                     </td>
                                 </tr>
@@ -135,15 +135,18 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        还款总额：<?php echo $v['amount']?>元
+                                        还款总额:<?php echo $v['amount']?>元
+                                    </td>
+                                    <td style="text-align: right;">
+                                        总手续费:<?php echo round($v['c_amount']-$v['amount'],2); ?>元
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        
+                                    费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                     <td  style="text-align: right;">
-                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
+                                        
                                     </td>
                                 </tr>
                                 <?php if($v["message"]): ?>
@@ -186,7 +189,7 @@
                                         还款总额：<?php echo $v['amount']?>元
                                     </td>
                                     <td style="text-align: right;">
-                                        
+                                        总手续费:<?php echo round($v['c_amount']-$v['amount'],2); ?>元
                                     </td>
                                 </tr>
                                 <tr>
@@ -223,7 +226,7 @@
                                     <td>
                                         <span style="font-size: 0.36rem;color: #595757;font-weight:bold;"><?php echo $v['bank_name']?></span>
                                     </td>
-                                    <td rowspan="3"  style="text-align: right;font-size: 0.3rem;">
+                                    <td rowspan="2"  style="text-align: right;font-size: 0.3rem;">
                                         共<span style="font-size: 0.6rem;color: #c1c1c1"><?php echo $v['periods']?></span>期
                                     </td>
                                 </tr>
@@ -236,13 +239,16 @@
                                     <td>
                                         还款总额：<?php echo $v['amount']?>元
                                     </td>
+                                    <td style="text-align: right;">
+                                        总手续费:<?php echo round($v['c_amount']-$v['amount'],2); ?>元
+                                    </td>
                                 </tr>
                                 <tr>
+                                    <td >
+                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
+                                    </td>
                                     <td>
                                         
-                                    </td>
-                                    <td  style="text-align: right;">
-                                        费率：<?php echo ($v["fee"]*100).'%+'.(int)$v["close_rate"];?>
                                     </td>
                                 </tr>
                                 <?php if($v["message"]): ?>

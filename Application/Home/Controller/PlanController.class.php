@@ -61,6 +61,7 @@ class PlanController extends InitController {
     public function index(){
         $u_id = $this->user_info["id"];
         $plan_model = M("plan");
+        $plan_des_model = M("plan_des");
         $current_page = 1;
         $per_page = 10;
         $plan_list1 = $plan_model->where(["u_id"=>$u_id,"status"=>3])->order("add_time desc")->page($current_page.','.$per_page)->select(); //正在执行
@@ -72,6 +73,8 @@ class PlanController extends InitController {
         if($plan_list1){
             foreach ($plan_list1 as $p1) {
                 $card_info = M("bank_card_".$p1["c_code"])->where(["id"=>$p1["bc_id"]])->find();
+                $c_amount = $plan_des_model->where(['p_id'=>$p1['id'],'type'=>1])->sum('amount');
+                $p1["c_amount"] = $c_amount;
                 $p1["bank_name"] = $card_info["bank_name"];
                 $p1["user_name"] = $card_info["user_name"];
                 $p1["card_no"] = substr($card_info["card_no"],-4);
@@ -81,6 +84,8 @@ class PlanController extends InitController {
         if($plan_list2){
             foreach ($plan_list2 as $p2) {
                 $card_info = M("bank_card_".$p2["c_code"])->where(["id"=>$p2["bc_id"]])->find();
+                $c_amount = $plan_des_model->where(['p_id'=>$p2['id'],'type'=>1])->sum('amount');
+                $p2["c_amount"] = $c_amount;
                 $p2["bank_name"] = $card_info["bank_name"];
                 $p2["user_name"] = $card_info["user_name"];
                 $p2["card_no"] = substr($card_info["card_no"],-4);
@@ -90,6 +95,8 @@ class PlanController extends InitController {
         if($plan_list3){
             foreach ($plan_list3 as $p3) {
                 $card_info = M("bank_card_".$p3["c_code"])->where(["id"=>$p3["bc_id"]])->find();
+                $c_amount = $plan_des_model->where(['p_id'=>$p3['id'],'type'=>1])->sum('amount');
+                $p3["c_amount"] = $c_amount;
                 $p3["bank_name"] = $card_info["bank_name"];
                 $p3["user_name"] = $card_info["user_name"];
                 $p3["card_no"] = substr($card_info["card_no"],-4);
