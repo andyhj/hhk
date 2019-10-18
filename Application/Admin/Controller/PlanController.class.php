@@ -688,7 +688,7 @@ class PlanController extends CommonController{
                     }
                     $param=[
                         'order_number' => $order_number, //支付订单号
-                        'df_order_number' => $plan_des_info["order_id"], //代付订单号
+                        'df_order_number' => $remedy_id, //代付订单号
                     ];
                     $ybf = new Ybf();
                     $ybf_dh = $ybf->ysfWitbindcard($param);//执行代还
