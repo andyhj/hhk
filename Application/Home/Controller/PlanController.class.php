@@ -324,10 +324,10 @@ class PlanController extends InitController {
         if($amount>6000&&$amount<=10000){
             $periods = 12;
         }
-        if($amount>10000&&$amount<=16000){
-            $periods = 18;
+        if($amount>10000&&$amount<=14000){
+            $periods = 16;
         }
-        if($amount>16000&&$amount<=22000){
+        if($amount>14000&&$amount<=22000){
             $periods = 24;
         }
         if($amount>22000&&$amount<=30000){
