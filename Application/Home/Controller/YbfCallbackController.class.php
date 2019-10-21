@@ -23,11 +23,11 @@ class YbfCallbackController extends InitController {
         $ybf = new Ybf();
 
         if ($ybf->checkSign($data)) {//验签成功
+            $order_id = $data['tenant_order_number'];
+            $plan_model = M("plan");
+            $plan_des_model = M("plan_des");
+            $plan_des_info = $plan_des_model->where("order_id='{$order_id}' OR remedy_id='{$order_id}'")->find();
             if ($data['status'] == '00000') {
-                $order_id = $data['tenant_order_number'];
-                $plan_model = M("plan");
-                $plan_des_model = M("plan_des");
-                $plan_des_info = $plan_des_model->where("order_id='{$order_id}' OR remedy_id='{$order_id}'")->find();
                 if(!$plan_des_info&&empty($plan_des_info)){
                     add_log("receive.log", "ybfpay", "订单不存在：". var_export($order_id, true));
                     die('SUCCESS');
@@ -78,12 +78,12 @@ class YbfCallbackController extends InitController {
         $ybf = new Ybf();
 
         if ($ybf->checkSign($data)) {//验签成功
+            $order_id = $data['tenant_order_number'];
+            $plan_model = M("plan");
+            $plan_des_model = M("plan_des");
+            $plan_des_info = $plan_des_model->where("order_id='{$order_id}' OR remedy_id='{$order_id}'")->find();
+            add_log("receive.log", "ybfpay", "订单：". var_export($plan_des_info, true));
             if ($data['status'] == '00000') {
-                $order_id = $data['tenant_order_number'];
-                $plan_model = M("plan");
-                $plan_des_model = M("plan_des");
-                $plan_des_info = $plan_des_model->where("order_id='{$order_id}' OR remedy_id='{$order_id}'")->find();
-                add_log("receive.log", "ybfpay", "订单：". var_export($plan_des_info, true));
                 if(!$plan_des_info&&empty($plan_des_info)){
                     add_log("receive.log", "ybfpay", "订单不存在：". var_export($order_id, true));
                     die('SUCCESS');
