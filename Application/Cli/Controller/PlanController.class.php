@@ -516,10 +516,12 @@ class PlanController extends InitController {
 
         $sum_yes1 = $sum_yes;
         $sum_today1 = $sum_today;
-        if($sum_yes>2100000){
-            $sum_yes1 = $je;
-            $sum_today1 = $je1;            
-        }      
+        if($sum_yes>2080000){
+            $sum_yes1 = $je;                    
+        }    
+        if($sum_today>1700000){
+            $sum_today1 = $je1;    
+        }  
         $msg = '《会收钱》昨日交易额:' . $sum_yes1 . ',今日交易额:' . $sum_today1.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
         $msg1 = '《会收钱》昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
         $this->preparereport($msg,$msg1);  
