@@ -541,7 +541,7 @@ class PlanController extends InitController {
             $user_m = D("User");
             foreach ($open_ids as $value) {
                 $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
-                if($value['open_id']=="B5Eb6F6uGkuuqD8iF9wnIXTKkxM"){
+                if($value['open_id']=="oB5Eb6F6uGkuuqD8iF9wnIXTKkxM"){
                     $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg1,'请关注','','',$value['open_id']);
                 }
             }
