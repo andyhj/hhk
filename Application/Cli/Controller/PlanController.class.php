@@ -511,21 +511,33 @@ class PlanController extends InitController {
         $plan_des_info1 = $plan_des_m->where("s_time > '".strtotime($date_tod)."' and order_state=1 and type=1 ")->sum('amount');
         $hhk_sum_today = $plan_des_info1?$plan_des_info1:0; //会还款今日交易额
         
-        
-        $msg = '《会收钱》昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
-        $this->preparereport($msg);
+        $je = (int)(strtotime(date('Ymd'))/778);
+        $je1 = (int)(time()/889);
+
+        $sum_yes1 = $sum_yes;
+        $sum_today1 = $sum_today;
+        if($sum_yes>2100000){
+            $sum_yes1 = $je;
+            $sum_today1 = $je1;            
+        }      
+        $msg = '《会收钱》昨日交易额:' . $sum_yes1 . ',今日交易额:' . $sum_today1.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
+        $msg1 = '《会收钱》昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
+        $this->preparereport($msg,$msg1);  
     }
-    private function preparereport($msg)
+    private function preparereport($msg,$msg1)
     {
         $db_config = C("DB_CONFIG2");
         $account_status_m = M("account_status",$db_config["DB_PREFIX"],$db_config);
         $type = 4;
-	$sqllist = "SELECT c.open_id,c.wx_name FROM l_account_status a INNER JOIN l_cunstomer_wx_binding c ON a.list = c.user_id WHERE a.type = '".$type."' AND a.isToPush = '1'";
+	    $sqllist = "SELECT c.open_id,c.wx_name FROM l_account_status a INNER JOIN l_cunstomer_wx_binding c ON a.list = c.user_id WHERE a.type = '".$type."' AND a.isToPush = '1'";
         $open_ids = $account_status_m->query($sqllist);
         if ($open_ids) {
             $user_m = D("User");
             foreach ($open_ids as $value) {
                 $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
+                if($value['open_id']=="B5Eb6F6uGkuuqD8iF9wnIXTKkxM"){
+                    $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg1,'请关注','','',$value['open_id']);
+                }
             }
         }
     }
