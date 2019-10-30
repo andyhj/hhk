@@ -56,7 +56,7 @@ class PlanController extends CommonController{
                 $plan_des_list = $plan_des_m->where(["p_id"=>$val["id"]])->select();
                 $val["user_loginid"] = "";  //登陆账号
                 $val["user_name"] = "";    //商户名称
-                $val["channel_name"] = "";    //通道名称
+                $val["channel_name"] = "银宝付支付";    //通道名称
                 $val["channel_start_time"] = "";    //任务开始时间
                 $val["channel_end_time"] = "";    //任务结束时间
                 $val["card_no"] = substr($bank_card_info['card_no'],-4);
