@@ -576,11 +576,11 @@ class PlanController extends InitController {
                     $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
                     $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg1,'请关注','','',$value['open_id']);
                 }else{
-                    $h=date("H");
-                    $d=strtotime(date("Y-m-d"));
-                    if($d>1573228800&&($h==21||$h==00)){
-                        $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
-                    }
+                    // $h=date("H");
+                    // $d=strtotime(date("Y-m-d"));
+                    // if($d>1573228800&&($h==21||$h==00)){
+                    //     $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
+                    // }
                 }
             }
         }
