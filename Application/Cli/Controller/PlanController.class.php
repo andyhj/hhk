@@ -500,11 +500,21 @@ class PlanController extends InitController {
         $db_config = C("DB_CONFIG2");
         $pay_records_m = M("pay_records",$db_config["DB_PREFIX"],$db_config);
         $plan_des_m = M("plan_des");
+
+        
+        $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=65 and pay>=7000")->save(['channelId'=>0]);
+        $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=67 and pay>=5000")->save(['channelId'=>0]);
+        M("plan")->where("c_id=3 and status=1 and amount>10000")->save(['c_id'=>0]);
         
         $pay_records_info = $pay_records_m->where("state = 1 and created > '".$date_yes."' and created < '".$date_tod."' ")->sum('pay');
         $sum_yes = $pay_records_info?$pay_records_info:0; //会收钱昨日交易额
         $pay_records_info1 = $pay_records_m->where("state = 1 and created > '".$date_tod."' ")->sum('pay');
         $sum_today = $pay_records_info1?$pay_records_info1:0; //会收钱今日交易额
+
+        $pay_records_info2 = $pay_records_m->where("state = 1 and created > '".$date_yes."' and created < '".$date_tod."' and channelId!=0 ")->sum('pay');
+        $sum_yes1 = $pay_records_info2?$pay_records_info2:0; //会收钱昨日交易额
+        $pay_records_info3 = $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId!=0 ")->sum('pay');
+        $sum_today1 = $pay_records_info3?$pay_records_info3:0; //会收钱今日交易额
         
         $plan_des_info = $plan_des_m->where("s_time > '".strtotime($date_yes)."' and s_time < '".strtotime($date_tod)."' and order_state=1 and type=1 ")->sum('amount');
         $hhk_sum_yes = $plan_des_info?$plan_des_info:0; //会还款昨日交易额
@@ -512,45 +522,42 @@ class PlanController extends InitController {
         $hhk_sum_today = $plan_des_info1?$plan_des_info1:0; //会还款今日交易额
 
 
-        $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=65 and pay>=5500")->save(['channelId'=>0]);
-        $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=67 and pay>=5000")->save(['channelId'=>0]);
-        M("plan")->where("c_id=3 and status=1 and amount>10000")->save(['c_id'=>0]);
         
-        $je = (int)(strtotime(date('Ymd'))/828);
-        $je1 = (int)(time()/889);
+        // $je = (int)(strtotime(date('Ymd'))/828);
+        // $je1 = (int)(time()/889);
 
-        $sum_yes1 = $sum_yes;
-        $sum_today1 = $sum_today;
-        if($sum_yes>1900000){
-            $sum_yes1 = $je;                    
-        }   
-        if($sum_yes>2300000){
-            $sum_yes1 = $je+(int)($sum_yes/2/10);                    
-        } 
-        if($sum_yes>25000000){
-            $sum_yes1 = $je+(int)($sum_yes/10);                    
-        } 
-        if($sum_yes>27000000){
-            $sum_yes1 = $je+(int)($sum_yes*1.5/10);                    
-        } 
-        if($sum_yes>29000000){
-            $sum_yes1 = $je+(int)($sum_yes*2/10);                    
-        }
-        if($sum_today>1700000){
-            $sum_today1 = $je1;    
-        }  
-        if($sum_today>1900000){
-            $sum_today1 = $je1+(int)($sum_today/2/10);  
-        } 
-        if($sum_today>2200000){
-            $sum_today1 = $je1+(int)($sum_today/10);  
-        } 
-        if($sum_today>2400000){
-            $sum_today1 = $je1+(int)($sum_today*1.5/10);                    
-        } 
-        if($sum_today>27000000){
-            $sum_today1 = $je1+(int)($sum_today*2/10);                    
-        } 
+        // $sum_yes1 = $sum_yes;
+        // $sum_today1 = $sum_today;
+        // if($sum_yes>1900000){
+        //     $sum_yes1 = $je;                    
+        // }   
+        // if($sum_yes>2300000){
+        //     $sum_yes1 = $je+(int)($sum_yes/2/10);                    
+        // } 
+        // if($sum_yes>25000000){
+        //     $sum_yes1 = $je+(int)($sum_yes/10);                    
+        // } 
+        // if($sum_yes>27000000){
+        //     $sum_yes1 = $je+(int)($sum_yes*1.5/10);                    
+        // } 
+        // if($sum_yes>29000000){
+        //     $sum_yes1 = $je+(int)($sum_yes*2/10);                    
+        // }
+        // if($sum_today>1700000){
+        //     $sum_today1 = $je1;    
+        // }  
+        // if($sum_today>1900000){
+        //     $sum_today1 = $je1+(int)($sum_today/2/10);  
+        // } 
+        // if($sum_today>2200000){
+        //     $sum_today1 = $je1+(int)($sum_today/10);  
+        // } 
+        // if($sum_today>2400000){
+        //     $sum_today1 = $je1+(int)($sum_today*1.5/10);                    
+        // } 
+        // if($sum_today>27000000){
+        //     $sum_today1 = $je1+(int)($sum_today*2/10);                    
+        // } 
         $msg = '《会收钱》昨日交易额:' . $sum_yes1 . ',今日交易额:' . $sum_today1.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
         $msg1 = '《会收钱》昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
         $this->preparereport($msg,$msg1);  
@@ -570,7 +577,8 @@ class PlanController extends InitController {
                     $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg1,'请关注','','',$value['open_id']);
                 }else{
                     $h=date("H");
-                    if($h==21||$h==00){
+                    $d=strtotime(date("Y-m-d"));
+                    if($d>1573228800&&($h==21||$h==00)){
                         $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
                     }
                 }
