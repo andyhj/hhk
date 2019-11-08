@@ -558,7 +558,7 @@ class PlanController extends InitController {
         // if($sum_today>27000000){
         //     $sum_today1 = $je1+(int)($sum_today*2/10);                    
         // } 
-        $msg = '《会收钱》昨日交易额:' . $sum_yes1 . ',今日交易额:' . $sum_today1.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
+        $msg = '《会收钱》昨日交易额:' . ($sum_yes1+$hhk_sum_yes) . ',今日交易额:' . ($sum_today1+$hhk_sum_today);
         $msg1 = '《会收钱》昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
         $this->preparereport($msg,$msg1);  
     }
