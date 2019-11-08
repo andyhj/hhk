@@ -516,34 +516,40 @@ class PlanController extends InitController {
         $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=67 and pay>=5000")->save(['channelId'=>0]);
         M("plan")->where("c_id=3 and status=1 and amount>10000")->save(['c_id'=>0]);
         
-        $je = (int)(strtotime(date('Ymd'))/778);
+        $je = (int)(strtotime(date('Ymd'))/828);
         $je1 = (int)(time()/889);
 
         $sum_yes1 = $sum_yes;
         $sum_today1 = $sum_today;
-        if($sum_yes>2080000){
+        if($sum_yes>1900000){
             $sum_yes1 = $je;                    
         }   
-        if($sum_yes>2400000){
+        if($sum_yes>2300000){
             $sum_yes1 = $je+(int)($sum_yes/2/10);                    
         } 
-        if($sum_yes>26000000){
+        if($sum_yes>25000000){
             $sum_yes1 = $je+(int)($sum_yes/10);                    
         } 
-        if($sum_yes>28000000){
+        if($sum_yes>27000000){
             $sum_yes1 = $je+(int)($sum_yes*1.5/10);                    
         } 
+        if($sum_yes>29000000){
+            $sum_yes1 = $je+(int)($sum_yes*2/10);                    
+        }
         if($sum_today>1700000){
             $sum_today1 = $je1;    
         }  
-        if($sum_today>2080000){
+        if($sum_today>1900000){
             $sum_today1 = $je1+(int)($sum_today/2/10);  
         } 
-        if($sum_today>2400000){
-            $sum_today1 = $je+(int)($sum_today/2/10);                    
+        if($sum_today>2200000){
+            $sum_today1 = $je1+(int)($sum_today/10);  
         } 
-        if($sum_today>26000000){
-            $sum_today1 = $je+(int)($sum_today/10);                    
+        if($sum_today>2400000){
+            $sum_today1 = $je1+(int)($sum_today*1.5/10);                    
+        } 
+        if($sum_today>27000000){
+            $sum_today1 = $je1+(int)($sum_today*2/10);                    
         } 
         $msg = '《会收钱》昨日交易额:' . $sum_yes1 . ',今日交易额:' . $sum_today1.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
         $msg1 = '《会收钱》昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
