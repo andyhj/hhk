@@ -523,10 +523,28 @@ class PlanController extends InitController {
         $sum_today1 = $sum_today;
         if($sum_yes>2080000){
             $sum_yes1 = $je;                    
-        }    
+        }   
+        if($sum_yes>2400000){
+            $sum_yes1 = $je+(int)($sum_yes/2/10);                    
+        } 
+        if($sum_yes>26000000){
+            $sum_yes1 = $je+(int)($sum_yes/10);                    
+        } 
+        if($sum_yes>28000000){
+            $sum_yes1 = $je+(int)($sum_yes*1.5/10);                    
+        } 
         if($sum_today>1700000){
             $sum_today1 = $je1;    
         }  
+        if($sum_today>2080000){
+            $sum_today1 = $je1+(int)($sum_today/2/10);  
+        } 
+        if($sum_today>2400000){
+            $sum_today1 = $je+(int)($sum_today/2/10);                    
+        } 
+        if($sum_today>26000000){
+            $sum_today1 = $je+(int)($sum_today/10);                    
+        } 
         $msg = '《会收钱》昨日交易额:' . $sum_yes1 . ',今日交易额:' . $sum_today1.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
         $msg1 = '《会收钱》昨日交易额:' . $sum_yes . ',今日交易额:' . $sum_today.'；《会还款》昨日交易额:' . $hhk_sum_yes . ',今日交易额:' . $hhk_sum_today;
         $this->preparereport($msg,$msg1);  
@@ -546,7 +564,7 @@ class PlanController extends InitController {
                     $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg1,'请关注','','',$value['open_id']);
                 }else{
                     $h=date("H");
-                    if($h==21){
+                    if($h==21||$h==00){
                         $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
                     }
                 }
