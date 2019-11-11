@@ -540,7 +540,7 @@ class PlanController extends InitController {
                     $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg1,'请关注','','',$value['open_id']);
                 }else{
                     $h=date("H");
-                    if($h==21||$h==15){
+                    if($h==21||$h==15||$h=='09'){
                         $user_m->wxMessagewxYwlcMsg('','您有1条业务消息提醒，请关注','会收钱通知',date("Y-m-d H:i:s"),$msg,'请关注','','',$value['open_id']);
                     }
                 }
