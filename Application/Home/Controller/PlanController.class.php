@@ -261,6 +261,7 @@ class PlanController extends InitController {
         $this->assign('close_rate', (int)$close_rate);
         $this->assign('channel_info', $channel_info);
         $this->assign('add_plan_url', U("index/plan/planSubmit"));
+        $this->assign('get_plan_url', U("index/plan/getPeriods"));
         $this->assign('add_card_url', U("index/card/addCard",["c_code"=>$channel_info["code"]]));
         $this->assign('cart_url', U("index/card/index",["c_code"=>$channel_info["code"]]));
         $this->assign('getcard_url', U("index/plan/getCard"));
@@ -292,9 +293,73 @@ class PlanController extends InitController {
         $this->returnJson($json);
     }
 
+    public function getPeriods()
+    {
+        $c_id = I("c_id",0);  //通道id
+        $u_id = $this->user_info["id"];
+        $amount = I("amount"); //金额
+        $periods = 8;
+        if(!$c_id||!$u_id||!$amount){
+            $json["status"] = 305;
+            $json["info"] = "参数错误";
+            $this->returnJson($json);
+        }
+        if($amount>6000&&$amount<=10000){
+            $periods = 12;
+        }
+        if($amount>10000&&$amount<=14000){
+            $periods = 16;
+        }
+        if($amount>14000&&$amount<=22000){
+            $periods = 24;
+        }
+        if($amount>22000&&$amount<=30000){
+            $periods = 32;
+        }
+        if($amount>30000&&$amount<=38000){
+            $periods = 40;
+        }
+        if($amount>38000&&$amount<=46000){
+            $periods = 48;
+        }
+        if($amount>46000&&$amount<=54000){
+            $periods = 56;
+        }
+        $channel_model = M("channel");
+        $channel_info = $channel_model->where(["id"=>$c_id])->find();
+        if(!$channel_info){
+            $json["status"] = 306;
+            $json["info"] = "通道不存在";
+            $this->returnJson($json);
+        }
+        $fee = $channel_info["user_fee"]; //普通用户交易费率
+        $close_rate = $channel_info["user_close_rate"];   //普通用户结算费用（每笔）
+        $is_plus = 0;
+        $user_m = M("user");
+        $user_des = $user_m->where(["u_id"=>$u_id])->find();
+        //判断是否plus会员
+        if($user_des && $user_des['is_vip']){
+            $is_plus = 1;
+            $fee = $channel_info["plus_user_fee"]; //plus用户交费率
+            $close_rate = $channel_info["plus_user_close_rate"];   //plus用户结算费用（每笔）
+        }
+        $p_amount =roundResolve($amount,$periods); //每期扣款额度
+        $fee_con = 0;
+        foreach ($p_amount as $key => $value) {
+            $fe = round((($value+$close_rate)/($close_rate-$fee))-$value,2);
+            $fee_con +=$fe;
+        }
+        $fee_c = max($p_amount)+$fee_con;
+        $json["status"] = 200;
+        $json["info"] = "成功";
+        $json["data"] = ['fees'=>$fee_con,'fee_content'=>$fee_c,'periods'=>$periods];
+        $this->returnJson($json);
+
+    }
+
     //添加计划
     public function planSubmit(){
-        $c_id = I("c_id",1);  //通道id
+        $c_id = I("c_id",0);  //通道id
         $b_id = I("b_id"); //银行卡id
         $u_id = $this->user_info["id"];
         $amount = I("amount"); //金额
@@ -401,9 +466,10 @@ class PlanController extends InitController {
             $nums=4;
             $p_d = $periods/$nums+$reserved_days;
         }
+        $max_a = [8=>1500,12=>6000,16=>10000,24=>14000,32=>22000,40=>30000,48=>38000,56=>46000];
         if($days<=$p_d){
             $json["status"] = 308;
-            $json["info"] = "选择{$periods}期，距离还款日必须大于{$p_d}天";
+            $json["info"] = "金额大于".$max_a[$periods]."，距离还款日必须大于{$p_d}天";
             $this->returnJson($json,$session_name);
         }
         $fee = $channel_info["user_fee"]; //普通用户交易费率

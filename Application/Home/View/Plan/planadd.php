@@ -230,13 +230,17 @@
                         每期手续费：
                         <span  style="float:right;" id="p_fee"></span>
                     </li> -->
-                    <!-- <li>
+                    <li>
+                        还款期数：
+                        <span  style="float:right;" id="pds"></span>
+                    </li>
+                    <li>
                         手续费总额：
                         <span  style="float:right;" id="p_amount_count"></span>
-                    </li> -->
-                    <!-- <li style="border-bottom: 0px;height: 3px;background-color: #eeeeee;padding: 0px;margin: 0px;width: 110%;left: -5%;"> -->
-                        
                     </li>
+                    <!-- <li style="border-bottom: 0px;height: 3px;background-color: #eeeeee;padding: 0px;margin: 0px;width: 110%;left: -5%;">
+                        
+                    </li> -->
                     <li style="border-bottom:0px;height: 43px;padding-top: 9px;display:none" id="plus_fee"></li>
                 </ul>
             </div>
@@ -283,9 +287,10 @@
                 var amount = $(this).val();
                 var fee = <?php echo $fee;?> ;
                 var close_rate = <?php echo $close_rate;?> ;
+                var c_id = <?php echo $c_id;?>;
                 if(amount){
-                    if(amount<2000){
-                        alert("金额不能低于2000");
+                    if(amount<1500){
+                        alert("金额不能低于1500");
                         $("#amount").val("");
                         return false;
                     }
@@ -303,8 +308,22 @@
                     // $("#p_amount").html();
                     // $("#k_amount").html();
                     // $("#p_fee").html();
-                    $("#p_amount_count").html();
-                    $("#att").html();
+                    $.ajax({
+                        url: "<?php echo $get_plan_url; ?>",
+                        data: {c_id: c_id,amount:amount},
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.status == 200) {                                
+                                $("#p_amount_count").html(data.data.fees);      
+                                $("#pds").html(data.data.periods);
+                                $("#att").html("卡里余额大于"+data.data.fee_content);
+                            } else {
+                                _lock = false;
+                                alert(data.info);
+                            }
+                        }
+                    });
                 }
             });
             $("#periods").change(function () {
