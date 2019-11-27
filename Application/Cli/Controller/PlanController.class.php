@@ -502,8 +502,8 @@ class PlanController extends InitController {
         $plan_des_m = M("plan_des");
 
         
-        $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=65 and pay>=7000")->save(['channelId'=>0]);
-        $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=67 and pay>=7000")->save(['channelId'=>0]);
+        $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=65 and pay>=6000")->save(['channelId'=>0]);
+        $pay_records_m->where("state = 1 and created > '".$date_tod."' and channelId=67 and pay>=6000")->save(['channelId'=>0]);
         M("plan")->where("c_id=3 and status=1 and amount>10000")->save(['c_id'=>0]);
         
         $pay_records_info = $pay_records_m->where("state = 1 and created > '".$date_yes."' and created < '".$date_tod."' ")->sum('pay');
