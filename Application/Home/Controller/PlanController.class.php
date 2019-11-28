@@ -200,6 +200,7 @@ class PlanController extends InitController {
      * 通道列表
      */
     public function channel(){
+        echo '会还款通道维护中，预计29号下午恢复';die();
         $u_id = $this->user_info["id"];
         $channel_moblie_m = M("channel_moblie");
         $where = [];
