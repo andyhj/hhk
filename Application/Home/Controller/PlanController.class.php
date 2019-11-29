@@ -229,7 +229,7 @@ class PlanController extends InitController {
                     $access = $d_user->ybfRegisterAndAccess($u_id,$fee);
                     if ($access&&$access['code']!=1) {
                         if ($access['code']==2) {
-                            echo '<script>alert("结算卡信息不完整，请更新结算卡");location="'.HSQ_HOST.'/mobile/info/bank_info.html";</script>';
+                            echo '<script>alert("结算卡信息不完整，请更新结算卡");location="'.HSQ_HOST.'/mobile/index/my_info.html";</script>';
                             die();
                         }else {
                             echo '<script>alert("'.$access['msg'].'");</script>';
