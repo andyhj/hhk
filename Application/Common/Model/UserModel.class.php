@@ -250,7 +250,7 @@ class UserModel extends Model{
         $ybf = new Ybf();
         $ybf_dh = $ybf->registerAndAccess($param);//执行代扣
         if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
-            $merchantNo = $ybf_dh['merchant_no'];
+            $merchantNo = $ybf_dh['data']['merchant_no'];
             $indata['u_id']   = $uid;
             $indata['mer_name']   = $customer_bankaccount_des['accountname'];
             $indata['id_card']    = $user_info['id_card'];
