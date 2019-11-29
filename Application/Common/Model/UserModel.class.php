@@ -240,7 +240,7 @@ class UserModel extends Model{
             'city' => $customer_bankaccount_des['city'], //市
             'area' => $customer_bankaccount_des['city'], //区
             'address' => $customer_bankaccount_des['province'].$customer_bankaccount_des['city'], //详细地址
-            'mer_name' => $customer_bankaccount_des['accountName'], //真实姓名
+            'mer_name' => $customer_bankaccount_des['accountname'], //真实姓名
             'id_card' => $user_info['id_card'], //身份证号码
             'account' => $customer_bankaccount_des['account'], //结算账号  
             'reserved_phone' => $customer_bankaccount_des['reserved_phone'], //结算卡银行预留手机号 
@@ -252,7 +252,7 @@ class UserModel extends Model{
         if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
             $merchantNo = $ybf_dh['merchant_no'];
             $indata['u_id']   = $uid;
-            $indata['mer_name']   = $customer_bankaccount_des['accountName'];
+            $indata['mer_name']   = $customer_bankaccount_des['accountname'];
             $indata['id_card']    = $user_info['id_card'];
             $indata['account']    = $customer_bankaccount_des['account'];
             $indata['bank_branch']  = $customer_bankaccount_des['bank_branch'];
