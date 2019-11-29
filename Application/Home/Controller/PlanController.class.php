@@ -200,11 +200,12 @@ class PlanController extends InitController {
      * 通道列表
      */
     public function channel(){
-        echo '会还款通道维护中，预计29号下午恢复';die();
-        $u_id = $this->user_info["id"];
+        $user_des = $this->user_info;
+        $u_id = $user_des["id"];
         $channel_moblie_m = M("channel_moblie");
         $where = [];
         if($u_id!=464885){
+            echo '会还款通道维护中，预计29号下午恢复';die();
             $where["state"] = 1;
         } 
         $num = $channel_moblie_m->where($where)->count();
@@ -218,6 +219,25 @@ class PlanController extends InitController {
         if($channel_moblie_list){
             foreach ($channel_moblie_list as $value) {
                 $channel_info = M("channel")->where(["id"=>$value["c_id"]])->find();
+                $fee = $channel_info["user_fee"]; //普通用户交易费率
+                //判断是否plus会员
+                if($user_des && $user_des['is_vip']){
+                    $fee = $channel_info["plus_user_fee"]; //plus用户交费率
+                }
+                if($value["c_id"]==3){
+                    $d_user = D('User');
+                    $access = $d_user->ybfRegisterAndAccess($u_id,$fee);
+                    if ($access&&$access['code']!=1) {
+                        if ($access['code']==2) {
+                            echo '<script>alert("结算卡信息不完整，请更新结算卡");location="'.HSQ_HOST.'/mobile/info/bank_info.html";</script>';
+                            die();
+                        }else {
+                            echo '<script>alert("'.$access['msg'].'");</script>';
+                            die();
+                        }
+                    }
+                    
+                }
                 $value["channel_info"] = $channel_info;
                 $channels_arr[] = $value;
             }

@@ -54,6 +54,36 @@ class Ybf {
         return json_decode($res, true);
     }
     /**
+     * 进件
+     * @param
+     * @return
+     * @author Andy Create At 2019-03-25
+     */
+    function registerAndAccess($data = false) {
+        $param = array(
+            'tenant_id' => $this->merchant_id,
+            'channel' => 6, //默认6
+            'province' => $data['province'], //省
+            'city' => $data['city'], //市
+            'area' => $data['area'], //区
+            'address' => $data['address'], //详细地址
+            'mer_name' => $data['mer_name'], //真实姓名
+            'id_card' => $data['id_card'], //身份证号码
+            'account' => $data['account'], //结算账号  
+            'reserved_phone' => $data['reserved_phone'], //结算卡银行预留手机号 
+            'bank_branch' => $data['bank_branch'], //银行行号
+            'down_pay_fee' => $data['down_pay_fee'], //费率 
+        );
+        //获取签名
+        $param['sign'] = $this->getSign($param);
+        add_log("registerAndAccess.log", "ybfpay", "提交参数：" . var_export($param, true));
+        $url = "http://pay.hsqpay.com/api/dhPay/registerAndAccess";
+        $res = $this->httpRequest($url, $param);
+        add_log("registerAndAccess.log", "ybfpay", "返回数据：" . var_export($res, true));
+
+        return json_decode($res, true);
+    }
+    /**
      * 银宝付云闪付代付（代还）
      * @param
      * @return

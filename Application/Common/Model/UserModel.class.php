@@ -11,6 +11,7 @@ namespace Common\Model;
 use Think\Model;
 use Common\WxApi\class_weixin_adv;
 use Common\GyfPay\gyf;
+use Common\ybfPay\Ybf;
 class UserModel extends Model{
     /**
      * 根据用户id查找用户
@@ -203,5 +204,72 @@ class UserModel extends Model{
             return true;
         }
         return false;
+    }
+    /**
+     * 银宝付进件
+     *
+     * @param Type $var
+     * @return void
+     */
+    public function ybfRegisterAndAccess($uid,$fee)
+    {
+        require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/YbfPay.php";
+        $user_m = D('User');
+        $user_info = $user_m->where(['u_id'=>$uid])->find();
+        $json['code'] = 1;
+        $json['msg'] = '进件成功';
+        if (!$user_info) {
+            $json['code'] = 4;
+            $json['msg'] = '用户不存在';
+            return $json;
+        }
+        $merchant_ybf_info = M('merchant_ybf')->where(['u_id'=>$uid])->find();
+        if ($merchant_ybf_info&&$merchant_ybf_info['success']==1) {
+            return $json;
+        }
+        $db_config = C("DB_CONFIG2");
+        $customer_bankaccount_m = M("customer_bankaccount",$db_config["DB_PREFIX"],$db_config);
+        $customer_bankaccount_des = $customer_bankaccount_m->where(["userId"=>$u_id])->find();
+        if(!$customer_bankaccount_des||!$customer_bankaccount_des['province']||!$customer_bankaccount_des['city']||!$customer_bankaccount_des['bank_branch']||!$customer_bankaccount_des['reserved_phone']){
+            $json['code'] = 2;
+            $json['msg'] = '结算卡信息不完整，请更新结算卡';
+            return $json;            
+        }
+        $param = array(
+            'province' => $customer_bankaccount_des['province'], //省
+            'city' => $customer_bankaccount_des['city'], //市
+            'area' => $customer_bankaccount_des['city'], //区
+            'address' => $customer_bankaccount_des['province'].$customer_bankaccount_des['city'], //详细地址
+            'mer_name' => $customer_bankaccount_des['accountName'], //真实姓名
+            'id_card' => $user_info['id_card'], //身份证号码
+            'account' => $customer_bankaccount_des['account'], //结算账号  
+            'reserved_phone' => $customer_bankaccount_des['reserved_phone'], //结算卡银行预留手机号 
+            'bank_branch' => $customer_bankaccount_des['bank_branch'], //银行行号
+            'down_pay_fee' => $fee, //费率 
+        );
+        $ybf = new Ybf();
+        $ybf_dh = $ybf->registerAndAccess($param);//执行代扣
+        if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
+            $merchantNo = $ybf_dh['merchant_no'];
+            $indata['u_id']   = $uid;
+            $indata['mer_name']   = $customer_bankaccount_des['accountName'];
+            $indata['id_card']    = $user_info['id_card'];
+            $indata['account']    = $customer_bankaccount_des['account'];
+            $indata['bank_branch']  = $customer_bankaccount_des['bank_branch'];
+            $indata['reserved_phone'] = $customer_bankaccount_des['reserved_phone'];
+            $indata['merchant_no']    = $merchantNo;
+            $indata['success'] = 1;
+            $rs = M('merchant_ybf')->add($indata);
+            if ($rs) {
+                return $json;
+            }
+            $json['code'] = 5;
+            $json['msg'] = '进件记录失败';
+            return $json;
+        }else{
+            $json['code'] = 3;
+            $json['msg'] = $ybf_dh["msg"];
+            return $json; 
+        }
     }
 }
