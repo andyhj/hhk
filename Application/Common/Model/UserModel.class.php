@@ -229,7 +229,7 @@ class UserModel extends Model{
         }
         $db_config = C("DB_CONFIG2");
         $customer_bankaccount_m = M("customer_bankaccount",$db_config["DB_PREFIX"],$db_config);
-        $customer_bankaccount_des = $customer_bankaccount_m->where(["userId"=>$u_id])->find();
+        $customer_bankaccount_des = $customer_bankaccount_m->where(["userId"=>$uid])->find();
         if(!$customer_bankaccount_des||!$customer_bankaccount_des['province']||!$customer_bankaccount_des['city']||!$customer_bankaccount_des['bank_branch']||!$customer_bankaccount_des['reserved_phone']){
             $json['code'] = 2;
             $json['msg'] = '结算卡信息不完整，请更新结算卡';
