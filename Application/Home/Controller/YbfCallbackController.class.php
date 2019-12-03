@@ -127,7 +127,7 @@ class YbfCallbackController extends InitController {
 		//接受请求的数据
         $data = I('post.');
         add_log("backCard.log", "ybfpay", "绑卡异步返回信息：" . var_export($data, true));		
-        if ($data['account']=='0000'&&$data['account']&&$data['order_sn']) {
+        if ($data['respCode']=='0000'&&$data['account']&&$data['order_sn']) {
             $bank_card_hlb_model = M("bank_card_ybf");
             //查询银行卡
             $bank_card_hlb_info = $bank_card_hlb_model->where(["card_no"=>$data['account'],'order_id'=>$data['order_sn']])->find();
