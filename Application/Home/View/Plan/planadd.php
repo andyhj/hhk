@@ -459,7 +459,7 @@
                             location='<?php echo U("index/plan/index");?>';
                         }else if (data.status == 999) {
                             alert("请先完成绑卡");
-                            location=data.status.url;
+                            location=data.url;
                         } else {
                             _lock = false;
                             alert(data.info);
