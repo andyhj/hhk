@@ -123,6 +123,11 @@ class YbfCallbackController extends InitController {
         }
 		die();
     }
+    function backCard(){
+		//接受请求的数据
+        $data = I('post.');
+        add_log("backCard.log", "ybfpay", "绑卡异步返回信息：" . var_export($data, true));		
+    }
     /**
      * 公众号推送信息
      * @param type $plan_info

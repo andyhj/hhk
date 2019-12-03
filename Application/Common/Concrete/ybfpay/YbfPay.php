@@ -145,6 +145,31 @@ class Ybf {
 
         return json_decode($res, true);
     }
+    /**
+     * 绑定银行卡
+     * @param
+     * @return
+     * @author Andy Create At 2019-03-25
+     */
+    function xeBindCard($data = false) {
+        $param = array(
+            'tenant_id' => $this->merchant_id,
+            'order_sn' => $data['order_sn'], //订单号
+            'merchant_no' => $data['merchant_no'], //子商户号
+            'account' => $data['account'], //卡号
+            'phone' => $data['phone'], //手机号
+            'front_url' => $data['front_url'], //页面通知地址
+            'back_url' => $data['back_url'], //异步通知地址
+        );
+        //获取签名
+        $param['sign'] = $this->getSign($param);
+        add_log("xeBindCard.log", "ybfpay", "提交参数：" . var_export($param, true));
+        $url = "http://pay.hsqpay.com/api/dhPay/xeBindCard";
+        $res = $this->httpRequest($url, $param);
+        add_log("xeBindCard.log", "ybfpay", "返回数据：" . var_export($res, true));
+
+        return json_decode($res, true);
+    }
 
     /**
      * 发送http请求

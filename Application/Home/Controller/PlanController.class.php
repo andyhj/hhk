@@ -17,6 +17,7 @@ use Common\Common\WxH5Login;
 use Common\HeliPay\Heli;
 use Common\WxApi\class_weixin_adv;
 use Common\GyfPay\gyf;
+use Common\ybfPay\Ybf;
 class PlanController extends InitController {
     private $user_info;
     private $user_wx_info;
@@ -205,6 +206,7 @@ class PlanController extends InitController {
         $channel_moblie_m = M("channel_moblie");
         $where = [];
         if($u_id!=464885){
+            die('维护中...');
             $where["state"] = 1;
         } 
         $num = $channel_moblie_m->where($where)->count();
@@ -377,6 +379,21 @@ class PlanController extends InitController {
 
     }
 
+    public function cardhtml()
+    {
+        $b_id = I("b_id"); //银行卡id
+        $url = U("index/plan/index");
+        if(!$b_id){
+            $this->error("参数错误",$url);die();
+        }
+        $bank_card_hlb_model = M("bank_card_ybf");
+        //查询银行卡
+        $bank_card_hlb_info = $bank_card_hlb_model->where(["id"=>$b_id])->find();
+        if(!$bank_card_hlb_info||!$bank_card_hlb_info['html']){
+            $this->error("卡错误",$url);die();
+        }
+        echo $bank_card_hlb_info['html'];die();
+    }
     //添加计划
     public function planSubmit(){
         $c_id = I("c_id",0);  //通道id
@@ -448,6 +465,40 @@ class PlanController extends InitController {
             $json["status"] = 307;
             $json["info"] = "银行卡不存在";
             $this->returnJson($json,$session_name);
+        }
+        if(!$bank_card_hlb_info['is_tied']){
+            require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/YbfPay.php";
+            $merchant = M('merchant_ybf')->where(['id_card'=>$bank_card_hlb_info['id_card'],'success'=>1])->find();
+            if (!$merchant) {
+                $json["status"] = 308;
+                $json["info"] = "子商户不存在";
+                $this->returnJson($json,$session_name);
+            }
+            $param = array(
+                'tenant_id' => $this->merchant_id,
+                'order_sn' => $bank_card_hlb_info['order_id'], //订单号
+                'merchant_no' => $merchant['merchant_no'], //子商户号
+                'account' => $bank_card_hlb_info['card_no'], //卡号
+                'phone' => $bank_card_hlb_info['phone'], //手机号
+                'front_url' => HTTP_HOST.'/index/plan/planadd/c_id/'.$c_id.'.html', //页面通知地址
+                'back_url' => HTTP_HOST."/index/ybfCallback/backCard", //异步通知地址
+            );
+            $ybf = new Ybf();
+            $ybf_dh = $ybf->xeBindCard($param);//执行代扣
+            if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
+                $bank_card_hlb_model->where(["id"=>$b_id])->save(['is_tied'=>1]);
+            }elseif(isset($ybf_dh['status']) && $ybf_dh['status'] == 49000 && isset($ybf_dh['data']['html'])){
+                $bank_card_hlb_model->where(["id"=>$b_id])->save(['is_tied'=>2,'html'=>$ybf_dh['data']['html']]);
+                $json["status"] = 999;
+                $json["info"] = "提交绑卡";
+                $json["url"] = HTTP_HOST."/index/plan/cardhtml.html?b_id=".$b_id;
+                $this->returnJson($json,$session_name);
+                
+            }else{
+                $json["status"] = 309;
+                $json["info"] = "提交绑卡失败";
+                $this->returnJson($json,$session_name);
+            }
         }
         $plan_info = $plan_model->where("`bc_id`={$b_id} AND c_code='".$channel_info["code"]."' AND (`status`=3 OR `status`=4 OR `status`=5)")->find();
         if($plan_info){
