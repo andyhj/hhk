@@ -467,6 +467,11 @@ class PlanController extends InitController {
             $this->returnJson($json,$session_name);
         }
         if(!$bank_card_hlb_info['is_tied']){
+            if($bank_card_hlb_info['is_tied']==2){
+                $json["status"] = 310;
+                $json["info"] = "提交绑卡审核中";
+                $this->returnJson($json,$session_name);
+            }
             require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/YbfPay.php";
             $merchant = M('merchant_ybf')->where(['id_card'=>$bank_card_hlb_info['id_card'],'success'=>1])->find();
             if (!$merchant) {
