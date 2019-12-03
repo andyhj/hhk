@@ -166,9 +166,10 @@ class Ybf {
         add_log("xeBindCard.log", "ybfpay", "提交参数：" . var_export($param, true));
         $url = "http://pay.hsqpay.com/api/dhPay/xeBindCard";
         $res = $this->httpRequest($url, $param);
-        add_log("xeBindCard.log", "ybfpay", "返回数据：" . var_export($res, true));
+        $ress = json_decode($res, true);
+        add_log("xeBindCard.log", "ybfpay", "返回数据：" . var_export($ress, true));
 
-        return json_decode($res, true);
+        return $ress;
     }
 
     /**
