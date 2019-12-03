@@ -457,6 +457,9 @@
                         if (data.status == 200) {
                             alert("生成计划成功");
                             location='<?php echo U("index/plan/index");?>';
+                        }else if (data.status == 999) {
+                            alert("请先完成绑卡");
+                            location=data.status.url;
                         } else {
                             _lock = false;
                             alert(data.info);
