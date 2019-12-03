@@ -206,7 +206,6 @@ class PlanController extends InitController {
         $channel_moblie_m = M("channel_moblie");
         $where = [];
         if($u_id!=464885){
-            die('维护中...');
             $where["state"] = 1;
         } 
         $num = $channel_moblie_m->where($where)->count();
