@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2018-12-12 15:24:25
+ * @LastEditTime: 2019-12-03 10:55:41
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \project\hhk\Application\Admin\View\Statistics\index.html
+ -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -52,8 +60,17 @@
                                 <td>通道成本</td>
                                 <td>公司利润</td>
                             </tr>
-                            <?php if(!empty($plan_des_list)): ?>
-                            <?php foreach($plan_des_list as $n => $data): ?>
+                            <?php if(!empty($plan_des_list)):
+                            $jyzr=0;
+                            $sxf=0;
+                            $tdcb=0;
+                            $gslr=0;
+                            ?>
+                            <?php foreach($plan_des_list as $n => $data): 
+                            $jyzr+=$data['amount'];
+                            $sxf+=round($data['sxf'],2);
+                            $tdcb+=round($data['cb'],2);
+                            $gslr+=round(($data['sxf']-$data['cb']),2);?>
                             <tr id="tr_user_<?php echo $data['id']; ?>">
                                 <td><?php echo date("Y-m-d",strtotime($data['days'])); ?></td>
                                 <td><?php echo $data['amount']; ?></td>
@@ -65,10 +82,10 @@
                             <?php endif; ?>
                         </tbody>
                     </table>
-                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">交易总额:<?php echo $count_amount?$count_amount["amount"]:0; ?></div>
-                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">手续费总额:<?php echo $count_amount?round($count_amount["sxf"],2):0; ?></div>
-                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">通道成本总额:<?php echo $count_amount?round($count_amount["cb"],2):0; ?></div>
-                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;margin-bottom: 50px;">公司利润总额:<?php echo $count_amount?round(($count_amount["sxf"]-$count_amount["cb"]),2):0; ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">交易总额:<?php echo round($jyzr,2); ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">手续费总额:<?php echo round($sxf,2); ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;">通道成本总额:<?php echo round($tdcb,2); ?></div>
+                    <div style="text-align: left;margin-left: 15px;margin-top: 15px;font-size: 15px;font-weight:bold;margin-bottom: 50px;">公司利润总额:<?php echo round($gslr,2); ?></div>
                 </div>
             </div>
         </div>
