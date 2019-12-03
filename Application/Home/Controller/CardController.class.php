@@ -274,6 +274,7 @@ class CardController extends InitController {
                     'front_url' => HTTP_HOST.'/index/card/index/c_code/'.$this->c_code.'.html', //页面通知地址
                     'back_url' => HTTP_HOST."/index/ybfCallback/backCard", //异步通知地址
                 );
+                $b_id = $card_info['id'];
                 $ybf = new Ybf();
                 $ybf_dh = $ybf->xeBindCard($param);//执行代扣
                 if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
