@@ -9,6 +9,7 @@ namespace Home\Controller;
 use Common\Common\WxH5Login;
 use Common\HeliPay\Heli;
 use Common\GyfPay\gyf;
+use Common\ybfPay\Ybf;
 class CardController extends InitController {
     private $user_info;
     private $c_code;
@@ -258,7 +259,38 @@ class CardController extends InitController {
                     $json["info"] = "验证码不正确";
                     $this->returnJson($json, $session_name);
                 }
-                $this->card_m->where(["card_no"=>$card_no,"uid"=>$u_id])->save(['success'=>1]);
+                require_once $_SERVER['DOCUMENT_ROOT'] . "/Application/Common/Concrete/ybfpay/YbfPay.php";
+                $merchant = M('merchant_ybf')->where(['id_card'=>$card_info['id_card'],'success'=>1])->find();
+                if (!$merchant) {
+                    $json["status"] = 308;
+                    $json["info"] = "子商户不存在";
+                    $this->returnJson($json,$session_name);
+                }
+                $param = array(
+                    'order_sn' => $card_info['order_id'], //订单号
+                    'merchant_no' => $merchant['merchant_no'], //子商户号
+                    'account' => $card_info['card_no'], //卡号
+                    'phone' => $card_info['phone'], //手机号
+                    'front_url' => HTTP_HOST.'/index/card/index/c_code/'.$this->c_code.'.html', //页面通知地址
+                    'back_url' => HTTP_HOST."/index/ybfCallback/backCard", //异步通知地址
+                );
+                $ybf = new Ybf();
+                $ybf_dh = $ybf->xeBindCard($param);//执行代扣
+                if(isset($ybf_dh['status']) && $ybf_dh['status'] == 40000 ){
+                    $this->card_m->where(["id"=>$b_id])->save(['is_tied'=>1,'success'=>1]);
+                }elseif(isset($ybf_dh['status']) && $ybf_dh['status'] == 49000 && isset($ybf_dh['data']['html'])){
+                    $this->card_m->where(["id"=>$b_id])->save(['is_tied'=>2,'success'=>1,'html'=>$ybf_dh['data']['html']]);
+                    $json["status"] = 200;
+                    $json["info"] = "下一步跳到银联绑卡";
+                    $json["url"] = HTTP_HOST."/index/plan/cardhtml.html?b_id=".$b_id;
+                    $this->returnJson($json,$session_name);
+                    
+                }else{
+                    $json["status"] = 309;
+                    $json["info"] = "提交绑卡失败";
+                    $this->returnJson($json,$session_name);
+                }
+
                 $json["status"] = 200;
                 $json["info"] = "绑卡成功";
                 $json["url"] = U("index/card/index",['c_code'=>$this->c_code]);

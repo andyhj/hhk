@@ -475,7 +475,6 @@ class PlanController extends InitController {
                 $this->returnJson($json,$session_name);
             }
             $param = array(
-                'tenant_id' => $this->merchant_id,
                 'order_sn' => $bank_card_hlb_info['order_id'], //订单号
                 'merchant_no' => $merchant['merchant_no'], //子商户号
                 'account' => $bank_card_hlb_info['card_no'], //卡号
