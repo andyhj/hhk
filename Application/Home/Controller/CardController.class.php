@@ -591,7 +591,7 @@ class CardController extends InitController {
                 }
                 break;
             case "ybf":
-                    $r_s = $this->card_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0]);
+                    $r_s = $this->card_m->where(["uid"=>$u_id,"id"=>$id])->save(["success"=>0,"is_tied"=>0]);
                     if($r_s){
                         $json["status"] = 200;
                         $json["info"] = "银行卡已经解绑成功";
