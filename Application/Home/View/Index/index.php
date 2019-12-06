@@ -99,7 +99,7 @@
         <!-- <div style="position:absolute;top:2%;left:80%; " id="cpjs">
             <img src="/src/img/home/cpjs.png" style="width:1rem;">
         </div> -->
-        <div class="add" onclick="javascript:window.location.href='<?php echo $channel;?>'">
+        <div class="add" onclick="javascript:alert('会还款暂停新建计划')">
             <div><img src="/src/img/home/addjh.png"></div>
         </div>
         <div class="cpjs-des">
