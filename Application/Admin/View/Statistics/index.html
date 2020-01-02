@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2018-12-12 15:24:25
- * @LastEditTime: 2019-12-03 10:55:41
- * @LastEditors: your name
+ * @LastEditTime: 2020-01-02 10:36:16
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \project\hhk\Application\Admin\View\Statistics\index.html
  -->
@@ -29,6 +29,8 @@
                     </div>
                     <form id="search_form" method="get">
                          时间： <select id="date" name="date">
+                                <option value="<?php echo '2019-11'; ?>"  <?php if($date== '2019-11'){echo 'selected = "selected"';} ?>><?php echo '2019-11'; ?></option>
+                                <option value="<?php echo '2019-12'; ?>"  <?php if($date== '2019-12'){echo 'selected = "selected"';} ?>><?php echo '2019-12'; ?></option>
                                     <option value="<?php echo date('Y').'-01'; ?>"  <?php if($date== date('Y').'-01'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-01'; ?></option>
                                     <option value="<?php echo date('Y').'-02'; ?>"  <?php if($date== date('Y').'-02'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-02'; ?></option>
                                     <option value="<?php echo date('Y').'-03'; ?>"  <?php if($date== date('Y').'-03'){echo 'selected = "selected"';} ?>><?php echo date('Y').'-03'; ?></option>
